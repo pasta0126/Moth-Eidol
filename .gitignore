@@ -1,0 +1,87 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+publish/
+artifacts/
+
+# .NET
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+project.lock.json
+project.fragment.lock.json
+launchSettings.json.user
+*.nupkg
+*.snupkg
+.nuget/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Tests & coverage
+TestResults/
+[Tt]est[Rr]esult*/
+coverage/
+*.coverage
+*.coveragexml
+*.trx
+coverage.*.xml
+coverage.json
+coverage.info
+
+# Logs
+*.log
+
+# Visual Studio
+.vs/
+*.rsuser
+*.VC.db
+*.VC.opendb
+_ReSharper*/
+*.DotSettings.user
+
+# JetBrains Rider / IntelliJ
+.idea/
+*.sln.iml
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# OS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*~
+.directory
+
+# Packaging / installers
+*.msi
+*.msix
+*.dmg
+*.pkg
+*.AppImage
+*.deb
+*.rpm
+
+# Secrets / local config
+.env
+.env.*
+appsettings.*.local.json
+*.pfx
+*.snk
+
+# AI tools (local, per-user)
+.claude/settings.local.json
+CLAUDE.local.md

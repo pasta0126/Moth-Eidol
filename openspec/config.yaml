@@ -1,0 +1,37 @@
+schema: spec-driven
+
+context: |
+  moth-eidol: cross-platform desktop app in .NET (C#) to monitor log files,
+  with desktop alerts and active follow (tail).
+  UI: Avalonia. Local storage: SQLite (nothing distributed). Tests: xUnit.
+  Platforms: Windows (priority), Linux (if easy), macOS latest (dev machine).
+  Log sources: local files and network shares (SMB) accessible with the
+  logged-in OS user. Tail uses polling, not FileSystemWatcher alone.
+  MVP: tail + regex rules + notifications, tray, background (same process).
+  MVP notification channels: in-app toast, tray icon state/counter, sound.
+  Native OS notifications are out of MVP; INotifier is a pluggable chain.
+  Monitoring/alert core must be UI- and platform-independent and testable.
+  Versioning: semver x.y.z starting at 0.1.0; one minor bump per completed change.
+  Everything in the repo (specs, docs, code, commits) is written in English.
+
+# Per-artifact rules (optional)
+# Add custom rules for specific artifacts.
+# Example:
+#   rules:
+#     proposal:
+#       - Keep proposals under 500 words
+#       - Always include a "Non-goals" section
+#     tasks:
+#       - Break tasks into chunks of max 2 hours
+
+# Per-operation guidance (optional)
+# Add advisory guidance for how apply and archive work should be conducted.
+# This is separate from artifact rules above.
+# Example:
+#   operations:
+#     apply:
+#       guidance:
+#         - Keep test summaries concise
+#     archive:
+#       guidance:
+#         - Summarize the archive outcome before finishing
