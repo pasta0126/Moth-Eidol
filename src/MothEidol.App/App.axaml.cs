@@ -6,6 +6,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using MothEidol.Core;
+using MothEidol.App.Platform;
 using MothEidol.Core.Platform;
 
 namespace MothEidol.App;
@@ -43,6 +44,11 @@ public partial class App : Application
             var autostart = AutostartFactory.Create(Environment.ProcessPath);
             _mainWindow = new MainWindow(version, autostart);
             desktop.MainWindow = _mainWindow;
+
+            if (OperatingSystem.IsMacOS())
+            {
+                MacDockIcon.TrySet(new Uri("avares://MothEidol.App/Assets/app-icon.png"));
+            }
         }
 
         base.OnFrameworkInitializationCompleted();
