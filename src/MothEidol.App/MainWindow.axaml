@@ -4,18 +4,24 @@
         Icon="/Assets/app-icon.png"
         Title="Moth-Eidol"
         Width="520" Height="320"
+        Background="{DynamicResource MothBgBrush}"
         WindowStartupLocation="CenterScreen">
     <StackPanel Margin="24" Spacing="12">
-        <TextBlock Text="MOTH-EIDOL" FontSize="28" FontWeight="Bold" />
-        <TextBlock Text="System Observability Compound" Opacity="0.7" />
-        <TextBlock x:Name="VersionText" />
+        <TextBlock Text="MOTH-EIDOL" FontSize="28" FontWeight="Bold"
+                   Foreground="{DynamicResource MothPrimaryBrush}" />
+        <TextBlock Text="System Observability Compound"
+                   Foreground="{DynamicResource MothAccentSoftBrush}" />
+        <TextBlock x:Name="VersionText" Foreground="{DynamicResource MothTextBrush}" />
 
-        <Separator Margin="0,8" />
+        <Separator Margin="0,8" Background="{DynamicResource MothBorderBrush}" />
 
-        <CheckBox x:Name="AutostartCheck" Content="Start with my session" />
-        <TextBlock x:Name="AutostartNote" Opacity="0.7" TextWrapping="Wrap" IsVisible="False" />
+        <CheckBox x:Name="AutostartCheck" Content="Start with my session"
+                  Foreground="{DynamicResource MothTextBrush}" />
+        <TextBlock x:Name="AutostartNote" TextWrapping="Wrap" IsVisible="False"
+                   Foreground="{DynamicResource MothTextMutedBrush}" />
 
         <TextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
-                   Opacity="0.7" TextWrapping="Wrap" Margin="0,8,0,0" />
+                   Foreground="{DynamicResource MothTextMutedBrush}"
+                   TextWrapping="Wrap" Margin="0,8,0,0" />
     </StackPanel>
 </Window>

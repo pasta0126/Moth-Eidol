@@ -68,6 +68,13 @@ Native OS notifications are out of the MVP; the notifier chain must stay pluggab
 - Small, focused changes; do not mix refactors with features.
 - Commit messages in the imperative mood; no unrelated files in a commit.
 
+## UI theme
+
+- Single dark theme defined in `src/MothEidol.App/Themes/MothTheme.axaml` (palette taken from the moth artwork: obsidian, amber, copper, cream, one turquoise accent).
+- Views must use the `Moth*Brush` resources (`DynamicResource`); never hard-code colors.
+- Main combination: obsidian background + intense amber primary + cream text; turquoise only for secondary/info details.
+- Semantic levels: info `MothInfoBrush`, warning `MothWarningBrush`, error `MothErrorBrush`.
+
 ## Commands
 
 ```sh
