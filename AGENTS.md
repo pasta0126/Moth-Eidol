@@ -76,6 +76,8 @@ dotnet test
 dotnet run --project src/MothEidol.App
 ```
 
+Shortcut to build and launch the app: `scripts/run.sh` (macOS/Linux) or `scripts\run.cmd` (Windows).
+
 ## Notes for agents
 
 - Read this file and the relevant specs in `openspec/` before changing code.
