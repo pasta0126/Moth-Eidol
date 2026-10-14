@@ -17,7 +17,8 @@ public partial class MainWindow : Window
     public MainWindow(string version, IAutostart autostart) : this()
     {
         _autostart = autostart;
-        VersionText.Text = $"Version {version}";
+        Title = $"Moth-Eidol v{version}";
+        VersionText.Text = $"Moth-Eidol v{version}";
 
         if (autostart.IsSupported)
         {

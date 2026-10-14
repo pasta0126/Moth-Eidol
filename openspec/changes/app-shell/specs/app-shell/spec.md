@@ -11,6 +11,13 @@ The system SHALL start a main window on Windows, macOS and Linux and SHALL show 
 - **WHEN** the user runs the application
 - **THEN** the main window is shown with the current version visible
 
+### Requirement: Version always visible
+The system SHALL keep the running version identifiable at all times: in the main window title, in a persistent footer of the main window that does not depend on the current content, and in the tray icon tooltip.
+
+#### Scenario: Identify the running version
+- **WHEN** the user looks at the main window or hovers the tray icon
+- **THEN** the current semantic version `x.y.z` is shown
+
 ### Requirement: Single instance
 The system SHALL allow only one instance per user session.
 

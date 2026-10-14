@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
@@ -27,7 +28,7 @@ public partial class App : Application
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             _desktop = desktop;
-            desktop.ShutdownMode = Avalonia.Controls.ShutdownMode.OnExplicitShutdown;
+            desktop.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             _instanceGuard = new SingleInstanceGuard($"MothEidol.{Environment.UserName}");
             if (!_instanceGuard.TryAcquire())
@@ -44,6 +45,12 @@ public partial class App : Application
             var autostart = AutostartFactory.Create(Environment.ProcessPath);
             _mainWindow = new MainWindow(version, autostart);
             desktop.MainWindow = _mainWindow;
+
+            var trayIcons = TrayIcon.GetIcons(this);
+            if (trayIcons is { Count: > 0 })
+            {
+                trayIcons[0].ToolTipText = $"Moth-Eidol v{version}";
+            }
 
             if (OperatingSystem.IsMacOS())
             {

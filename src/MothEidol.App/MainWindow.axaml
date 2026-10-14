@@ -6,13 +6,18 @@
         Width="520" Height="320"
         Background="{DynamicResource MothBgBrush}"
         WindowStartupLocation="CenterScreen">
+    <DockPanel>
+    <Border DockPanel.Dock="Bottom"
+            BorderBrush="{DynamicResource MothBorderBrush}"
+            BorderThickness="0,1,0,0" Padding="24,8">
+        <TextBlock x:Name="VersionText" FontSize="12"
+                   Foreground="{DynamicResource MothTextMutedBrush}" />
+    </Border>
     <StackPanel Margin="24" Spacing="12">
         <TextBlock Text="MOTH-EIDOL" FontSize="28" FontWeight="Bold"
                    Foreground="{DynamicResource MothPrimaryBrush}" />
         <TextBlock Text="System Observability Compound"
                    Foreground="{DynamicResource MothAccentSoftBrush}" />
-        <TextBlock x:Name="VersionText" Foreground="{DynamicResource MothTextBrush}" />
-
         <Separator Margin="0,8" Background="{DynamicResource MothBorderBrush}" />
 
         <CheckBox x:Name="AutostartCheck" Content="Start with my session"
@@ -24,4 +29,5 @@
                    Foreground="{DynamicResource MothTextMutedBrush}"
                    TextWrapping="Wrap" Margin="0,8,0,0" />
     </StackPanel>
+    </DockPanel>
 </Window>
