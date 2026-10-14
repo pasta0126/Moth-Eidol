@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="MothEidol.App.MainWindow"
+        Icon="/Assets/tray.png"
+        Title="Moth-Eidol"
+        Width="520" Height="320"
+        WindowStartupLocation="CenterScreen">
+    <StackPanel Margin="24" Spacing="12">
+        <TextBlock Text="MOTH-EIDOL" FontSize="28" FontWeight="Bold" />
+        <TextBlock Text="System Observability Compound" Opacity="0.7" />
+        <TextBlock x:Name="VersionText" />
+
+        <Separator Margin="0,8" />
+
+        <CheckBox x:Name="AutostartCheck" Content="Start with my session" />
+        <TextBlock x:Name="AutostartNote" Opacity="0.7" TextWrapping="Wrap" IsVisible="False" />
+
+        <TextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
+                   Opacity="0.7" TextWrapping="Wrap" Margin="0,8,0,0" />
+    </StackPanel>
+</Window>

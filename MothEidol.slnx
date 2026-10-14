@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MothEidol.App/MothEidol.App.csproj" />
+    <Project Path="src/MothEidol.Core/MothEidol.Core.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MothEidol.Core.Tests/MothEidol.Core.Tests.csproj" />
+  </Folder>
+</Solution>

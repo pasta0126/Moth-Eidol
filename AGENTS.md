@@ -70,11 +70,10 @@ Native OS notifications are out of the MVP; the notifier chain must stay pluggab
 
 ## Commands
 
-To be completed once the .NET solution exists (`app-shell`):
-
 ```sh
 dotnet build
 dotnet test
+dotnet run --project src/MothEidol.App
 ```
 
 ## Notes for agents
