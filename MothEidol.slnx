@@ -2,8 +2,10 @@
   <Folder Name="/src/">
     <Project Path="src/MothEidol.App/MothEidol.App.csproj" />
     <Project Path="src/MothEidol.Core/MothEidol.Core.csproj" />
+    <Project Path="src/MothEidol.Persistence/MothEidol.Persistence.csproj" />
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MothEidol.Core.Tests/MothEidol.Core.Tests.csproj" />
+    <Project Path="tests/MothEidol.Persistence.Tests/MothEidol.Persistence.Tests.csproj" />
   </Folder>
 </Solution>

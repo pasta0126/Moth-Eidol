@@ -14,6 +14,13 @@
                    Foreground="{DynamicResource MothTextMutedBrush}" />
     </Border>
     <StackPanel Margin="24" Spacing="12">
+        <Border x:Name="NoticeBanner" IsVisible="False" Padding="12"
+                CornerRadius="4" BorderThickness="1"
+                Background="{DynamicResource MothSurfaceAltBrush}"
+                BorderBrush="{DynamicResource MothWarningBrush}">
+            <TextBlock x:Name="NoticeText" TextWrapping="Wrap"
+                       Foreground="{DynamicResource MothTextBrush}" />
+        </Border>
         <TextBlock Text="MOTH-EIDOL" FontSize="28" FontWeight="Bold"
                    Foreground="{DynamicResource MothPrimaryBrush}" />
         <TextBlock Text="System Observability Compound"

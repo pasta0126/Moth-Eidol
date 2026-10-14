@@ -9,6 +9,8 @@ using Avalonia.Threading;
 using MothEidol.Core;
 using MothEidol.App.Platform;
 using MothEidol.Core.Platform;
+using MothEidol.Core.Settings;
+using MothEidol.Persistence;
 
 namespace MothEidol.App;
 
@@ -43,7 +45,9 @@ public partial class App : Application
 
             var version = AppVersion.FromAssembly(Assembly.GetExecutingAssembly());
             var autostart = AutostartFactory.Create(Environment.ProcessPath);
-            _mainWindow = new MainWindow(version, autostart);
+            var (settings, notice) = OpenSettings();
+            ReconcileAutostart(settings, autostart);
+            _mainWindow = new MainWindow(version, autostart, settings, notice);
             desktop.MainWindow = _mainWindow;
 
             var trayIcons = TrayIcon.GetIcons(this);
@@ -59,6 +63,52 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    private static (AppSettings Settings, string? Notice) OpenSettings()
+    {
+        try
+        {
+            var path = DataDirectory.DatabasePath(DataDirectory.Resolve());
+            var database = SqliteDatabase.Open(path);
+
+            return database.Status switch
+            {
+                DatabaseStatus.Ready =>
+                    (new AppSettings(new SqliteSettingsRepository(database)), null),
+                DatabaseStatus.RecoveredFromCorruption =>
+                    (new AppSettings(new SqliteSettingsRepository(database)),
+                     $"The local database was corrupt. A backup was kept at {database.BackupPath} and a new one was created."),
+                _ =>
+                    (new AppSettings(new InMemorySettingsRepository()),
+                     $"The local database was created by a newer version (schema {database.FoundVersion}). It was not modified and settings will not be saved in this session."),
+            };
+        }
+        catch (Exception ex)
+        {
+            return (new AppSettings(new InMemorySettingsRepository()),
+                    $"Local storage is unavailable ({ex.Message}). Settings will not be saved in this session.");
+        }
+    }
+
+    private static void ReconcileAutostart(AppSettings settings, IAutostart autostart)
+    {
+        if (!autostart.IsSupported)
+        {
+            return;
+        }
+
+        try
+        {
+            if (autostart.IsEnabled != settings.StartWithSession)
+            {
+                autostart.SetEnabled(settings.StartWithSession);
+            }
+        }
+        catch (Exception)
+        {
+            // Best effort: the window shows the real state and reports errors on change.
+        }
     }
 
     private void ShowMainWindow()

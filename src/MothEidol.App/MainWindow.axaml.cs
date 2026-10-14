@@ -1,11 +1,13 @@
 using Avalonia.Controls;
 using MothEidol.Core.Platform;
+using MothEidol.Core.Settings;
 
 namespace MothEidol.App;
 
 public partial class MainWindow : Window
 {
     private readonly IAutostart? _autostart;
+    private readonly AppSettings? _settings;
     private bool _allowClose;
 
     // Required by the Avalonia XAML loader / designer.
@@ -14,15 +16,23 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    public MainWindow(string version, IAutostart autostart) : this()
+    public MainWindow(string version, IAutostart autostart, AppSettings settings, string? notice) : this()
     {
         _autostart = autostart;
+        _settings = settings;
+
+        if (!string.IsNullOrEmpty(notice))
+        {
+            NoticeText.Text = notice;
+            NoticeBanner.IsVisible = true;
+        }
+
         Title = $"Moth-Eidol v{version}";
         VersionText.Text = $"Moth-Eidol v{version}";
 
         if (autostart.IsSupported)
         {
-            AutostartCheck.IsChecked = autostart.IsEnabled;
+            AutostartCheck.IsChecked = settings.StartWithSession;
             AutostartCheck.IsCheckedChanged += OnAutostartChanged;
         }
         else
@@ -74,7 +84,9 @@ public partial class MainWindow : Window
 
         try
         {
-            _autostart.SetEnabled(AutostartCheck.IsChecked == true);
+            var enabled = AutostartCheck.IsChecked == true;
+            _autostart.SetEnabled(enabled);
+            _settings!.StartWithSession = enabled;
         }
         catch (Exception ex)
         {

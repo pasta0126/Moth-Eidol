@@ -24,5 +24,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MothEidol.Core\MothEidol.Core.csproj" />
+    <ProjectReference Include="..\MothEidol.Persistence\MothEidol.Persistence.csproj" />
   </ItemGroup>
 </Project>
