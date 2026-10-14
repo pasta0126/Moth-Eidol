@@ -1,6 +1,6 @@
 ## Why
 
-Monitoring is only useful if it detects what matters. Users need to define regex rules over log lines and get alert events, without being flooded when the same error repeats. This is version `0.4.0`.
+Monitoring is only useful if it detects what matters. Users need to define regex rules over log lines and get alert events, without being flooded when the same error repeats.
 
 ## What Changes
 

@@ -1,6 +1,6 @@
 ## Why
 
-This is the core of the product: reading local or network-share log files live and showing them, reliably across rotations, disconnections and restarts. This is version `0.3.0`.
+This is the core of the product: reading local or network-share log files live and showing them, reliably across rotations, disconnections and restarts.
 
 ## What Changes
 

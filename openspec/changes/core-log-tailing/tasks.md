@@ -22,4 +22,4 @@
 
 - [ ] 4.1 Tests with temporary files: append, truncation, rotation, disappearance, restart, partial line
 - [ ] 4.2 Run on macOS against a local file and, if possible, a shared folder
-- [ ] 4.3 Close the change: archive, bump version to 0.3.0, commit, push and tag `v0.3.0`
+- [ ] 4.3 Close the change: archive, bump the version (semver), commit, push and tag it

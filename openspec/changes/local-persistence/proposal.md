@@ -1,6 +1,6 @@
 ## Why
 
-Monitoring needs to remember sources, rules, read positions and history between runs. Without local persistence every restart would lose configuration and re-alert on lines already seen. This is version `0.2.0`.
+Monitoring needs to remember sources, rules, read positions and history between runs. Without local persistence every restart would lose configuration and re-alert on lines already seen.
 
 ## What Changes
 

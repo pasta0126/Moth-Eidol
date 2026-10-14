@@ -19,4 +19,4 @@
 
 - [ ] 4.1 Tests for migration, settings and recovery using temporary databases
 - [ ] 4.2 Run on macOS: change a setting, restart and check it persists
-- [ ] 4.3 Close the change: archive, bump version to 0.2.0, commit, push and tag `v0.2.0`
+- [ ] 4.3 Close the change: archive, bump the version (semver), commit, push and tag it

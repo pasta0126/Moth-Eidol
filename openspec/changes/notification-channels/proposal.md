@@ -1,6 +1,6 @@
 ## Why
 
-Alerts must reach the user even when the window is hidden. Native OS notifications are out of the MVP (macOS is the dev machine and the hardest case), so alerts are delivered through app-controlled channels that behave the same on every platform. This is version `0.5.0`.
+Alerts must reach the user even when the window is hidden. Native OS notifications are out of the MVP (macOS is the dev machine and the hardest case), so alerts are delivered through app-controlled channels that behave the same on every platform.
 
 ## What Changes
 

@@ -11,7 +11,7 @@ context: |
   MVP notification channels: in-app toast, tray icon state/counter, sound.
   Native OS notifications are out of MVP; INotifier is a pluggable chain.
   Monitoring/alert core must be UI- and platform-independent and testable.
-  Versioning: semver x.y.z starting at 0.1.0; one minor bump per completed change.
+  Versioning: semver x.y.z starting at 0.1.0; bumps decided at release time.
   Everything in the repo (specs, docs, code, commits) is written in English.
 
 # Per-artifact rules (optional)

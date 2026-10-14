@@ -20,4 +20,4 @@
 
 - [ ] 4.1 Tests for matching, invalid regex, timeout, scope, throttling, summary and retention
 - [ ] 4.2 Run on macOS: add a rule, append matching lines to a file and check events and history
-- [ ] 4.3 Close the change: archive, bump version to 0.4.0, commit, push and tag `v0.4.0`
+- [ ] 4.3 Close the change: archive, bump the version (semver), commit, push and tag it

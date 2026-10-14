@@ -1,6 +1,6 @@
 ## Why
 
-The project has no code yet. Before adding monitoring we need a runnable cross-platform application that lives in the tray and in the background, so every later change can be tested manually. This is version `0.1.0`.
+The project has no code yet. Before adding monitoring we need a runnable cross-platform application that lives in the tray and in the background, so every later change can be tested manually.
 
 ## What Changes
 

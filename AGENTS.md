@@ -40,23 +40,23 @@ Do not invent requirements that are not in a spec; if something is missing, prop
 
 ### Planned changes (MVP order)
 
-| Version | Change | Content |
+| Order | Change | Content |
 |---|---|---|
-| 0.1.0 | `app-shell` | Solution, Avalonia window, tray, background, single instance |
-| 0.2.0 | `local-persistence` | SQLite, migrations, settings |
-| 0.3.0 | `core-log-tailing` | Sources, polling tail, rotation, offsets, live viewer |
-| 0.4.0 | `alert-rules` | Regex rules, throttling, history |
-| 0.5.0 | `notification-channels` | In-app toast, tray counter, sound, channel chain |
+| 1 | `app-shell` | Solution, Avalonia window, tray, background, single instance |
+| 2 | `local-persistence` | SQLite, migrations, settings |
+| 3 | `core-log-tailing` | Sources, polling tail, rotation, offsets, live viewer |
+| 4 | `alert-rules` | Regex rules, throttling, history |
+| 5 | `notification-channels` | In-app toast, tray counter, sound, channel chain |
 
 Native OS notifications are out of the MVP; the notifier chain must stay pluggable.
 
 ## Versioning and release flow
 
-- Semantic versioning `x.y.z`, starting at `0.1.0`.
+- Semantic versioning `x.y.z`, starting at `0.1.0`. Version numbers are not pre-assigned to planned changes; the number is decided at release time according to what was actually delivered.
 - The version lives in a single place (`Directory.Build.props`); the app displays it.
 - Each time a change (spec) is finished:
   1. Archive the OpenSpec change.
-  2. Bump the version (one minor step per completed change while in `0.x`).
+  2. Bump the version according to semver and what was delivered.
   3. Commit, push, and push the git tag `vX.Y.Z`.
   4. **Tell the maintainer** so they can run the application manually and verify it.
 - Do not start the next change before the maintainer has had the chance to verify.
