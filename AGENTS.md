@@ -83,6 +83,8 @@ dotnet test
 dotnet run --project src/MothEidol.App
 ```
 
+In VS Code: `F5` ("Moth-Eidol (debug)") builds and debugs the app; the task "run (script)" launches `scripts/run.sh`.
+
 Shortcut to build and launch the app: `scripts/run.sh` (macOS/Linux) or `scripts\run.cmd` (Windows).
 
 ## Notes for agents
