@@ -50,6 +50,8 @@ Do not invent requirements that are not in a spec; if something is missing, prop
 
 Native OS notifications are out of the MVP; the notifier chain must stay pluggable.
 
+Backlog (not scheduled): `tray-icon-theming` (black/white tray icon per OS theme; macOS template image).
+
 ## Versioning and release flow
 
 - Semantic versioning `x.y.z`, starting at `0.1.0`. Version numbers are not pre-assigned to planned changes; the number is decided at release time according to what was actually delivered.

@@ -20,5 +20,5 @@
 ## 4. Verification
 
 - [x] 4.1 Core tests for the version service and autostart (with a test double)
-- [ ] 4.2 Build and run on macOS; check startup, tray, background close and quit
-- [ ] 4.3 Close the change: archive, bump the version (semver), commit, push and tag it
+- [x] 4.2 Build and run on macOS; check startup, tray, background close and quit
+- [x] 4.3 Close the change: archive, bump the version (semver), commit, push and tag it
