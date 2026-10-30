@@ -1,0 +1,49 @@
+2026-01-01 00:04:17.681 +01:00 [INF] ▶️ === INICIO - Servicio MailNotifier iniciado a las: "2026-01-01T00:04:17.6819105+01:00" ===
+2026-01-01 06:09:27.494 +01:00 [INF] ✅ No hay correos pendientes por procesar
+2026-01-01 09:09:33.465 +01:00 [INF]    - SSL Habilitado: false
+2026-01-01 09:19:36.120 +01:00 [INF]    - SSL Habilitado: false
+2026-01-01 09:34:39.321 +01:00 [INF]    - Puerto: 25
+2026-01-01 09:34:41.280 +01:00 [INF] 📨 Procesando correo para user001@example.test
+2026-01-01 09:44:43.364 +01:00 [INF] 📨 Procesando correo para user002@example.test
+2026-01-01 10:09:45.636 +01:00 [INF] ▶️ === FIN - Servicio MailNotifier finalizado a las: "2026-01-01T10:09:45.6367084+01:00" ===
+2026-01-01 10:44:48.072 +01:00 [INF]    - Servidor: 192.0.2.3
+2026-01-01 11:29:53.659 +01:00 [ERR] ❌ Error enviando correo a user003@example.test: The specified string is not in the form required for a subject.
+2026-01-01 11:29:53.659 +01:00 [ERR] ❌ Error al procesar correo para user003@example.test: The specified string is not in the form required for a subject.
+2026-01-01 11:34:55.097 +01:00 [INF] 📧 Mensaje construido correctamente
+2026-01-01 11:39:55.983 +01:00 [ERR] ❌ Error enviando correo a user004@example.test: The specified string is not in the form required for a subject.
+2026-01-01 11:39:55.984 +01:00 [ERR] ❌ Error al procesar correo para user004@example.test: The specified string is not in the form required for a subject.
+2026-01-01 11:44:56.936 +01:00 [ERR] ❌ Error enviando correo a user004@example.test: The specified string is not in the form required for a subject.
+2026-01-01 11:44:56.936 +01:00 [ERR] ❌ Error al procesar correo para user004@example.test: The specified string is not in the form required for a subject.
+2026-01-01 11:59:58.951 +01:00 [INF]    - Remitente: user005@example.test
+2026-01-01 12:25:01.245 +01:00 [INF]    - Puerto: 25
+2026-01-01 13:00:04.477 +01:00 [INF]    - Destinatario: user006@example.test
+2026-01-01 13:25:06.838 +01:00 [INF]    - Destinatario: user007@example.test
+2026-01-01 13:35:08.020 +01:00 [ERR] ❌ Error enviando correo a user008@example.test: The specified string is not in the form required for a subject.
+2026-01-01 13:35:08.020 +01:00 [ERR] ❌ Error al procesar correo para user008@example.test: The specified string is not in the form required for a subject.
+2026-01-01 13:45:09.887 +01:00 [ERR] ❌ Error enviando correo a user009@example.test: The specified string is not in the form required for a subject.
+2026-01-01 13:45:09.887 +01:00 [ERR] ❌ Error al procesar correo para user009@example.test: The specified string is not in the form required for a subject.
+2026-01-01 13:45:10.304 +01:00 [INF]    - Destinatario: user010@example.test
+2026-01-01 14:20:13.934 +01:00 [INF] 📧 Mensaje construido correctamente
+2026-01-01 14:45:16.391 +01:00 [INF] 📧 Mensaje construido correctamente
+2026-01-01 15:55:19.920 +01:00 [INF]    - Puerto: 25
+2026-01-01 16:25:22.501 +01:00 [INF] ✅ Correo enviado correctamente a user011@example.test
+2026-01-01 16:35:24.183 +01:00 [ERR] ❌ Error enviando correo a user012@example.test: The specified string is not in the form required for a subject.
+2026-01-01 16:35:24.183 +01:00 [ERR] ❌ Error al procesar correo para user012@example.test: The specified string is not in the form required for a subject.
+2026-01-01 16:35:25.896 +01:00 [INF]    - Puerto: 25
+2026-01-01 17:00:29.254 +01:00 [ERR] ❌ Error enviando correo a user013@example.test: The specified string is not in the form required for a subject.
+2026-01-01 17:00:29.255 +01:00 [ERR] ❌ Error al procesar correo para user013@example.test: The specified string is not in the form required for a subject.
+2026-01-01 17:00:30.412 +01:00 [INF]    - SSL Habilitado: false
+2026-01-01 17:10:52.743 +01:00 [ERR] ❌ Error SMTP al enviar correo:
+2026-01-01 17:10:52.743 +01:00 [ERR]    - StatusCode: "GeneralFailure"
+2026-01-01 17:10:52.744 +01:00 [ERR]    - Mensaje: Failure sending mail.
+2026-01-01 17:10:52.745 +01:00 [ERR]    - Inner Exception: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
+2026-01-01 17:10:52.745 +01:00 [ERR]    - Inner Exception Type: SocketException
+2026-01-01 17:10:52.746 +01:00 [ERR] ❌ Error enviando correo a user014@example.test: Error SMTP: GeneralFailure - Failure sending mail.
+2026-01-01 17:10:52.747 +01:00 [ERR] ❌ Error al procesar correo para user014@example.test: Error SMTP: GeneralFailure - Failure sending mail.
+2026-01-01 17:15:54.382 +01:00 [INF]    - Remitente: user005@example.test
+2026-01-01 17:40:57.016 +01:00 [INF]    - Remitente: user005@example.test
+2026-01-01 18:11:41.925 +01:00 [ERR] An error occurred using the connection to database 'App_Extension' on server 'dbhost01,1401'.
+2026-01-01 18:12:24.072 +01:00 [ERR] An error occurred using the connection to database 'App_Extension' on server 'dbhost01,1401'.
+2026-01-01 18:13:07.330 +01:00 [ERR] An error occurred using the connection to database 'App_Extension' on server 'dbhost01,1401'.
+2026-01-01 18:18:10.933 +01:00 [INF]    - Puerto: 25
+2026-01-01 21:33:19.895 +01:00 [INF] 🔍 Buscando correos pendientes por enviar...

@@ -1,0 +1,85 @@
+2026-01-02 08:21:41.050 +01:00 [INF] Concurrency limiter initialized with 5 slots
+2026-01-02 08:21:42.256 +01:00 [WRN] Petición 6810 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 08:21:42.256 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 08:21:42.256 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 08:21:42.256 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 08:21:42.257 +01:00 [WRN] Petición 6808 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 08:21:42.260 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 08:21:42.261 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 08:21:42.261 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 08:21:42.262 +01:00 [WRN] Petición 6804 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 08:21:42.262 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.642 +01:00 [WRN] Petición 6810 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.642 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.642 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.642 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.643 +01:00 [WRN] Petición 6808 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.644 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.649 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.650 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.650 +01:00 [WRN] Petición 6804 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 09:10:00.650 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:12.333 +01:00 [INF] Executing endpoint 'DocumentFetcher.Api.Controllers.FilesController.GetDocumentTypesAsync (DocumentFetcher.Api)'
+2026-01-02 13:35:13.647 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:13.647 +01:00 [WRN] Petición 6810 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:13.647 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:13.647 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:13.648 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:13.648 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:13.648 +01:00 [WRN] Petición 6808 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:13.649 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:13.649 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:13.650 +01:00 [WRN] Petición 6804 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 13:35:26.806 +01:00 [INF] Request starting HTTP/1.1 POST https://host002.example.test/api/v2/documentos/candidatos - application/json 378
+2026-01-02 13:35:28.516 +01:00 [INF] [Petición 6815] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260928_6383
+2026-01-02 14:06:51.696 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:06:51.696 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:06:51.696 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:06:51.696 +01:00 [WRN] Petición 6810 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:06:51.696 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:06:51.696 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:06:51.697 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:06:51.697 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:06:51.698 +01:00 [WRN] Petición 6808 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:06:51.698 +01:00 [WRN] Petición 6804 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 14:07:40.930 +01:00 [INF] Request starting HTTP/1.1 GET https://host002.example.test/DocumentTypes/Candidate - null null
+2026-01-02 14:07:42.099 +01:00 [INF] [Petición 6816] Ruta de descarga: \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260102_6816
+2026-01-02 14:09:27.387 +01:00 [INF] [Petición 6817] INICIO DE SEGUIMIENTO: Entidad=Candidato, Identificadores=1, TiposDocumento=AnexosContrato,AnexosHR,CBS,CertifPreventor,EntregaEPIs,Foto,HR,IBAN,NIF NIE,NumSegSocial,RenunciaMedica,VidaLaboral,Contrato
+2026-01-02 14:11:07.367 +01:00 [INF] Route matched with {action = "Candidatos", controller = "DocumentosV2"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Object]] Candidatos(DocumentFetcher.Models.Dtos.CandidatesRequest) on controller DocumentFetcher.Api.Controllers.DocumentosV2Controller (DocumentFetcher.Api).
+2026-01-02 14:12:47.389 +01:00 [INF] Request finished HTTP/1.1 GET https://host002.example.test/DocumentTypes/Candidate - 200 null application/json; charset=utf-8 11.175ms
+2026-01-02 14:14:26.971 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-02 15:01:55.266 +01:00 [INF] Concurrency limiter initialized with 5 slots
+2026-01-02 15:01:56.477 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:01:56.477 +01:00 [WRN] Petición 6810 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:01:56.477 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:01:56.477 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:01:56.477 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:01:56.478 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:01:56.478 +01:00 [WRN] Petición 6808 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:01:56.478 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:01:56.479 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:01:56.479 +01:00 [WRN] Petición 6804 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 15:02:18.615 +01:00 [INF] Executed action DocumentFetcher.Api.Controllers.FilesController.GetDocumentTypesAsync (DocumentFetcher.Api) in 80.3566ms
+2026-01-02 15:05:30.823 +01:00 [INF] Executing endpoint 'DocumentFetcher.Api.Controllers.FilesController.GetDocumentTypesAsync (DocumentFetcher.Api)'
+2026-01-02 15:07:00.927 +01:00 [INF] [Petición 6822] INICIADO - Tipos de documento a procesar: 13
+2026-01-02 15:13:14.302 +01:00 [INF] Request finished HTTP/1.1 POST https://host002.example.test/api/v2/documentos/candidatos - 200 null application/json; charset=utf-8 11.1083ms
+2026-01-02 15:33:48.623 +01:00 [INF] [Petición 6824] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260928_6369
+2026-01-02 15:33:48.905 +01:00 [WRN] En la petición se ha solicitado el tipo de documento 'CB' y no se ha encontrado ninguna configuración para obtener estos documentos.
+2026-01-02 15:34:42.905 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType2`2[[System.Int32, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-02 15:34:42.921 +01:00 [WRN] En la petición se ha solicitado el tipo de documento 'CB' y no se ha encontrado ninguna configuración para obtener estos documentos.
+2026-01-02 15:37:37.250 +01:00 [INF] [Petición 6826] INICIO DE SEGUIMIENTO: Entidad=Pedido, Identificadores=1, TiposDocumento=CB
+2026-01-02 15:37:37.258 +01:00 [WRN] En la petición se ha solicitado el tipo de documento 'CB' y no se ha encontrado ninguna configuración para obtener estos documentos.
+2026-01-02 15:46:04.376 +01:00 [INF] Executed action DocumentFetcher.Api.Controllers.DocumentosV2Controller.Candidatos (DocumentFetcher.Api) in 9.274ms
+2026-01-02 16:06:33.194 +01:00 [INF] Executing endpoint 'DocumentFetcher.Api.Controllers.DocumentosV2Controller.Candidatos (DocumentFetcher.Api)'
+2026-01-02 16:16:49.099 +01:00 [INF] Executed endpoint 'DocumentFetcher.Api.Controllers.FilesController.GetDocumentTypesAsync (DocumentFetcher.Api)'
+2026-01-02 16:20:51.305 +01:00 [INF] Route matched with {action = "FetchClientOrdersFiles", controller = "Files"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Object]] FetchClientOrdersFiles(DocumentFetcher.Models.Dtos.ClientOrdersRequest) on controller DocumentFetcher.Api.Controllers.FilesController (DocumentFetcher.Api).
+2026-01-02 16:20:51.353 +01:00 [WRN] En la petición se ha solicitado el tipo de documento 'CB' y no se ha encontrado ninguna configuración para obtener estos documentos.
+2026-01-02 16:21:38.201 +01:00 [INF] Request finished HTTP/1.1 POST https://host002.example.test/Download/ClientOrders - 200 null application/json; charset=utf-8 42.3749ms
+2026-01-02 16:21:38.217 +01:00 [WRN] En la petición se ha solicitado el tipo de documento 'CB' y no se ha encontrado ninguna configuración para obtener estos documentos.
+2026-01-02 16:36:24.067 +01:00 [WRN] En la petición se ha solicitado el tipo de documento 'CB' y no se ha encontrado ninguna configuración para obtener estos documentos.
+2026-01-02 16:36:24.103 +01:00 [INF] [Petición 6832] FINALIZADO - Tiempo: 0.00s - Total: 0 - OK: 0 - Error: 0
+2026-01-02 17:07:52.032 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 17:07:52.032 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 17:07:52.032 +01:00 [WRN] Petición 6810 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 17:07:52.032 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-02 17:08:31.493 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.

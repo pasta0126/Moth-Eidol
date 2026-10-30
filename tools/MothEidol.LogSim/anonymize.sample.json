@@ -1,0 +1,17 @@
+{
+  // Copy to logs/anonymize.json (git-ignored) and fill in the real terms there.
+  // Terms are case-insensitive substrings; a replacement must not contain any term.
+  "terms": {
+    "RealCompanyGroup": "AcmeGroup",
+    "RealCompany": "Acme",
+    "RealProjectName": "FictionalProject"
+  },
+  // Optional extra regex rules for ids that follow a recognizable pattern.
+  "regexRules": [
+    { "pattern": "candidato \\d+", "replacement": "candidato 1000" }
+  ],
+  // Constant shift applied to every date; must not map an input date onto another input date.
+  "dateShiftDays": -300,
+  "maxAlertingEntriesPerFile": 60,
+  "maxInfoEntriesPerFile": 25
+}

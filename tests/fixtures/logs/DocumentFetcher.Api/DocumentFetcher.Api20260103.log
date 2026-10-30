@@ -1,0 +1,35 @@
+2026-01-03 12:33:53.517 +01:00 [INF] Concurrency limiter initialized with 5 slots
+2026-01-03 12:33:53.615 +01:00 [INF] Request starting HTTP/1.1 GET https://host002.example.test/DocumentTypes/Candidate - null null
+2026-01-03 12:33:53.673 +01:00 [INF] Route matched with {action = "GetDocumentTypes", controller = "Files"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.Collections.Generic.List`1[System.String]]] GetDocumentTypesAsync(System.String) on controller DocumentFetcher.Api.Controllers.FilesController (DocumentFetcher.Api).
+2026-01-03 12:33:54.773 +01:00 [INF] Executed action DocumentFetcher.Api.Controllers.FilesController.GetDocumentTypesAsync (DocumentFetcher.Api) in 1094.0086ms
+2026-01-03 12:33:54.787 +01:00 [INF] Request finished HTTP/1.1 GET https://host002.example.test/DocumentTypes/Candidate - 200 null application/json; charset=utf-8 1176.5961ms
+2026-01-03 12:33:54.837 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:33:54.837 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:33:54.837 +01:00 [WRN] Petición 6810 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:33:54.837 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:33:54.837 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:33:54.838 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:33:54.838 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:33:54.839 +01:00 [WRN] Petición 6808 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:33:54.839 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:33:54.839 +01:00 [WRN] Petición 6804 tiene un Payload nulo o vacío. Se omite.
+2026-01-03 12:37:27.829 +01:00 [INF] Executing endpoint 'DocumentFetcher.Api.Controllers.FilesController.GetDocumentTypesAsync (DocumentFetcher.Api)'
+2026-01-03 12:37:27.911 +01:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[System.String, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-03 12:37:27.916 +01:00 [INF] Request finished HTTP/1.1 GET https://host002.example.test/DocumentTypes/Candidate - 200 null application/json; charset=utf-8 89.7149ms
+2026-01-03 12:37:28.214 +01:00 [INF] Executing endpoint 'DocumentFetcher.Api.Controllers.DocumentosV2Controller.Candidatos (DocumentFetcher.Api)'
+2026-01-03 12:37:28.446 +01:00 [INF] Executed action DocumentFetcher.Api.Controllers.DocumentosV2Controller.Candidatos (DocumentFetcher.Api) in 225.5579ms
+2026-01-03 12:37:28.448 +01:00 [INF] Request finished HTTP/1.1 POST https://host002.example.test/api/v2/documentos/candidatos - 200 null application/json; charset=utf-8 236.0851ms
+2026-01-03 12:37:29.557 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6391
+2026-01-03 12:37:29.813 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6393
+2026-01-03 12:37:30.144 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6399
+2026-01-03 12:37:30.302 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6401
+2026-01-03 12:37:30.663 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6404
+2026-01-03 12:37:30.885 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6406
+2026-01-03 12:37:31.463 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6409
+2026-01-03 12:37:31.606 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6411
+2026-01-03 12:37:32.210 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6415
+2026-01-03 12:37:32.442 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6418
+2026-01-03 12:37:33.042 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6421
+2026-01-03 12:37:33.259 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6423
+2026-01-03 12:37:34.336 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6426
+2026-01-03 12:37:34.920 +01:00 [INF] [Petición 6834] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260929_6428

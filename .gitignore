@@ -89,3 +89,6 @@ CLAUDE.local.md
 # Local log dumps
 /logs/
 /logs.zip
+
+# Anonymized test fixtures are versioned (see tools/MothEidol.LogSim)
+!tests/fixtures/**/*.log

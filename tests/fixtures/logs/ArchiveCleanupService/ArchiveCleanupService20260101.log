@@ -1,0 +1,6 @@
+2026-01-01 09:04:37.747 +01:00 [INF] ▶️ === INICIO - ArchiveCleanupService a las "2026-01-01T09:04:37.7471018+01:00" ===
+2026-01-01 09:04:37.969 +01:00 [INF] Módulo CandidateArchiveCleanup: hoy (01/01/2026) no corresponde ejecutar según 'ThirdWednesday'.
+2026-01-01 09:04:37.971 +01:00 [INF] Módulo 'CandidateArchiveCleanup': 0 procesados, 0 fallidos. Duración: "00:00:00.0781470".
+2026-01-01 09:04:37.977 +01:00 [INF] Módulo TabletArchiveCleanup: no corresponde ejecutar ahora (hora actual 9, hora configurada 23, o ya ejecutado hoy).
+2026-01-01 09:04:37.978 +01:00 [INF] Módulo 'TabletArchiveCleanup': 0 procesados, 0 fallidos. Duración: "00:00:00.0009283".
+2026-01-01 09:04:37.985 +01:00 [INF] ⏹️ === FIN - ArchiveCleanupService ===

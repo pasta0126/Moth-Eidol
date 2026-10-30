@@ -1,0 +1,27 @@
+2026-01-02 00:03:24.982 +01:00 [INF] ▶️ === INICIO - Servicio MailNotifier iniciado a las: "2026-01-02T00:03:24.9823974+01:00" ===
+2026-01-02 04:28:32.983 +01:00 [INF] ✅ No hay correos pendientes por procesar
+2026-01-02 07:48:39.752 +01:00 [INF] 📧 Encontrados 4 correos pendientes para procesar
+2026-01-02 09:03:44.643 +01:00 [INF] 📨 Procesando correo para user015@example.test
+2026-01-02 09:38:47.957 +01:00 [INF] 📨 Procesando correo para user016@example.test
+2026-01-02 09:38:49.086 +01:00 [INF]    - SSL Habilitado: false
+2026-01-02 09:58:50.851 +01:00 [INF] 📧 Mensaje construido correctamente
+2026-01-02 10:28:52.970 +01:00 [INF] 📨 Procesando correo para user017@example.test
+2026-01-02 11:08:55.277 +01:00 [INF] 📧 Mensaje construido correctamente
+2026-01-02 11:43:59.388 +01:00 [INF]    - SSL Habilitado: false
+2026-01-02 11:59:02.171 +01:00 [INF] ▶️ === FIN - Servicio MailNotifier finalizado a las: "2026-01-02T11:59:02.1710823+01:00" ===
+2026-01-02 12:24:04.957 +01:00 [INF] ▶️ === INICIO - Servicio MailNotifier iniciado a las: "2026-01-02T12:24:04.9577208+01:00" ===
+2026-01-02 12:49:07.029 +01:00 [INF]    - Destinatario: user018@example.test
+2026-01-02 13:14:08.740 +01:00 [INF]    - Servidor: 192.0.2.3
+2026-01-02 13:39:10.807 +01:00 [INF] ✅ Correo enviado correctamente a user019@example.test
+2026-01-02 13:59:12.309 +01:00 [INF] 📨 Procesando correo para user020@example.test
+2026-01-02 14:29:14.178 +01:00 [INF]    - Remitente: user005@example.test
+2026-01-02 15:09:16.391 +01:00 [INF] ✅ Correo enviado correctamente a user021@example.test
+2026-01-02 15:54:19.701 +01:00 [INF]    - Servidor: 192.0.2.3
+2026-01-02 16:19:22.317 +01:00 [INF] ✅ Correo enviado correctamente a user022@example.test
+2026-01-02 16:54:25.079 +01:00 [INF] ✅ Correo enviado correctamente a user017@example.test
+2026-01-02 17:14:27.828 +01:00 [INF] 📨 Procesando correo para user023@example.test
+2026-01-02 17:44:29.784 +01:00 [INF]    - Remitente: user005@example.test
+2026-01-02 17:49:29.947 +01:00 [ERR] ❌ Error enviando correo a user022@example.test: The specified string is not in the form required for a subject.
+2026-01-02 17:49:29.948 +01:00 [ERR] ❌ Error al procesar correo para user022@example.test: The specified string is not in the form required for a subject.
+2026-01-02 18:24:32.354 +01:00 [INF]    - Remitente: user005@example.test
+2026-01-02 21:09:37.916 +01:00 [INF] ✅ Correo enviado correctamente a user002@example.test

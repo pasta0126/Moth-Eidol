@@ -1,0 +1,26 @@
+2026-01-02 08:02:25.695 +01:00 [INF] Ejecución del servicio LedgerFileImportService a las: "2026-01-02T08:02:25.6957619+01:00"
+2026-01-02 10:33:27.755 +01:00 [INF] Procesando archivo ACM-GLB-ES-DW-CUSTOMER-Extract02012026060020.csv
+2026-01-02 10:33:29.545 +01:00 [INF] Procesando archivo ACM-GLB-ES-DW-JOURNAL-WITH-SUBLEDGER02012026090018.csv
+2026-01-02 10:33:31.804 +01:00 [INF] Procesando archivo ACM-GLB-ES-DW-JOURNALS-EXTRACT02012026090020.csv
+2026-01-02 10:33:43.511 +01:00 [INF] Procesando archivo ACM-GLB-ESDW-RECEIVABLES-EXTRACT02012026060016.csv
+2026-01-02 10:43:24.822 +01:00 [INF] Procesando archivo OC_Debt_20260102.csv
+2026-01-02 11:33:59.367 +01:00 [INF] Procesando archivo OC_Debt_20260102.csv
+2026-01-02 11:49:29.195 +01:00 [INF] Procesando archivo OC_Debt_20260102.csv
+2026-01-02 13:34:44.479 +01:00 [INF] Remaining 230 records processed. Total processed: 230.
+2026-01-02 13:38:35.173 +01:00 [INF] Ejecutando PostImportConFicherosProcesados a las: "2026-01-02T13:38:35.1732373+01:00"
+2026-01-02 13:49:36.633 +01:00 [INF] Ejecutando PostImportSiempre a las: "2026-01-02T13:49:36.6330266+01:00"
+2026-01-02 16:30:06.898 +01:00 [INF] Procesando archivo ACM-GLB-ES-DW-JOURNAL-WITH-SUBLEDGER02012026140013.csv
+2026-01-02 16:30:13.620 +01:00 [INF] Ejecutando PostImportSiempre a las: "2026-01-02T16:30:13.6200772+01:00"
+2026-01-02 18:04:49.961 +01:00 [INF] Ejecución del servicio LedgerFileImportService a las: "2026-01-02T18:04:49.9618570+01:00"
+2026-01-02 18:05:03.944 +01:00 [INF] Remaining 296 records processed. Total processed: 296.
+2026-01-02 18:14:37.912 +01:00 [INF] Ejecutando PostImportSiempre DEUDA a las: "2026-01-02T18:14:37.9120238+01:00"
+2026-01-02 18:19:52.156 +01:00 [INF] Processing file of type: OFileJournalsDto
+2026-01-02 18:29:18.104 +01:00 [INF] 12103 registros procesados exitosamente.
+2026-01-02 19:34:48.171 +01:00 [INF] 12103 registros procesados exitosamente.
+2026-01-02 19:50:14.384 +01:00 [INF] 12103 registros procesados exitosamente.
+2026-01-02 21:30:28.507 +01:00 [INF] File ACM-GLB-ES-DW-JOURNAL-WITH-SUBLEDGER02012026190014.csv processed successfully
+2026-01-02 21:39:51.136 +01:00 [INF] Inicio WorkDeuda a las: "2026-01-02T21:39:51.1363061+01:00"
+2026-01-02 21:45:21.525 +01:00 [INF] Inicio WorkDeuda a las: "2026-01-02T21:45:21.5254880+01:00"
+2026-01-02 23:30:40.944 +01:00 [INF] Processing file of type: OFileJournalsWithSubledgerDto
+2026-01-02 23:31:26.988 +01:00 [WRN] Se excluyeron 11746 registros no válidos durante el procesamiento.
+2026-01-02 23:31:33.808 +01:00 [INF] File ACM-GLB-ES-DW-JOURNALS-EXTRACT02012026210020.csv processed successfully

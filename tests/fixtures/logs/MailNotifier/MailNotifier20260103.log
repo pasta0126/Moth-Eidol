@@ -1,0 +1,40 @@
+2026-01-03 00:04:46.601 +01:00 [INF] ▶️ === INICIO - Servicio MailNotifier iniciado a las: "2026-01-03T00:04:46.6013938+01:00" ===
+2026-01-03 03:54:52.621 +01:00 [INF] 🔍 Buscando correos pendientes por enviar...
+2026-01-03 07:44:58.833 +01:00 [INF] ✅ No hay correos pendientes por procesar
+2026-01-03 09:00:01.691 +01:00 [INF]    - Puerto: 25
+2026-01-03 09:05:04.514 +01:00 [INF] 🚀 Intentando conectar al servidor SMTP...
+2026-01-03 09:25:07.644 +01:00 [INF] 🔧 Configuración SMTP:
+2026-01-03 09:30:08.114 +01:00 [ERR] ❌ Error enviando correo a @Acme.es: The specified string is not in the form required for an e-mail address.
+2026-01-03 09:30:08.118 +01:00 [ERR] ❌ Error al procesar correo para @Acme.es: The specified string is not in the form required for an e-mail address.
+2026-01-03 09:35:10.535 +01:00 [INF]    - SSL Habilitado: false
+2026-01-03 09:35:11.783 +01:00 [INF]    - Destinatario: user024@example.test
+2026-01-03 09:35:12.730 +01:00 [INF]    - Puerto: 25
+2026-01-03 10:05:14.857 +01:00 [INF] ✅ Correo enviado correctamente a user025@example.test
+2026-01-03 10:30:17.394 +01:00 [INF] ✅ Correo enviado correctamente a user026@example.test
+2026-01-03 10:40:18.897 +01:00 [INF] ▶️ === FIN - Servicio MailNotifier finalizado a las: "2026-01-03T10:40:18.8977241+01:00" ===
+2026-01-03 10:55:19.847 +01:00 [ERR] ❌ Error enviando correo a @Acme.es: The specified string is not in the form required for an e-mail address.
+2026-01-03 10:55:19.847 +01:00 [ERR] ❌ Error al procesar correo para @Acme.es: The specified string is not in the form required for an e-mail address.
+2026-01-03 11:05:23.473 +01:00 [INF]    - Remitente: user005@example.test
+2026-01-03 11:20:25.391 +01:00 [INF]    - Servidor: 192.0.2.3
+2026-01-03 11:40:27.855 +01:00 [INF]    - SSL Habilitado: false
+2026-01-03 12:10:54.687 +01:00 [ERR] ❌ Error SMTP al enviar correo:
+2026-01-03 12:10:54.687 +01:00 [ERR]    - StatusCode: "GeneralFailure"
+2026-01-03 12:10:54.688 +01:00 [ERR]    - Mensaje: Failure sending mail.
+2026-01-03 12:10:54.688 +01:00 [ERR]    - Inner Exception: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond.
+2026-01-03 12:10:54.689 +01:00 [ERR]    - Inner Exception Type: SocketException
+2026-01-03 12:10:54.689 +01:00 [ERR] ❌ Error enviando correo a user027@example.test: Error SMTP: GeneralFailure - Failure sending mail.
+2026-01-03 12:10:54.690 +01:00 [ERR] ❌ Error al procesar correo para user027@example.test: Error SMTP: GeneralFailure - Failure sending mail.
+2026-01-03 12:15:56.948 +01:00 [INF] 📨 Procesando correo para user028@example.test
+2026-01-03 12:46:01.243 +01:00 [INF] 📧 Mensaje construido correctamente
+2026-01-03 12:46:02.362 +01:00 [INF]    - Destinatario: user028@example.test
+2026-01-03 13:06:04.569 +01:00 [ERR] ❌ Error enviando correo a @Acme.es: The specified string is not in the form required for an e-mail address.
+2026-01-03 13:06:04.569 +01:00 [ERR] ❌ Error al procesar correo para @Acme.es: The specified string is not in the form required for an e-mail address.
+2026-01-03 13:11:06.329 +01:00 [INF] ✅ Correo enviado correctamente a user002@example.test
+2026-01-03 13:16:09.320 +01:00 [INF]    - Remitente: user005@example.test
+2026-01-03 13:36:12.486 +01:00 [INF] 🚀 Intentando conectar al servidor SMTP...
+2026-01-03 13:46:15.155 +01:00 [INF] ✅ Correo enviado correctamente a user029@example.test
+2026-01-03 14:01:18.302 +01:00 [INF]    - SSL Habilitado: false
+2026-01-03 14:26:21.401 +01:00 [ERR] ❌ Error enviando correo a user030@example.test: The specified string is not in the form required for a subject.
+2026-01-03 14:26:21.401 +01:00 [ERR] ❌ Error al procesar correo para user030@example.test: The specified string is not in the form required for a subject.
+2026-01-03 14:31:23.815 +01:00 [INF]    - SSL Habilitado: false
+2026-01-03 14:41:26.264 +01:00 [INF] 📧 Mensaje construido correctamente

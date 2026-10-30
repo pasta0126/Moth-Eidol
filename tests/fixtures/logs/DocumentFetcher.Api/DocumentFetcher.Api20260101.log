@@ -1,0 +1,150 @@
+2026-01-01 10:49:09.258 +01:00 [INF] Concurrency limiter initialized with 5 slots
+2026-01-01 10:49:10.350 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 10:49:10.350 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 10:49:10.350 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 10:49:10.350 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 10:49:10.350 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 10:49:10.351 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 10:49:10.352 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 10:49:11.300 +01:00 [INF] [Petición 6803] INICIO DE SEGUIMIENTO: Entidad=Candidato, Identificadores=100, TiposDocumento=CertifPreventor
+2026-01-01 10:56:18.285 +01:00 [ERR] [Petición 6803] Error procesando archivo
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6803\90000001N\CertifPreventor\90000001N_CERT-5977697.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+2026-01-01 10:56:18.311 +01:00 [ERR] [Petición 6803] Error al procesar los archivos
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6803\90000001N\CertifPreventor\90000001N_CERT-5977697.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+   at DocumentFetcher.Services.FileService.GetAndSaveFilesAsync(Peticion peticion, SummaryResponse summary, List`1 uspFiles, String basePath, Int32 totalOk, Int32 totalError, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 616
+2026-01-01 10:56:25.978 +01:00 [ERR] [Petición 6803] Error procesando archivo
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6803\90000002J\CertifPreventor\90000002J_CERT-5988695.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+2026-01-01 10:56:26.004 +01:00 [ERR] [Petición 6803] Error al procesar los archivos
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6803\90000002J\CertifPreventor\90000002J_CERT-5988695.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+   at DocumentFetcher.Services.FileService.GetAndSaveFilesAsync(Peticion peticion, SummaryResponse summary, List`1 uspFiles, String basePath, Int32 totalOk, Int32 totalError, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 616
+2026-01-01 11:01:58.247 +01:00 [INF] [Petición 6805] Ruta de descarga: \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6805
+2026-01-01 11:09:08.458 +01:00 [ERR] [Petición 6805] Error procesando archivo
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6805\90000003Z\CertifPreventor\90000003Z_CERT-7668964.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+2026-01-01 11:09:08.559 +01:00 [ERR] [Petición 6805] Error al procesar los archivos
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6805\90000003Z\CertifPreventor\90000003Z_CERT-7668964.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+   at DocumentFetcher.Services.FileService.GetAndSaveFilesAsync(Peticion peticion, SummaryResponse summary, List`1 uspFiles, String basePath, Int32 totalOk, Int32 totalError, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 616
+2026-01-01 11:09:14.187 +01:00 [ERR] [Petición 6805] Error procesando archivo
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6805\Z9000004V\CertifPreventor\Z9000004V_CERT-6956953.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+2026-01-01 11:09:14.209 +01:00 [ERR] [Petición 6805] Error al procesar los archivos
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6805\Z9000004V\CertifPreventor\Z9000004V_CERT-6956953.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+   at DocumentFetcher.Services.FileService.GetAndSaveFilesAsync(Peticion peticion, SummaryResponse summary, List`1 uspFiles, String basePath, Int32 totalOk, Int32 totalError, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 616
+2026-01-01 11:42:40.458 +01:00 [INF] Request finished HTTP/1.1 GET https://host002.example.test/DocumentTypes/Candidate - 200 null application/json; charset=utf-8 1127.6446ms
+2026-01-01 11:42:40.526 +01:00 [WRN] Petición 6804 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 11:42:40.526 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 11:42:40.526 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 11:42:40.526 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 11:42:40.526 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 11:42:40.527 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 11:42:40.527 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 11:42:40.528 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 11:44:44.235 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType1`3[[System.Boolean, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.Int32, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-01 11:44:46.607 +01:00 [INF] [Petición 6806] Carpeta de descargas antigua eliminada (> 30 días): \\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser02\DDOC\20260927_6360
+2026-01-01 11:44:49.746 +01:00 [INF] Request finished HTTP/1.1 GET https://host002.example.test/Download/Status/6806 - 200 null application/json; charset=utf-8 31.3134ms
+2026-01-01 11:45:00.423 +01:00 [INF] Executing OkObjectResult, writing value of type 'DocumentFetcher.Models.Dtos.PeticionStatusResponse'.
+2026-01-01 11:45:11.140 +01:00 [INF] Executing endpoint 'DocumentFetcher.Api.Controllers.FilesController.GetPeticionStatus (DocumentFetcher.Api)'
+2026-01-01 11:45:16.472 +01:00 [INF] Request finished HTTP/1.1 GET https://host002.example.test/Download/Status/6806 - 200 null application/json; charset=utf-8 11.088ms
+2026-01-01 11:45:27.165 +01:00 [INF] Executed action DocumentFetcher.Api.Controllers.FilesController.GetPeticionStatus (DocumentFetcher.Api) in 9.727ms
+2026-01-01 11:45:37.812 +01:00 [INF] Route matched with {action = "GetPeticionStatus", controller = "Files"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.ActionResult`1[System.String]] GetPeticionStatus(Int32) on controller DocumentFetcher.Api.Controllers.FilesController (DocumentFetcher.Api).
+2026-01-01 11:45:48.481 +01:00 [INF] Request starting HTTP/1.1 GET https://host002.example.test/Download/Status/6806 - null null
+2026-01-01 11:45:53.799 +01:00 [INF] Executing OkObjectResult, writing value of type 'DocumentFetcher.Models.Dtos.PeticionStatusResponse'.
+2026-01-01 11:50:55.077 +01:00 [INF] Request starting HTTP/1.1 GET https://host002.example.test/DocumentTypes/Candidate - null null
+2026-01-01 11:50:55.334 +01:00 [INF] Executed endpoint 'DocumentFetcher.Api.Controllers.DocumentosV2Controller.Candidatos (DocumentFetcher.Api)'
+2026-01-01 12:47:31.779 +01:00 [WRN] Petición 6808 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 12:47:31.779 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 12:47:31.779 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 12:47:31.779 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 12:47:31.780 +01:00 [WRN] Petición 6804 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 12:47:31.780 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 12:47:31.781 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 12:47:31.781 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 12:47:31.782 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 12:47:31.783 +01:00 [INF] Fin del proceso de retomar trabajos pendientes.
+2026-01-01 12:55:04.318 +01:00 [ERR] [Petición 6809] Error procesando archivo
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6809\90000005Q\CertifPreventor\90000005Q_CERT-7271986.pdf.tmp' because it is being used by another process.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+2026-01-01 12:55:04.356 +01:00 [ERR] [Petición 6809] Error al procesar los archivos
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6809\90000005Q\CertifPreventor\90000005Q_CERT-7271986.pdf.tmp' because it is being used by another process.
+   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+   at DocumentFetcher.Services.FileService.GetAndSaveFilesAsync(Peticion peticion, SummaryResponse summary, List`1 uspFiles, String basePath, Int32 totalOk, Int32 totalError, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 616
+2026-01-01 12:55:10.904 +01:00 [ERR] [Petición 6809] Error procesando archivo
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6809\90000006V\CertifPreventor\90000006V_CERT-7695749.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+2026-01-01 12:55:10.927 +01:00 [ERR] [Petición 6809] Error al procesar los archivos
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6809\90000006V\CertifPreventor\90000006V_CERT-7695749.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+   at DocumentFetcher.Services.FileService.GetAndSaveFilesAsync(Peticion peticion, SummaryResponse summary, List`1 uspFiles, String basePath, Int32 totalOk, Int32 totalError, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 616
+2026-01-01 13:06:52.241 +01:00 [INF] Executing OkObjectResult, writing value of type '<>f__AnonymousType2`2[[System.Int32, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e],[System.String, System.Private.CoreLib, Version=192.0.2.1, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]'.
+2026-01-01 13:11:27.572 +01:00 [ERR] [Petición 6811] Error procesando archivo
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6811\90000007H\CertifPreventor\90000007H_CERT-7711038.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+2026-01-01 13:11:27.598 +01:00 [ERR] [Petición 6811] Error al procesar los archivos
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6811\90000007H\CertifPreventor\90000007H_CERT-7711038.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+   at DocumentFetcher.Services.FileService.GetAndSaveFilesAsync(Peticion peticion, SummaryResponse summary, List`1 uspFiles, String basePath, Int32 totalOk, Int32 totalError, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 616
+2026-01-01 13:11:28.232 +01:00 [ERR] No existe el archivo en la ruta: \\server003\DOCS\DOCS_ONBOARDING\90000008L\90000008L_CERT-5863471.pdf
+2026-01-01 13:11:28.233 +01:00 [WRN] [Petición 6811] Documento no descargado: 90000008L_CERT-5863471.pdf - Ruta: \\server003\DOCS\DOCS_ONBOARDING\90000008L\90000008L_CERT-5863471.pdf
+2026-01-01 13:11:29.926 +01:00 [ERR] [Petición 6811] Error procesando archivo
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6811\90000009C\CertifPreventor\90000009C_CERT-5979534.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+2026-01-01 13:11:30.018 +01:00 [ERR] [Petición 6811] Error al procesar los archivos
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6811\90000009C\CertifPreventor\90000009C_CERT-5979534.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+   at DocumentFetcher.Services.FileService.GetAndSaveFilesAsync(Peticion peticion, SummaryResponse summary, List`1 uspFiles, String basePath, Int32 totalOk, Int32 totalError, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 616
+2026-01-01 13:11:36.323 +01:00 [ERR] [Petición 6811] Error procesando archivo
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6811\Y9000010D\CertifPreventor\Y9000010D_CERT-6183546.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+2026-01-01 13:11:36.348 +01:00 [ERR] [Petición 6811] Error al procesar los archivos
+System.IO.IOException: The process cannot access the file '\\server001\cln_doc\Docs_Tablet\UsuarioPB\svcuser01\DDOC\20260101_6811\Y9000010D\CertifPreventor\Y9000010D_CERT-6183546.pdf.tmp' because it is being used by another process.
+   at System.IO.File.<WriteAllBytesAsync>g__Core|103_0(String path, ReadOnlyMemory`1 bytes, CancellationToken cancellationToken)
+   at DocumentFetcher.Services.FileService.ProcessSingleFileAsync(UspFileResponse uspFile, String typeFolder, SemaphoreSlim semaphore, ConcurrentBag`1 files, ConcurrentBag`1 errors, ConcurrentBag`1 filesNotDownloaded, Int32 peticionId, String tipoDocumento, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 704
+   at DocumentFetcher.Services.FileService.GetAndSaveFilesAsync(Peticion peticion, SummaryResponse summary, List`1 uspFiles, String basePath, Int32 totalOk, Int32 totalError, CancellationToken cancellationToken) in C:\Users\dev\source\repos\DocumentFetcher\src\DocumentFetcher.Services\FileService.cs:line 616
+2026-01-01 14:05:42.141 +01:00 [INF] Executing endpoint 'DocumentFetcher.Api.Controllers.FilesController.GetDocumentTypesAsync (DocumentFetcher.Api)'
+2026-01-01 14:05:43.356 +01:00 [INF] Request finished HTTP/1.1 GET https://host002.example.test/DocumentTypes/Candidate - 200 null application/json; charset=utf-8 1251.9644ms
+2026-01-01 14:05:43.401 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:05:43.401 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:05:43.401 +01:00 [WRN] Petición 6810 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:05:43.401 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:05:43.401 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:05:43.401 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:05:43.402 +01:00 [WRN] Petición 6773 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:05:43.402 +01:00 [WRN] Petición 6808 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:05:43.403 +01:00 [WRN] Petición 6802 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:05:43.403 +01:00 [WRN] Petición 6804 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 14:08:23.855 +01:00 [INF] [Petición 6812] INICIADO - Tipos de documento a procesar: 13
+2026-01-01 15:26:53.222 +01:00 [WRN] Petición 6738 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 15:26:53.222 +01:00 [WRN] Petición 6736 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 15:26:53.223 +01:00 [WRN] Petición 6771 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 15:26:53.222 +01:00 [WRN] Petición 6733 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 15:26:53.222 +01:00 [WRN] Petición 6741 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 15:26:53.222 +01:00 [WRN] Petición 6810 tiene un Payload nulo o vacío. Se omite.
+2026-01-01 15:26:53.226 +01:00 [INF] Fin del proceso de retomar trabajos pendientes.
+2026-01-01 15:28:17.790 +01:00 [INF] Executed action DocumentFetcher.Api.Controllers.DocumentosV2Controller.Candidatos (DocumentFetcher.Api) in 228.7986ms
+2026-01-01 16:15:09.509 +01:00 [INF] Se encontraron 10 peticiones pendientes.
+2026-01-01 16:15:47.338 +01:00 [INF] Request finished HTTP/1.1 GET https://host002.example.test/DocumentTypes/Candidate - 200 null application/json; charset=utf-8 94.352ms

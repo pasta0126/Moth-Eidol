@@ -1,0 +1,15 @@
+2025-12-28 00:31:16.125 +02:00 [INF] Application is shutting down...
+2025-12-28 00:31:17.193 +02:00 [INF] Servicio ArchiveCleanupService detenido de forma controlada a las: "2025-12-28T00:31:17.1937606+02:00"
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at ArchiveCleanupService.Worker.ExecuteAsync(CancellationToken stoppingToken) in C:\Users\dev\source\repos\ArchiveCleanupService\ArchiveCleanupService\Worker.cs:line 60
+2025-12-28 00:32:40.374 +02:00 [INF] Application started. Hosting environment: Production; Content root path: E:\Services\Servicio_ArchiveCleanupService\
+2025-12-28 00:33:22.033 +02:00 [INF] Application is shutting down...
+2025-12-28 00:33:22.063 +02:00 [INF] Servicio ArchiveCleanupService detenido de forma controlada a las: "2025-12-28T00:33:22.0632706+02:00"
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at ArchiveCleanupService.Worker.ExecuteAsync(CancellationToken stoppingToken) in C:\Users\dev\source\repos\ArchiveCleanupService\ArchiveCleanupService\Worker.cs:line 60
+2025-12-28 00:34:18.809 +02:00 [INF] Application started. Hosting environment: Production; Content root path: E:\Services\Servicio_ArchiveCleanupService\
+2025-12-28 00:34:48.162 +02:00 [INF] Application is shutting down...
+2025-12-28 00:34:48.224 +02:00 [INF] Servicio ArchiveCleanupService detenido de forma controlada a las: "2025-12-28T00:34:48.2241867+02:00"
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at ArchiveCleanupService.Worker.ExecuteAsync(CancellationToken stoppingToken) in C:\Users\dev\source\repos\ArchiveCleanupService\ArchiveCleanupService\Worker.cs:line 60
+2025-12-28 00:35:39.618 +02:00 [INF] Application started. Hosting environment: Production; Content root path: E:\Services\Servicio_ArchiveCleanupService\
