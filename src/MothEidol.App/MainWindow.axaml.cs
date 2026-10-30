@@ -2,14 +2,13 @@ using Avalonia.Controls;
 using MothEidol.App.Views;
 using MothEidol.Core.Logs;
 using MothEidol.Core.Platform;
+using MothEidol.Core.Projects;
 using MothEidol.Core.Settings;
 
 namespace MothEidol.App;
 
 public partial class MainWindow : Window
 {
-    private readonly IAutostart? _autostart;
-    private readonly AppSettings? _settings;
     private bool _allowClose;
 
     // Required by the Avalonia XAML loader / designer.
@@ -18,35 +17,29 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    public MainWindow(string version, IAutostart autostart, AppSettings settings, string? notice, TailingService tailing, EntryBus entries) : this()
+    public MainWindow(
+        string version,
+        IAutostart autostart,
+        AppSettings settings,
+        string? notice,
+        TailingService tailing,
+        ProjectService projects,
+        ProjectTails tails) : this()
     {
-        _autostart = autostart;
-        _settings = settings;
-
         if (!string.IsNullOrEmpty(notice))
         {
             NoticeText.Text = notice;
             NoticeBanner.IsVisible = true;
         }
 
-        var sources = new SourceListModel(tailing);
-        SourcesPanel.Initialize(tailing, sources);
-        Viewer.Initialize(sources, entries, settings);
+        Dashboard.Initialize(projects, tailing, OpenProject, () => Show(SettingsScreen));
+        ProjectScreen.Initialize(projects, tailing, tails, settings, ShowDashboard);
+        SettingsScreen.Initialize(autostart, settings, ShowDashboard);
 
+        // The version stays visible on every screen: the footer lives outside the screens.
         Title = $"Moth-Eidol v{version}";
         VersionText.Text = $"Moth-Eidol v{version}";
-
-        if (autostart.IsSupported)
-        {
-            AutostartCheck.IsChecked = settings.StartWithSession;
-            AutostartCheck.IsCheckedChanged += OnAutostartChanged;
-        }
-        else
-        {
-            AutostartCheck.IsEnabled = false;
-            AutostartNote.Text = autostart.UnsupportedReason;
-            AutostartNote.IsVisible = true;
-        }
+        ShowDashboard();
     }
 
     /// <summary>Lets the next close actually close the window (used when quitting).</summary>
@@ -81,24 +74,22 @@ public partial class MainWindow : Window
         base.OnClosing(e);
     }
 
-    private void OnAutostartChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void ShowDashboard()
     {
-        if (_autostart is null)
-        {
-            return;
-        }
+        Dashboard.Refresh();
+        Show(Dashboard);
+    }
 
-        try
-        {
-            var enabled = AutostartCheck.IsChecked == true;
-            _autostart.SetEnabled(enabled);
-            _settings!.StartWithSession = enabled;
-        }
-        catch (Exception ex)
-        {
-            AutostartCheck.IsChecked = _autostart.IsEnabled;
-            AutostartNote.Text = $"Could not change the setting: {ex.Message}";
-            AutostartNote.IsVisible = true;
-        }
+    private void OpenProject(Project project, bool settingsFirst)
+    {
+        ProjectScreen.Open(project, settingsFirst);
+        Show(ProjectScreen);
+    }
+
+    private void Show(Control screen)
+    {
+        Dashboard.IsVisible = screen == Dashboard;
+        ProjectScreen.IsVisible = screen == ProjectScreen;
+        SettingsScreen.IsVisible = screen == SettingsScreen;
     }
 }

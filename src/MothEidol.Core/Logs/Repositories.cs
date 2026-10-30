@@ -17,7 +17,7 @@ public interface ILogSourceRepository
 {
     IReadOnlyList<LogSource> List();
 
-    LogSource Add(SourceKind kind, string path, string? pattern);
+    LogSource Add(SourceKind kind, string path, string? pattern, long projectId = 0);
 
     void Remove(long id);
 

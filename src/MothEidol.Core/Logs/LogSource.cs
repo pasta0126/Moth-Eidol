@@ -21,8 +21,9 @@ public enum SourceStatus
 }
 
 /// <param name="Path">File path, or folder path for folder sources.</param>
+/// <param name="ProjectId">The project the source belongs to; 0 when it has none.</param>
 /// <param name="Pattern">File-name glob for folder sources (for example <c>Service*.log</c>); null for file sources.</param>
-public sealed record LogSource(long Id, SourceKind Kind, string Path, string? Pattern, bool Enabled)
+public sealed record LogSource(long Id, SourceKind Kind, string Path, string? Pattern, bool Enabled, long ProjectId = 0)
 {
     public string DisplayName => Kind == SourceKind.File
         ? Path

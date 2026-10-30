@@ -8,7 +8,7 @@ public sealed class SqliteLogSourceRepository(SqliteDatabase database) : ILogSou
     {
         using var connection = database.CreateConnection();
         using var command = connection.CreateCommand();
-        command.CommandText = "SELECT id, kind, path, pattern, enabled FROM log_sources ORDER BY id;";
+        command.CommandText = "SELECT id, kind, path, pattern, enabled, project_id FROM log_sources ORDER BY id;";
 
         var sources = new List<LogSource>();
         using var reader = command.ExecuteReader();
@@ -19,24 +19,26 @@ public sealed class SqliteLogSourceRepository(SqliteDatabase database) : ILogSou
                 Enum.Parse<SourceKind>(reader.GetString(1)),
                 reader.GetString(2),
                 reader.IsDBNull(3) ? null : reader.GetString(3),
-                reader.GetInt64(4) != 0));
+                reader.GetInt64(4) != 0,
+                reader.GetInt64(5)));
         }
         return sources;
     }
 
-    public LogSource Add(SourceKind kind, string path, string? pattern)
+    public LogSource Add(SourceKind kind, string path, string? pattern, long projectId = 0)
     {
         using var connection = database.CreateConnection();
         using var command = connection.CreateCommand();
         command.CommandText = """
-            INSERT INTO log_sources (kind, path, pattern, enabled) VALUES ($kind, $path, $pattern, 1);
+            INSERT INTO log_sources (kind, path, pattern, enabled, project_id) VALUES ($kind, $path, $pattern, 1, $project);
             SELECT last_insert_rowid();
             """;
         command.Parameters.AddWithValue("$kind", kind.ToString());
         command.Parameters.AddWithValue("$path", path);
         command.Parameters.AddWithValue("$pattern", (object?)pattern ?? DBNull.Value);
+        command.Parameters.AddWithValue("$project", projectId);
         var id = Convert.ToInt64(command.ExecuteScalar());
-        return new LogSource(id, kind, path, pattern, Enabled: true);
+        return new LogSource(id, kind, path, pattern, Enabled: true, projectId);
     }
 
     public void Remove(long id)

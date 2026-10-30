@@ -12,11 +12,11 @@ public sealed class InMemoryLogSourceRepository : ILogSourceRepository
         lock (_gate) return [.. _sources];
     }
 
-    public LogSource Add(SourceKind kind, string path, string? pattern)
+    public LogSource Add(SourceKind kind, string path, string? pattern, long projectId = 0)
     {
         lock (_gate)
         {
-            var source = new LogSource(_nextId++, kind, path, pattern, Enabled: true);
+            var source = new LogSource(_nextId++, kind, path, pattern, Enabled: true, projectId);
             _sources.Add(source);
             return source;
         }

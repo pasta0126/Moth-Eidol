@@ -1,4 +1,3 @@
-using System.Collections.Concurrent;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -10,23 +9,31 @@ using MothEidol.Core.Settings;
 
 namespace MothEidol.App.Views;
 
-public partial class ViewerView : UserControl
+/// <summary>The live tail of one project: the entries of all its sources, optionally limited to one.</summary>
+public partial class TailView : UserControl
 {
+    /// <summary>One choice of the source filter; a null id means every source of the project.</summary>
+    private sealed record SourceChoice(long? SourceId, string Label)
+    {
+        public override string ToString() => Label;
+    }
+
     private readonly AvaloniaList<EntryItem> _items = [];
-    private readonly ConcurrentDictionary<long, ViewBuffer<LogEntry>> _buffers = new();
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(150) };
+    private ProjectTails? _tails;
     private AppSettings? _settings;
+    private ViewBuffer<LogEntry>? _buffer;
     private ScrollViewer? _scroll;
-    private SourceRow? _selected;
     private long _position;
     private bool _scrolledAway;
+    private bool _loading;
 
-    public ViewerView()
+    public TailView()
     {
         InitializeComponent();
         LinesList.ItemsSource = _items;
         LinesList.TemplateApplied += OnListTemplateApplied;
-        SourceCombo.SelectionChanged += OnSourceChanged;
+        SourceCombo.SelectionChanged += (_, _) => { if (!_loading) ResetView(); };
         LevelCombo.SelectionChanged += (_, _) => ResetView();
         ClearButton.Click += OnClearClicked;
         PauseToggle.IsCheckedChanged += (_, _) => UpdateScrollState();
@@ -35,47 +42,40 @@ public partial class ViewerView : UserControl
         UpdateScrollState();
     }
 
-    public void Initialize(SourceListModel model, EntryBus entries, AppSettings settings)
+    public void Initialize(ProjectTails tails, AppSettings settings)
     {
+        _tails = tails;
         _settings = settings;
         MaxLinesBox.Value = settings.ViewerMaxLines;
-        SourceCombo.ItemsSource = model.Rows;
-        if (model.Rows.Count > 0) SourceCombo.SelectedIndex = 0;
-        UpdateHint(model);
-        model.Rows.CollectionChanged += (_, _) => UpdateHint(model);
-
-        // Entries are collected for every source even while another one is shown, so switching loses nothing.
-        var subscription = entries.Subscribe();
-        _ = Task.Run(async () =>
-        {
-            await foreach (var entry in subscription.Reader.ReadAllAsync())
-            {
-                BufferFor(entry.SourceId).Add(entry);
-            }
-        });
-
         _timer.Start();
     }
 
-    private ViewBuffer<LogEntry> BufferFor(long sourceId) =>
-        _buffers.GetOrAdd(sourceId, _ => new ViewBuffer<LogEntry>(_settings?.ViewerMaxLines ?? 5000));
-
-    private void UpdateHint(SourceListModel model)
+    /// <summary>Shows the tail of a project; call again when its sources change.</summary>
+    public void Bind(long projectId, IReadOnlyList<LogSource> sources)
     {
-        HintText.Text = model.Rows.Count == 0
-            ? "No sources yet. Add one in the Sources tab to see its entries here."
+        if (_tails is null) return;
+
+        var changedProject = _buffer != _tails.For(projectId);
+        _buffer = _tails.For(projectId);
+
+        var previous = (SourceCombo.SelectedItem as SourceChoice)?.SourceId;
+        var choices = new List<SourceChoice> { new(null, "All sources") };
+        choices.AddRange(sources.Select(s => new SourceChoice(s.Id, s.DisplayName)));
+
+        _loading = true;
+        SourceCombo.ItemsSource = choices;
+        SourceCombo.SelectedItem = changedProject ? choices[0] : choices.FirstOrDefault(c => c.SourceId == previous) ?? choices[0];
+        _loading = false;
+
+        HintText.Text = sources.Count == 0
+            ? "This project has no sources yet. Add one in its Settings."
             : "New entries appear as they are written. Click a multi-line entry to expand its stack trace.";
-        if (SourceCombo.SelectedItem is null && model.Rows.Count > 0) SourceCombo.SelectedIndex = 0;
-    }
 
-    private void OnSourceChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        _selected = SourceCombo.SelectedItem as SourceRow;
-        _scrolledAway = false;
+        if (changedProject) _scrolledAway = false;
         ResetView();
     }
 
-    /// <summary>Rebuilds the view from the retained entries (source or filter changed).</summary>
+    /// <summary>Rebuilds the view from the retained entries (project, source or filter changed).</summary>
     private void ResetView()
     {
         _position = 0;
@@ -93,38 +93,40 @@ public partial class ViewerView : UserControl
 
     private void OnClearClicked(object? sender, RoutedEventArgs e)
     {
-        if (_selected is null) return;
-        var buffer = BufferFor(_selected.Id);
-        buffer.Clear();
-        _position = buffer.NextSequence;
+        if (_buffer is null) return;
+        _buffer.Clear();
+        _position = _buffer.NextSequence;
         _items.Clear();
     }
 
     private void OnMaxLinesChanged(object? sender, NumericUpDownValueChangedEventArgs e)
     {
-        if (_settings is null || e.NewValue is not { } value) return;
+        if (_settings is null || _tails is null || e.NewValue is not { } value) return;
 
         var max = (int)value;
         _settings.ViewerMaxLines = max;
-        foreach (var buffer in _buffers.Values) buffer.MaxLines = max;
+        _tails.MaxLines = max;
         TrimView(max);
     }
 
     private void Sync()
     {
-        if (_selected is null || !IsEffectivelyVisible) return;
+        if (_buffer is null || !IsEffectivelyVisible) return;
 
-        var buffer = BufferFor(_selected.Id);
-        var (entries, next) = buffer.ReadSince(_position);
+        var (entries, next) = _buffer.ReadSince(_position);
         _position = next;
 
-        // The filter only changes what is displayed: every entry stays monitored and buffered.
+        // The filters only change what is displayed: every entry stays monitored and buffered.
         var minimum = MinimumLevel;
-        var shown = entries.Where(e => e.Level >= minimum).Select(e => new EntryItem(e)).ToList();
+        var source = (SourceCombo.SelectedItem as SourceChoice)?.SourceId;
+        var shown = entries
+            .Where(e => e.Level >= minimum && (source is null || e.SourceId == source))
+            .Select(e => new EntryItem(e))
+            .ToList();
         if (shown.Count == 0) return;
 
         _items.AddRange(shown);
-        TrimView(buffer.MaxLines);
+        TrimView(_buffer.MaxLines);
 
         if (PauseToggle.IsChecked != true && !_scrolledAway)
         {

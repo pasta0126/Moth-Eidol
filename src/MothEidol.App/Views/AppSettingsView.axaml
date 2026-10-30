@@ -1,0 +1,19 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="MothEidol.App.Views.AppSettingsView">
+    <StackPanel Margin="24" Spacing="12">
+        <Button x:Name="BackButton" Content="&#x2190; Dashboard" HorizontalAlignment="Left" />
+        <TextBlock Text="Settings" FontSize="28" FontWeight="Bold"
+                   Foreground="{DynamicResource MothPrimaryBrush}" />
+        <Separator Margin="0,8" Background="{DynamicResource MothBorderBrush}" />
+
+        <CheckBox x:Name="AutostartCheck" Content="Start with my session"
+                  Foreground="{DynamicResource MothTextBrush}" />
+        <TextBlock x:Name="AutostartNote" TextWrapping="Wrap" IsVisible="False"
+                   Foreground="{DynamicResource MothTextMutedBrush}" />
+
+        <TextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
+                   Foreground="{DynamicResource MothTextMutedBrush}"
+                   TextWrapping="Wrap" Margin="0,8,0,0" />
+    </StackPanel>
+</UserControl>

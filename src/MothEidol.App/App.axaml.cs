@@ -8,6 +8,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using MothEidol.Core;
 using MothEidol.Core.Logs;
+using MothEidol.Core.Projects;
 using MothEidol.App.Platform;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Settings;
@@ -22,6 +23,7 @@ public partial class App : Application
     private SingleInstanceGuard? _instanceGuard;
     private TailingService? _tailing;
     private EntryPipeline? _entries;
+    private ProjectTails? _tails;
 
     public override void Initialize()
     {
@@ -52,16 +54,20 @@ public partial class App : Application
             var settings = storage.Settings;
             ReconcileAutostart(settings, autostart);
 
+            ProjectService? projects = null;
             _tailing = new TailingService(
                 storage.Sources,
                 storage.Positions,
-                new TailOptions { PollInterval = TimeSpan.FromMilliseconds(settings.PollIntervalMs) });
+                new TailOptions { PollInterval = TimeSpan.FromMilliseconds(settings.PollIntervalMs) },
+                projectEnabled: id => projects?.IsEnabled(id) ?? true);
+            projects = new ProjectService(storage.Projects, _tailing);
             _entries = new EntryPipeline(_tailing.Lines);
             _entries.Start(); // Subscribes before the sources start, so no line is missed.
+            _tails = new ProjectTails(_entries.Entries, projects.ProjectOfSource, settings.ViewerMaxLines);
             _tailing.Start();
             desktop.Exit += (_, _) => StopTailing();
 
-            _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, _entries.Entries);
+            _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, projects, _tails);
             desktop.MainWindow = _mainWindow;
 
             var trayIcons = TrayIcon.GetIcons(this);
@@ -80,7 +86,11 @@ public partial class App : Application
     }
 
     private sealed record Storage(
-        AppSettings Settings, ILogSourceRepository Sources, IReadPositionStore Positions, string? Notice);
+        AppSettings Settings,
+        ILogSourceRepository Sources,
+        IReadPositionStore Positions,
+        IProjectRepository Projects,
+        string? Notice);
 
     private static Storage OpenStorage()
     {
@@ -107,12 +117,14 @@ public partial class App : Application
             new AppSettings(new SqliteSettingsRepository(database)),
             new SqliteLogSourceRepository(database),
             new SqliteReadPositionStore(database),
+            new SqliteProjectRepository(database),
             notice);
 
         static Storage InMemory(string notice) => new(
             new AppSettings(new InMemorySettingsRepository()),
             new InMemoryLogSourceRepository(),
             new InMemoryReadPositionStore(),
+            new InMemoryProjectRepository(),
             notice);
     }
 
@@ -122,6 +134,7 @@ public partial class App : Application
         try
         {
             _tailing?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(3));
+            _tails?.Dispose();
             _entries?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(2));
         }
         catch (Exception)

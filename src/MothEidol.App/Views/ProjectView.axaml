@@ -1,0 +1,26 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:MothEidol.App.Views"
+             x:Class="MothEidol.App.Views.ProjectView">
+    <DockPanel Margin="24,16,24,0">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*" ColumnSpacing="16">
+            <Button x:Name="BackButton" Content="&#x2190; Dashboard" VerticalAlignment="Top" />
+            <StackPanel Grid.Column="1" Spacing="2">
+                <TextBlock x:Name="TitleText" FontSize="24" FontWeight="Bold" TextTrimming="CharacterEllipsis"
+                           Foreground="{DynamicResource MothPrimaryBrush}" />
+                <StackPanel Orientation="Horizontal" Spacing="6">
+                    <Ellipse x:Name="StatusDot" Width="10" Height="10" VerticalAlignment="Center" />
+                    <TextBlock x:Name="StatusText" Foreground="{DynamicResource MothTextMutedBrush}" />
+                </StackPanel>
+            </StackPanel>
+        </Grid>
+        <TabControl x:Name="Sections" Margin="0,12,0,0">
+            <TabItem Header="Tail">
+                <views:TailView x:Name="Tail" />
+            </TabItem>
+            <TabItem Header="Settings">
+                <views:ProjectSettingsView x:Name="SettingsSection" />
+            </TabItem>
+        </TabControl>
+    </DockPanel>
+</UserControl>

@@ -1,10 +1,10 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:views="using:MothEidol.App.Views"
-             x:Class="MothEidol.App.Views.ViewerView">
-    <DockPanel Margin="16">
+             x:Class="MothEidol.App.Views.TailView">
+    <DockPanel Margin="0,12,0,0">
         <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
-            <ComboBox x:Name="SourceCombo" HorizontalAlignment="Stretch" PlaceholderText="Select a source" />
+            <ComboBox x:Name="SourceCombo" HorizontalAlignment="Stretch" />
             <ComboBox x:Name="LevelCombo" Grid.Column="1" MinWidth="170" SelectedIndex="0">
                 <ComboBoxItem Content="All levels" />
                 <ComboBoxItem Content="Warning and above" />
