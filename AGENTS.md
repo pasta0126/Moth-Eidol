@@ -14,6 +14,7 @@ Goals:
 - Monitor log files in real time (active follow, `tail -f` style), local or on network shares reachable with the OS user.
 - Organize monitoring by project (name, log folders, file patterns) and flag entries per project according to the log level: info is shown but never alerts, warning alerts depending on the project configuration, error and above always alert.
 - Home screen is a dashboard with one status tile per project (is anything pending?); a tile opens the project screen with its events (grouped, pending/seen), the live tail and its settings.
+- The interface is oriented to people, in the spirit of Sentry: readable titles instead of raw log lines, relative times, trends, context and ordered stack traces.
 - Alert frequency is configurable per project (immediate with cooldown, or periodic summary).
 - Each team member runs the app on their own PC (macOS or Windows) and reads the logs with their OS user permissions; the app only alerts while it is running (tray/background).
 - Run on Windows (priority), Linux (if easy) and macOS (latest; this is the development machine).
@@ -52,7 +53,8 @@ Do not invent requirements that are not in a spec; if something is missing, prop
 | 5 | `serilog-parsing` | `LogEntry` with level/timestamp/message, multi-line grouping (stack traces), pluggable parser, viewer coloring and level filter |
 | 6 | `projects` | Projects, dashboard with status tiles (home screen), project screen with tail and settings; replaces the global Live/Sources tabs |
 | 7 | `project-alerts` | Level-based alert-level detection per project, grouped events with pending/seen, events section and tile pending state, per-project cooldown or periodic summary, retention |
-| 8 | `notification-channels` | In-app toast, tray counter, sound, channel chain |
+| 8 | `event-insights` | Sentry-like presentation: readable titles and location, relative times, sparklines and trends, New/Regressed badges, ordered stack trace, context before the error, occurrence timeline, copy summary |
+| 9 | `notification-channels` | In-app toast, tray counter, sound, channel chain |
 
 Native OS notifications and team-wide channels (email, webhook) are out of the MVP; the notifier chain must stay pluggable.
 

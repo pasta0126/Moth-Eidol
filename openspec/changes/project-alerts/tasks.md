@@ -2,7 +2,7 @@
 
 - [ ] 1.1 `AlertEvent` model and in-process event stream
 - [ ] 1.2 `AlertEvaluator` applying level rules and the project's warning setting
-- [ ] 1.3 Message normalizer and group key
+- [ ] 1.3 Message normalizer and group key (normalized first line plus first exception type)
 
 ## 2. Event groups
 

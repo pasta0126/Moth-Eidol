@@ -35,7 +35,7 @@ The system SHALL keep the full entry, including its continuation lines, in each 
 - **THEN** the occurrence contains the header and the stack trace text
 
 ### Requirement: Event groups
-The system SHALL group the alert-level entries of a project that have the same level and the same normalized message, keeping the number of occurrences and the time of the first and the last one.
+The system SHALL group the alert-level entries of a project that have the same level, the same normalized message and, when they contain a stack trace, the same exception type, keeping the number of occurrences and the time of the first and the last one.
 
 #### Scenario: Repeated error with different ids
 - **WHEN** the same error message is logged twice differing only in numeric ids
@@ -43,6 +43,10 @@ The system SHALL group the alert-level entries of a project that have the same l
 
 #### Scenario: Different errors
 - **WHEN** two alert-level entries have different normalized messages
+- **THEN** they belong to different groups
+
+#### Scenario: Same message, different exception
+- **WHEN** two entries have the same message but their stack traces start with different exception types
 - **THEN** they belong to different groups
 
 #### Scenario: Bounded detail

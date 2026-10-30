@@ -18,7 +18,7 @@ Alerts are produced independently from the UI and from how they are delivered. W
 ## Decisions
 
 - **Pipeline**: `LogEntry` → `AlertEvaluator` (level + project config) → `AlertEvent` → (a) `EventStore` grouping and (b) project `FrequencyPolicy` → delivery. Grouping records every alert-level entry regardless of delivery throttling.
-- **Group key**: project + level + normalized first line of the entry message. Normalization replaces GUIDs, ISO timestamps, quoted values and digit runs with placeholders, so "Envío KO ... registro 164568" and "... registro 164570" fall in the same group.
+- **Group key**: project + level + normalized first line of the entry message + the exception type of the first exception line when the entry has a stack trace. Normalization replaces GUIDs, ISO timestamps, quoted values and digit runs with placeholders, so "Envío KO ... registro 164568" and "... registro 164570" fall in the same group, while the same message with a different exception type does not.
 - **Group state**: `Count`, `FirstSeen`, `LastSeen`, `SeenAt` (when the user last marked it), and `Pending` = occurrences after `SeenAt`. A new occurrence after being marked seen makes the group pending again.
 - **Occurrences**: only the most recent N per group are stored with their full text (including stack trace, bounded length); the group count keeps counting beyond N.
 - **Seen actions**: mark one group, or all groups of a project, as seen.
