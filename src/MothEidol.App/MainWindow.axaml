@@ -1,9 +1,10 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="using:MothEidol.App.Views"
         x:Class="MothEidol.App.MainWindow"
         Icon="/Assets/app-icon.png"
         Title="Moth-Eidol"
-        Width="520" Height="320"
+        Width="1000" Height="680" MinWidth="640" MinHeight="420"
         Background="{DynamicResource MothBgBrush}"
         WindowStartupLocation="CenterScreen">
     <DockPanel>
@@ -13,28 +14,38 @@
         <TextBlock x:Name="VersionText" FontSize="12"
                    Foreground="{DynamicResource MothTextMutedBrush}" />
     </Border>
-    <StackPanel Margin="24" Spacing="12">
-        <Border x:Name="NoticeBanner" IsVisible="False" Padding="12"
-                CornerRadius="4" BorderThickness="1"
-                Background="{DynamicResource MothSurfaceAltBrush}"
-                BorderBrush="{DynamicResource MothWarningBrush}">
-            <TextBlock x:Name="NoticeText" TextWrapping="Wrap"
-                       Foreground="{DynamicResource MothTextBrush}" />
-        </Border>
-        <TextBlock Text="MOTH-EIDOL" FontSize="28" FontWeight="Bold"
-                   Foreground="{DynamicResource MothPrimaryBrush}" />
-        <TextBlock Text="System Observability Compound"
-                   Foreground="{DynamicResource MothAccentSoftBrush}" />
-        <Separator Margin="0,8" Background="{DynamicResource MothBorderBrush}" />
+    <Border x:Name="NoticeBanner" DockPanel.Dock="Top" IsVisible="False" Padding="12" Margin="16,16,16,0"
+            CornerRadius="4" BorderThickness="1"
+            Background="{DynamicResource MothSurfaceAltBrush}"
+            BorderBrush="{DynamicResource MothWarningBrush}">
+        <TextBlock x:Name="NoticeText" TextWrapping="Wrap"
+                   Foreground="{DynamicResource MothTextBrush}" />
+    </Border>
+    <TabControl x:Name="Tabs" Margin="8,8,8,0">
+        <TabItem Header="Live">
+            <views:ViewerView x:Name="Viewer" />
+        </TabItem>
+        <TabItem Header="Sources">
+            <views:SourcesView x:Name="SourcesPanel" />
+        </TabItem>
+        <TabItem Header="Settings">
+            <StackPanel Margin="24" Spacing="12">
+                <TextBlock Text="MOTH-EIDOL" FontSize="28" FontWeight="Bold"
+                           Foreground="{DynamicResource MothPrimaryBrush}" />
+                <TextBlock Text="System Observability Compound"
+                           Foreground="{DynamicResource MothAccentSoftBrush}" />
+                <Separator Margin="0,8" Background="{DynamicResource MothBorderBrush}" />
 
-        <CheckBox x:Name="AutostartCheck" Content="Start with my session"
-                  Foreground="{DynamicResource MothTextBrush}" />
-        <TextBlock x:Name="AutostartNote" TextWrapping="Wrap" IsVisible="False"
-                   Foreground="{DynamicResource MothTextMutedBrush}" />
+                <CheckBox x:Name="AutostartCheck" Content="Start with my session"
+                          Foreground="{DynamicResource MothTextBrush}" />
+                <TextBlock x:Name="AutostartNote" TextWrapping="Wrap" IsVisible="False"
+                           Foreground="{DynamicResource MothTextMutedBrush}" />
 
-        <TextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
-                   Foreground="{DynamicResource MothTextMutedBrush}"
-                   TextWrapping="Wrap" Margin="0,8,0,0" />
-    </StackPanel>
+                <TextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
+                           Foreground="{DynamicResource MothTextMutedBrush}"
+                           TextWrapping="Wrap" Margin="0,8,0,0" />
+            </StackPanel>
+        </TabItem>
+    </TabControl>
     </DockPanel>
 </Window>

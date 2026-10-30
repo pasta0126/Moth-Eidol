@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using MothEidol.App.Views;
+using MothEidol.Core.Logs;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Settings;
 
@@ -16,7 +18,7 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    public MainWindow(string version, IAutostart autostart, AppSettings settings, string? notice) : this()
+    public MainWindow(string version, IAutostart autostart, AppSettings settings, string? notice, TailingService tailing) : this()
     {
         _autostart = autostart;
         _settings = settings;
@@ -26,6 +28,10 @@ public partial class MainWindow : Window
             NoticeText.Text = notice;
             NoticeBanner.IsVisible = true;
         }
+
+        var sources = new SourceListModel(tailing);
+        SourcesPanel.Initialize(tailing, sources);
+        Viewer.Initialize(tailing, sources, settings);
 
         Title = $"Moth-Eidol v{version}";
         VersionText.Text = $"Moth-Eidol v{version}";

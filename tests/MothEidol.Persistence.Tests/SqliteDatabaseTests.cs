@@ -55,7 +55,7 @@ public sealed class SqliteDatabaseTests : IDisposable
         var db1 = SqliteDatabase.Open(DbPath, v1);
         new SqliteSettingsRepository(db1).Set("keep", "me");
 
-        var v2 = v1.Append(new Migration(2, "CREATE TABLE extra (id INTEGER PRIMARY KEY);")).ToList();
+        var v2 = v1.Append(new Migration(Migrations.All[^1].Version + 1, "CREATE TABLE extra (id INTEGER PRIMARY KEY);")).ToList();
         var db2 = SqliteDatabase.Open(DbPath, v2);
 
         Assert.Equal(DatabaseStatus.Ready, db2.Status);
@@ -69,14 +69,14 @@ public sealed class SqliteDatabaseTests : IDisposable
     [Fact]
     public void NewerSchema_IsLeftUntouched()
     {
-        var v2 = Migrations.All.Append(new Migration(2, "CREATE TABLE extra (id INTEGER PRIMARY KEY);")).ToList();
+        var v2 = Migrations.All.Append(new Migration(Migrations.All[^1].Version + 1, "CREATE TABLE extra (id INTEGER PRIMARY KEY);")).ToList();
         SqliteDatabase.Open(DbPath, v2);
         var before = File.ReadAllBytes(DbPath);
 
         var db = SqliteDatabase.Open(DbPath, Migrations.All);
 
         Assert.Equal(DatabaseStatus.IncompatibleSchema, db.Status);
-        Assert.Equal(2, db.FoundVersion);
+        Assert.Equal(Migrations.All[^1].Version + 1, db.FoundVersion);
         Assert.False(db.IsUsable);
         Assert.Equal(before, File.ReadAllBytes(DbPath));
     }

@@ -22,4 +22,8 @@
     <ProjectReference Include="..\..\src\MothEidol.Core\MothEidol.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="..\fixtures\**\*.log" Link="fixtures\%(RecursiveDir)%(Filename)%(Extension)" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

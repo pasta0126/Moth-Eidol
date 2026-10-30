@@ -1,26 +1,26 @@
 ## 1. Model and sources
 
-- [ ] 1.1 Log source model and repository on top of `local-persistence`
-- [ ] 1.2 Source management (add, remove, enable) and statuses
-- [ ] 1.3 Folder sources: folder plus pattern, resolution of the newest matching file
-- [ ] 1.4 Sources screen in the application
+- [x] 1.1 Log source model and repository on top of `local-persistence`
+- [x] 1.2 Source management (add, remove, enable) and statuses
+- [x] 1.3 Folder sources: folder plus pattern, resolution of the newest matching file
+- [x] 1.4 Sources screen in the application
 
 ## 2. Tailing
 
-- [ ] 2.1 Incremental reader with polling, position and batch reads
-- [ ] 2.2 Truncation and rotation detection, including switch to a newer file in a folder source
-- [ ] 2.3 Unavailability handling with retries and recovery
-- [ ] 2.4 Complete lines, UTF-8/UTF-16 with BOM, CRLF/LF
-- [ ] 2.5 Persistence and resume of the read position
-- [ ] 2.6 Line channel for consumers
+- [x] 2.1 Incremental reader with polling, position and batch reads
+- [x] 2.2 Truncation and rotation detection, including switch to a newer file in a folder source
+- [x] 2.3 Unavailability handling with retries and recovery
+- [x] 2.4 Complete lines, UTF-8/UTF-16 with BOM, CRLF/LF
+- [x] 2.5 Persistence and resume of the read position
+- [x] 2.6 Line channel for consumers
 
 ## 3. Viewer
 
-- [ ] 3.1 Live view with auto-scroll and pause
-- [ ] 3.2 Line limit in the view
+- [x] 3.1 Live view with auto-scroll and pause
+- [x] 3.2 Line limit in the view
 
 ## 4. Verification
 
-- [ ] 4.1 Tests with temporary files: append, truncation, rotation, daily-file switch, disappearance, restart, partial line
-- [ ] 4.2 Run on macOS against a local file and, if possible, a shared folder
+- [x] 4.1 Tests with temporary files: append, truncation, rotation, daily-file switch, disappearance, restart, partial line
+- [x] 4.2 Run on macOS against a local file and, if possible, a shared folder
 - [ ] 4.3 Close the change: archive, bump the version (semver), commit, push and tag it

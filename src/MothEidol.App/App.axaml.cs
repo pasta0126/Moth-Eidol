@@ -7,6 +7,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
 using MothEidol.Core;
+using MothEidol.Core.Logs;
 using MothEidol.App.Platform;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Settings;
@@ -19,6 +20,7 @@ public partial class App : Application
     private IClassicDesktopStyleApplicationLifetime? _desktop;
     private MainWindow? _mainWindow;
     private SingleInstanceGuard? _instanceGuard;
+    private TailingService? _tailing;
 
     public override void Initialize()
     {
@@ -45,9 +47,18 @@ public partial class App : Application
 
             var version = AppVersion.FromAssembly(Assembly.GetExecutingAssembly());
             var autostart = AutostartFactory.Create(Environment.ProcessPath);
-            var (settings, notice) = OpenSettings();
+            var storage = OpenStorage();
+            var settings = storage.Settings;
             ReconcileAutostart(settings, autostart);
-            _mainWindow = new MainWindow(version, autostart, settings, notice);
+
+            _tailing = new TailingService(
+                storage.Sources,
+                storage.Positions,
+                new TailOptions { PollInterval = TimeSpan.FromMilliseconds(settings.PollIntervalMs) });
+            _tailing.Start();
+            desktop.Exit += (_, _) => StopTailing();
+
+            _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing);
             desktop.MainWindow = _mainWindow;
 
             var trayIcons = TrayIcon.GetIcons(this);
@@ -65,7 +76,10 @@ public partial class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    private static (AppSettings Settings, string? Notice) OpenSettings()
+    private sealed record Storage(
+        AppSettings Settings, ILogSourceRepository Sources, IReadPositionStore Positions, string? Notice);
+
+    private static Storage OpenStorage()
     {
         try
         {
@@ -74,20 +88,41 @@ public partial class App : Application
 
             return database.Status switch
             {
-                DatabaseStatus.Ready =>
-                    (new AppSettings(new SqliteSettingsRepository(database)), null),
-                DatabaseStatus.RecoveredFromCorruption =>
-                    (new AppSettings(new SqliteSettingsRepository(database)),
-                     $"The local database was corrupt. A backup was kept at {database.BackupPath} and a new one was created."),
-                _ =>
-                    (new AppSettings(new InMemorySettingsRepository()),
-                     $"The local database was created by a newer version (schema {database.FoundVersion}). It was not modified and settings will not be saved in this session."),
+                DatabaseStatus.Ready => Persistent(database, null),
+                DatabaseStatus.RecoveredFromCorruption => Persistent(database,
+                    $"The local database was corrupt. A backup was kept at {database.BackupPath} and a new one was created."),
+                _ => InMemory(
+                    $"The local database was created by a newer version (schema {database.FoundVersion}). It was not modified and settings and sources will not be saved in this session."),
             };
         }
         catch (Exception ex)
         {
-            return (new AppSettings(new InMemorySettingsRepository()),
-                    $"Local storage is unavailable ({ex.Message}). Settings will not be saved in this session.");
+            return InMemory($"Local storage is unavailable ({ex.Message}). Settings and sources will not be saved in this session.");
+        }
+
+        static Storage Persistent(SqliteDatabase database, string? notice) => new(
+            new AppSettings(new SqliteSettingsRepository(database)),
+            new SqliteLogSourceRepository(database),
+            new SqliteReadPositionStore(database),
+            notice);
+
+        static Storage InMemory(string notice) => new(
+            new AppSettings(new InMemorySettingsRepository()),
+            new InMemoryLogSourceRepository(),
+            new InMemoryReadPositionStore(),
+            notice);
+    }
+
+    /// <summary>Stops every source and saves its read position, so nothing is repeated on the next start.</summary>
+    private void StopTailing()
+    {
+        try
+        {
+            _tailing?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(3));
+        }
+        catch (Exception)
+        {
+            // Best effort on the way out.
         }
     }
 
@@ -128,6 +163,7 @@ public partial class App : Application
     private void OnQuitClicked(object? sender, EventArgs e)
     {
         _mainWindow?.AllowClose();
+        StopTailing();
         _desktop?.Shutdown();
     }
 }

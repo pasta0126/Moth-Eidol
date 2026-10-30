@@ -1,0 +1,57 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:MothEidol.App.Views"
+             x:Class="MothEidol.App.Views.SourcesView">
+    <DockPanel Margin="16">
+        <Border DockPanel.Dock="Top" Padding="12" CornerRadius="4"
+                Background="{DynamicResource MothSurfaceBrush}">
+            <StackPanel Spacing="8">
+                <TextBlock Text="Add a log source" FontWeight="SemiBold"
+                           Foreground="{DynamicResource MothAccentBrush}" />
+                <StackPanel Orientation="Horizontal" Spacing="16">
+                    <RadioButton x:Name="FileRadio" GroupName="kind" IsChecked="True"
+                                 Content="A file" Foreground="{DynamicResource MothTextBrush}" />
+                    <RadioButton x:Name="FolderRadio" GroupName="kind"
+                                 Content="A folder and a file name pattern (follows the newest match)"
+                                 Foreground="{DynamicResource MothTextBrush}" />
+                </StackPanel>
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <TextBox x:Name="PathBox"
+                             PlaceholderText="Path to the log file or folder (local or a network share)" />
+                    <Button x:Name="BrowseButton" Grid.Column="1" Content="Browse..." />
+                </Grid>
+                <TextBox x:Name="PatternBox" IsVisible="False"
+                         PlaceholderText="File name pattern, for example MyService*.log" />
+                <StackPanel Orientation="Horizontal" Spacing="12">
+                    <Button x:Name="AddButton" Content="Add source" Classes="accent" />
+                    <TextBlock x:Name="ErrorText" VerticalAlignment="Center" TextWrapping="Wrap"
+                               Foreground="{DynamicResource MothErrorBrush}" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+
+        <TextBlock x:Name="EmptyText" DockPanel.Dock="Top" Margin="0,16,0,0"
+                   Text="No sources yet. Add the log file or folder you want to follow."
+                   Foreground="{DynamicResource MothTextMutedBrush}" />
+
+        <ListBox x:Name="SourceList" Margin="0,12,0,0" Background="Transparent">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="views:SourceRow">
+                    <Grid ColumnDefinitions="110,*,Auto,Auto" ColumnSpacing="12" Margin="0,4">
+                        <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold"
+                                   Foreground="{Binding StatusBrush}" VerticalAlignment="Center" />
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource MothTextBrush}" />
+                            <TextBlock Text="{Binding Detail}" FontSize="11" TextTrimming="CharacterEllipsis"
+                                       Foreground="{DynamicResource MothTextMutedBrush}" />
+                        </StackPanel>
+                        <CheckBox Grid.Column="2" Content="Enabled" IsChecked="{Binding Enabled, Mode=OneWay}"
+                                  Click="OnEnabledClicked" Foreground="{DynamicResource MothTextBrush}" />
+                        <Button Grid.Column="3" Content="Remove" Click="OnRemoveClicked" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>

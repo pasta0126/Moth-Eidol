@@ -1,0 +1,40 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="MothEidol.App.Views.ViewerView">
+    <DockPanel Margin="16">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto,Auto" ColumnSpacing="12">
+            <ComboBox x:Name="SourceCombo" HorizontalAlignment="Stretch" PlaceholderText="Select a source" />
+            <ToggleButton x:Name="PauseToggle" Grid.Column="1" Content="Pause auto-scroll" />
+            <Button x:Name="ClearButton" Grid.Column="2" Content="Clear" />
+            <StackPanel Grid.Column="3" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                <TextBlock Text="Max lines" VerticalAlignment="Center"
+                           Foreground="{DynamicResource MothTextMutedBrush}" />
+                <NumericUpDown x:Name="MaxLinesBox" Minimum="100" Maximum="200000" Increment="500"
+                               FormatString="0" Width="130" />
+            </StackPanel>
+            <TextBlock x:Name="ScrollStateText" Grid.Column="4" VerticalAlignment="Center" MinWidth="130"
+                       Foreground="{DynamicResource MothTextMutedBrush}" />
+        </Grid>
+
+        <TextBlock x:Name="HintText" DockPanel.Dock="Top" Margin="0,12,0,0"
+                   Foreground="{DynamicResource MothTextMutedBrush}" TextWrapping="Wrap" />
+
+        <ListBox x:Name="LinesList" Margin="0,12,0,0"
+                 Background="{DynamicResource MothSurfaceBrush}"
+                 BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1"
+                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+            <ListBox.Styles>
+                <Style Selector="ListBoxItem">
+                    <Setter Property="Padding" Value="6,1" />
+                    <Setter Property="MinHeight" Value="0" />
+                </Style>
+            </ListBox.Styles>
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="x:String">
+                    <TextBlock Text="{Binding}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
+                               TextWrapping="NoWrap" Foreground="{DynamicResource MothTextBrush}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</UserControl>
