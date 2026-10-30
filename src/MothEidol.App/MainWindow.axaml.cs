@@ -18,7 +18,7 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    public MainWindow(string version, IAutostart autostart, AppSettings settings, string? notice, TailingService tailing) : this()
+    public MainWindow(string version, IAutostart autostart, AppSettings settings, string? notice, TailingService tailing, EntryBus entries) : this()
     {
         _autostart = autostart;
         _settings = settings;
@@ -31,7 +31,7 @@ public partial class MainWindow : Window
 
         var sources = new SourceListModel(tailing);
         SourcesPanel.Initialize(tailing, sources);
-        Viewer.Initialize(tailing, sources, settings);
+        Viewer.Initialize(sources, entries, settings);
 
         Title = $"Moth-Eidol v{version}";
         VersionText.Text = $"Moth-Eidol v{version}";

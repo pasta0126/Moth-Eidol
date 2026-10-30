@@ -4,10 +4,10 @@ namespace MothEidol.Core.Logs;
 /// The most recent lines of a source, bounded in size. Readers ask for what is new since a sequence number,
 /// so a view can append incrementally and never needs the whole history.
 /// </summary>
-public sealed class LineViewBuffer(int maxLines)
+public sealed class ViewBuffer<T>(int maxLines)
 {
     private readonly object _gate = new();
-    private readonly Queue<string> _lines = new();
+    private readonly Queue<T> _lines = new();
     private long _firstSequence;
     private int _maxLines = Math.Max(1, maxLines);
 
@@ -30,7 +30,7 @@ public sealed class LineViewBuffer(int maxLines)
         get { lock (_gate) return _firstSequence + _lines.Count; }
     }
 
-    public void Add(string line)
+    public void Add(T line)
     {
         lock (_gate)
         {
@@ -49,7 +49,7 @@ public sealed class LineViewBuffer(int maxLines)
     }
 
     /// <summary>Lines added at or after <paramref name="sequence"/> that are still retained, and the sequence to ask for next.</summary>
-    public (IReadOnlyList<string> Lines, long Next) ReadSince(long sequence)
+    public (IReadOnlyList<T> Lines, long Next) ReadSince(long sequence)
     {
         lock (_gate)
         {

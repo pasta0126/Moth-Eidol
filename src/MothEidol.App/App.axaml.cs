@@ -21,6 +21,7 @@ public partial class App : Application
     private MainWindow? _mainWindow;
     private SingleInstanceGuard? _instanceGuard;
     private TailingService? _tailing;
+    private EntryPipeline? _entries;
 
     public override void Initialize()
     {
@@ -55,10 +56,12 @@ public partial class App : Application
                 storage.Sources,
                 storage.Positions,
                 new TailOptions { PollInterval = TimeSpan.FromMilliseconds(settings.PollIntervalMs) });
+            _entries = new EntryPipeline(_tailing.Lines);
+            _entries.Start(); // Subscribes before the sources start, so no line is missed.
             _tailing.Start();
             desktop.Exit += (_, _) => StopTailing();
 
-            _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing);
+            _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, _entries.Entries);
             desktop.MainWindow = _mainWindow;
 
             var trayIcons = TrayIcon.GetIcons(this);
@@ -119,6 +122,7 @@ public partial class App : Application
         try
         {
             _tailing?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(3));
+            _entries?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(2));
         }
         catch (Exception)
         {

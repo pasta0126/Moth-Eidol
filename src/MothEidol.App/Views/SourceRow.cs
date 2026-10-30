@@ -1,5 +1,4 @@
 using System.ComponentModel;
-using Avalonia;
 using Avalonia.Media;
 using MothEidol.Core.Logs;
 
@@ -40,7 +39,7 @@ public sealed class SourceRow : INotifyPropertyChanged
 
     public string? Detail => _status is SourceStatus.Unavailable or SourceStatus.ReadError ? _detail : null;
 
-    public IBrush? StatusBrush => Resource(_status switch
+    public IBrush? StatusBrush => ThemeBrushes.Get(_status switch
     {
         SourceStatus.Active => "MothInfoBrush",
         SourceStatus.Paused => "MothTextMutedBrush",
@@ -57,9 +56,4 @@ public sealed class SourceRow : INotifyPropertyChanged
     }
 
     public override string ToString() => Name;
-
-    private static IBrush? Resource(string key) =>
-        Application.Current is { } app && app.TryGetResource(key, app.ActualThemeVariant, out var value)
-            ? value as IBrush
-            : null;
 }

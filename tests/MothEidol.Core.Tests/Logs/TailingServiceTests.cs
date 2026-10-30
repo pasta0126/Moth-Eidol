@@ -17,7 +17,7 @@ public sealed class TailingServiceTests : IDisposable
 
     public void Dispose() => _temp.Dispose();
 
-    private static async Task<List<LogLine>> ReadAsync(LineSubscription subscription, int count)
+    private static async Task<List<LogLine>> ReadAsync(Subscription<LogLine> subscription, int count)
     {
         using var cancellation = new CancellationTokenSource(Timeout);
         var lines = new List<LogLine>();
