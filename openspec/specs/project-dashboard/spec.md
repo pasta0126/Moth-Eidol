@@ -17,7 +17,7 @@ The system SHALL open on a dashboard showing one tile per project, ordered by na
 - **THEN** the dashboard shows only the new-project tile and a short hint
 
 ### Requirement: Tile status
-The system SHALL show on each tile the project's name and a status distinguishable at a glance: healthy, degraded (a source is unavailable or has a read error), not configured (no sources) or disabled.
+The system SHALL show on each tile the project's name and a status distinguishable at a glance: healthy, degraded (a source is unavailable or has a read error), not configured (no sources) or disabled, and SHALL combine it with the pending state of its events (see `project-alerts`).
 
 #### Scenario: Healthy project
 - **WHEN** all sources of an enabled project are active
@@ -30,6 +30,10 @@ The system SHALL show on each tile the project's name and a status distinguishab
 #### Scenario: Project without sources
 - **WHEN** a project has no sources
 - **THEN** its tile shows the not configured status
+
+#### Scenario: Pending events outweigh healthy
+- **WHEN** a healthy project has pending event groups
+- **THEN** its tile shows the pending state of its worst pending level
 
 ### Requirement: Create from the dashboard
 The system SHALL let the user create a project from the dashboard by giving only a name, and SHALL then open the new project's screen so its parameters can be set.
