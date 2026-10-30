@@ -217,6 +217,73 @@ public sealed class AlertPipelineTests : IAsyncDisposable
         Assert.Equal(EntryLevel.Fatal, _store.Groups(_project.Id).Single().Level);
     }
 
+    private Task PublishAt(EntryLevel level, string message, int second, long? sourceId = null) =>
+        _entries.PublishAsync(
+            [new LogEntry(sourceId ?? _sourceId, T0.AddSeconds(second), level, message, false, T0)],
+            CancellationToken.None).AsTask();
+
+    [Fact]
+    public async Task An_occurrence_keeps_the_entries_that_preceded_it_from_its_own_source()
+    {
+        Start();
+        var other = _projects.AddSource(_project.Id, SourceKind.File, _temp.File("b.log"), null).Id;
+
+        await PublishAt(EntryLevel.Information, "first", 1);
+        await PublishAt(EntryLevel.Information, "noise from another source", 2, other);
+        await PublishAt(EntryLevel.Warning, "second", 3);
+        await PublishAt(EntryLevel.Error, "boom", 4);
+
+        await WaitForAsync(() => _store.Groups(_project.Id).Count == 1);
+        var context = _store.Occurrences(_store.Groups(_project.Id).Single().Id).Single().Context;
+        Assert.NotNull(context);
+        Assert.Equal(["first", "second"], context.Select(c => c.Text));
+        Assert.Equal([EntryLevel.Information, EntryLevel.Warning], context.Select(c => c.Level));
+    }
+
+    [Fact]
+    public async Task The_first_entry_of_a_source_has_no_context_and_the_context_is_bounded()
+    {
+        Start(new AlertOptions { TickInterval = TimeSpan.FromMilliseconds(20), ContextEntries = 3 });
+
+        await PublishAt(EntryLevel.Error, "very first", 0);
+        for (var i = 1; i <= 6; i++) await PublishAt(EntryLevel.Information, $"info {i}", i);
+        await PublishAt(EntryLevel.Fatal, "later failure", 10);
+
+        await WaitForAsync(() => _store.Groups(_project.Id).Count == 2);
+        var first = _store.Groups(_project.Id).Single(g => g.Level == EntryLevel.Error);
+        var later = _store.Groups(_project.Id).Single(g => g.Level == EntryLevel.Fatal);
+        Assert.Empty(_store.Occurrences(first.Id).Single().Context ?? []);
+        Assert.Equal(["info 4", "info 5", "info 6"], _store.Occurrences(later.Id).Single().Context!.Select(c => c.Text));
+    }
+
+    [Fact]
+    public async Task Long_context_entries_are_cut()
+    {
+        Start(new AlertOptions { TickInterval = TimeSpan.FromMilliseconds(20), MaxContextTextLength = 20 });
+
+        await PublishAt(EntryLevel.Information, new string('x', 200), 1);
+        await PublishAt(EntryLevel.Error, "boom", 2);
+
+        await WaitForAsync(() => _store.Groups(_project.Id).Count == 1);
+        var text = _store.Occurrences(_store.Groups(_project.Id).Single().Id).Single().Context!.Single().Text;
+        Assert.Equal(21, text.Length);
+        Assert.EndsWith("…", text);
+    }
+
+    [Fact]
+    public async Task The_group_gets_a_readable_title_and_a_location_from_the_stack_trace()
+    {
+        Start();
+
+        await Publish(EntryLevel.Error,
+            "Failed to send\nSystem.InvalidOperationException: boom\n   at Acme.Billing.Worker.Run() in C:\\src\\Worker.cs:line 9");
+
+        await WaitForAsync(() => _store.Groups(_project.Id).Count == 1);
+        var group = _store.Groups(_project.Id).Single();
+        Assert.Equal("InvalidOperationException: boom", group.Title);
+        Assert.Equal("Worker.Run", group.Location);
+    }
+
     [Fact]
     public async Task Removing_a_project_removes_its_events()
     {

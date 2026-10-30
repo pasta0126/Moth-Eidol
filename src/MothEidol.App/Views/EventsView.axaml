@@ -20,17 +20,38 @@
             <ListBox x:Name="GroupList" Margin="0,12,0,0" Background="Transparent">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="views:EventGroupRow">
-                        <Grid ColumnDefinitions="44,*,Auto,110,160" ColumnSpacing="12" Margin="0,3">
+                        <Grid ColumnDefinitions="40,*,Auto,100,70,95,95" ColumnSpacing="12" Margin="0,5"
+                              ToolTip.Tip="{Binding LastSeenExact}">
                             <TextBlock Text="{Binding LevelText}" FontWeight="Bold" VerticalAlignment="Center"
                                        FontFamily="Menlo,Consolas,Monospace" Foreground="{Binding LevelBrush}" />
-                            <TextBlock Grid.Column="1" Text="{Binding Title}" FontWeight="{Binding TitleWeight}"
-                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
-                                       Foreground="{DynamicResource MothTextBrush}" />
-                            <TextBlock Grid.Column="2" Text="{Binding CountText}" VerticalAlignment="Center"
-                                       Foreground="{DynamicResource MothTextMutedBrush}" />
-                            <TextBlock Grid.Column="3" Text="{Binding PendingText}" VerticalAlignment="Center"
-                                       Foreground="{Binding PendingBrush}" />
-                            <TextBlock Grid.Column="4" Text="{Binding LastSeenText}" VerticalAlignment="Center"
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="1">
+                                <TextBlock Text="{Binding Title}" FontWeight="{Binding TitleWeight}"
+                                           TextTrimming="CharacterEllipsis"
+                                           Foreground="{DynamicResource MothTextBrush}" />
+                                <TextBlock Text="{Binding Location}" IsVisible="{Binding HasLocation}" FontSize="12"
+                                           TextTrimming="CharacterEllipsis"
+                                           Foreground="{DynamicResource MothAccentSoftBrush}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+                                <Border IsVisible="{Binding IsNew}" CornerRadius="3" Padding="6,1"
+                                        Background="{DynamicResource MothInfoBrush}">
+                                    <TextBlock Text="NEW" FontSize="10" FontWeight="Bold"
+                                               Foreground="{DynamicResource MothBgBrush}" />
+                                </Border>
+                                <Border IsVisible="{Binding IsRegressed}" CornerRadius="3" Padding="6,1"
+                                        Background="{DynamicResource MothErrorBrush}">
+                                    <TextBlock Text="REGRESSED" FontSize="10" FontWeight="Bold"
+                                               Foreground="{DynamicResource MothTextBrush}" />
+                                </Border>
+                            </StackPanel>
+                            <views:SparklineControl Grid.Column="3" Height="24" VerticalAlignment="Center"
+                                                    Values="{Binding Series}" Brush="{Binding SeriesBrush}" />
+                            <TextBlock Grid.Column="4" Text="{Binding CountText}" VerticalAlignment="Center"
+                                       HorizontalAlignment="Right" Foreground="{DynamicResource MothTextMutedBrush}" />
+                            <StackPanel Grid.Column="5" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding PendingText}" Foreground="{Binding PendingBrush}" />
+                            </StackPanel>
+                            <TextBlock Grid.Column="6" Text="{Binding LastSeenText}" VerticalAlignment="Center"
                                        FontSize="12" Foreground="{DynamicResource MothTextMutedBrush}" />
                         </Grid>
                     </DataTemplate>
@@ -39,37 +60,81 @@
         </DockPanel>
 
         <DockPanel x:Name="DetailPanel" IsVisible="False" Margin="0,12,0,0">
-            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
                 <Button x:Name="DetailBackButton" Content="&#x2190; Events" VerticalAlignment="Top" />
-                <StackPanel Grid.Column="1" Spacing="2">
-                    <TextBlock x:Name="DetailTitle" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"
+                <StackPanel Grid.Column="1" Spacing="3">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock x:Name="DetailLevel" FontWeight="Bold" VerticalAlignment="Center"
+                                   FontFamily="Menlo,Consolas,Monospace" />
+                        <Border x:Name="NewBadge" IsVisible="False" CornerRadius="3" Padding="6,1"
+                                Background="{DynamicResource MothInfoBrush}" VerticalAlignment="Center">
+                            <TextBlock Text="NEW" FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource MothBgBrush}" />
+                        </Border>
+                        <Border x:Name="RegressedBadge" IsVisible="False" CornerRadius="3" Padding="6,1"
+                                Background="{DynamicResource MothErrorBrush}" VerticalAlignment="Center">
+                            <TextBlock Text="REGRESSED" FontSize="10" FontWeight="Bold"
+                                       Foreground="{DynamicResource MothTextBrush}" />
+                        </Border>
+                    </StackPanel>
+                    <TextBlock x:Name="DetailTitle" FontSize="17" FontWeight="SemiBold" TextWrapping="Wrap"
                                Foreground="{DynamicResource MothTextBrush}" />
+                    <TextBlock x:Name="DetailLocation" Foreground="{DynamicResource MothAccentSoftBrush}" />
                     <TextBlock x:Name="DetailMeta" Foreground="{DynamicResource MothTextMutedBrush}" />
                 </StackPanel>
-                <Button x:Name="DetailSeenButton" Grid.Column="2" Content="Mark as seen" Classes="accent"
+                <Button x:Name="CopyButton" Grid.Column="2" Content="Copy summary" VerticalAlignment="Top" />
+                <Button x:Name="DetailSeenButton" Grid.Column="3" Content="Mark as seen" Classes="accent"
                         VerticalAlignment="Top" />
             </Grid>
-            <TextBlock DockPanel.Dock="Top" Margin="0,12,0,0" x:Name="DetailNote"
-                       Foreground="{DynamicResource MothTextMutedBrush}" />
-            <ListBox x:Name="OccurrenceList" Margin="0,8,0,0"
-                     Background="{DynamicResource MothSurfaceBrush}"
-                     BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1"
-                     ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                <ListBox.ItemTemplate>
-                    <DataTemplate x:DataType="views:OccurrenceRow">
-                        <StackPanel Margin="0,6" Spacing="2">
-                            <StackPanel Orientation="Horizontal" Spacing="12">
-                                <TextBlock Text="{Binding Time}" FontWeight="SemiBold"
-                                           Foreground="{DynamicResource MothAccentSoftBrush}" />
-                                <TextBlock Text="{Binding Source}"
-                                           Foreground="{DynamicResource MothTextMutedBrush}" />
-                            </StackPanel>
-                            <TextBlock Text="{Binding Message}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
-                                       TextWrapping="NoWrap" Foreground="{DynamicResource MothTextBrush}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+
+            <TextBlock x:Name="CopiedText" DockPanel.Dock="Top" Margin="0,6,0,0"
+                       Foreground="{DynamicResource MothInfoBrush}" />
+
+            <Border DockPanel.Dock="Top" Margin="0,12,0,0" Padding="12" CornerRadius="4"
+                    Background="{DynamicResource MothSurfaceBrush}">
+                <StackPanel Spacing="6">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Text="Occurrences over time" FontWeight="SemiBold" VerticalAlignment="Center"
+                                   Foreground="{DynamicResource MothAccentBrush}" />
+                        <ComboBox x:Name="RangeCombo" Grid.Column="1" MinWidth="150" SelectedIndex="0">
+                            <ComboBoxItem Content="Last 24 hours" />
+                            <ComboBoxItem Content="Last 7 days" />
+                        </ComboBox>
+                    </Grid>
+                    <views:SparklineControl x:Name="Timeline" Height="64" HorizontalAlignment="Stretch" />
+                    <Grid ColumnDefinitions="*,Auto,*">
+                        <TextBlock x:Name="AxisStart" FontSize="11"
+                                   Foreground="{DynamicResource MothTextMutedBrush}" />
+                        <TextBlock x:Name="PeakText" Grid.Column="1" FontSize="11"
+                                   Foreground="{DynamicResource MothTextMutedBrush}" />
+                        <TextBlock x:Name="AxisEnd" Grid.Column="2" FontSize="11" HorizontalAlignment="Right"
+                                   Foreground="{DynamicResource MothTextMutedBrush}" />
+                    </Grid>
+                </StackPanel>
+            </Border>
+
+            <Grid Margin="0,12,0,0" ColumnDefinitions="300,12,*">
+                <DockPanel>
+                    <TextBlock x:Name="DetailNote" DockPanel.Dock="Top" Margin="0,0,0,6" TextWrapping="Wrap"
+                               Foreground="{DynamicResource MothTextMutedBrush}" />
+                    <ListBox x:Name="OccurrenceList" Background="{DynamicResource MothSurfaceBrush}"
+                             BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate x:DataType="views:OccurrenceRow">
+                                <StackPanel Margin="0,3" ToolTip.Tip="{Binding Exact}">
+                                    <TextBlock Text="{Binding Relative}" FontWeight="SemiBold"
+                                               Foreground="{DynamicResource MothTextBrush}" />
+                                    <TextBlock Text="{Binding Source}" FontSize="12" TextTrimming="CharacterEllipsis"
+                                               Foreground="{DynamicResource MothTextMutedBrush}" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </DockPanel>
+                <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto">
+                    <ContentControl x:Name="OccurrenceDetail" Margin="0,0,12,12" />
+                </ScrollViewer>
+            </Grid>
         </DockPanel>
     </Grid>
 </UserControl>

@@ -167,6 +167,94 @@ public abstract class EventStoreContract : IDisposable
     }
 
     [Fact]
+    public void The_location_is_kept_and_the_latest_one_wins()
+    {
+        var store = Create();
+        store.Record(1, EntryLevel.Error, "k", "t", 10, T0, "m", 50, location: "Worker.Run");
+        var group = store.Record(1, EntryLevel.Error, "k", "t", 10, T0.AddSeconds(1), "m", 50, location: "Worker.Stop");
+
+        Assert.Equal("Worker.Stop", group.Location);
+        Assert.Equal("Worker.Stop", store.Groups(1).Single().Location);
+    }
+
+    [Fact]
+    public void Context_entries_are_saved_with_the_occurrence_in_order()
+    {
+        var store = Create();
+        var context = new List<ContextEntry>
+        {
+            new(T0.AddSeconds(-2), EntryLevel.Information, "Connecting"),
+            new(T0.AddSeconds(-1), EntryLevel.Warning, "Retrying\n   at A.B()"),
+        };
+
+        var group = store.Record(1, EntryLevel.Error, "k", "t", 10, T0, "boom", 50, context: context);
+        store.Record(1, EntryLevel.Error, "k", "t", 10, T0.AddSeconds(5), "boom again", 50);
+
+        var occurrences = store.Occurrences(group.Id);
+        Assert.Null(occurrences[0].Context); // no context for the second one
+        Assert.Equal(context, occurrences[1].Context);
+    }
+
+    [Fact]
+    public void Hourly_series_count_occurrences_per_hour_oldest_first_for_a_group_and_for_a_project()
+    {
+        var store = Create();
+        var now = T0.AddMinutes(30); // 10:30
+        var a = store.Record(1, EntryLevel.Error, "a", "a", 10, T0, "m", 50);
+        store.Record(1, EntryLevel.Error, "a", "a", 10, T0.AddMinutes(10), "m", 50);
+        store.Record(1, EntryLevel.Error, "a", "a", 10, T0.AddHours(-2), "m", 50);
+        store.Record(1, EntryLevel.Error, "b", "b", 10, T0.AddHours(-1), "m", 50);
+        store.Record(2, EntryLevel.Error, "c", "c", 10, T0, "m", 50);
+
+        var group = store.GroupSeries(a.Id, now, 4);
+        var project = store.ProjectSeries(1, now, 4);
+
+        Assert.Equal([0, 1, 0, 2], group);          // 7h, 8h, 9h, 10h  -> 08:xx has one, 10:xx has two
+        Assert.Equal([0, 1, 1, 2], project);        // plus the other group's occurrence at 09:xx
+        Assert.Equal(4, store.ProjectSeries(1, now, 4).Count);
+    }
+
+    [Fact]
+    public void Occurrences_outside_the_window_are_not_counted()
+    {
+        var store = Create();
+        var group = store.Record(1, EntryLevel.Error, "a", "a", 10, T0.AddHours(-30), "m", 50);
+
+        Assert.Equal(0, store.GroupSeries(group.Id, T0, 24).Sum());
+        Assert.Equal(1, store.GroupSeries(group.Id, T0, 48).Sum());
+    }
+
+    [Fact]
+    public void Old_hourly_counts_can_be_pruned_without_touching_recent_ones()
+    {
+        var store = Create();
+        var group = store.Record(1, EntryLevel.Error, "a", "a", 10, T0.AddDays(-10), "m", 50);
+        store.Record(1, EntryLevel.Error, "a", "a", 10, T0, "m", 50);
+
+        Assert.Equal(1, store.PruneBuckets(T0.AddDays(-8)));
+
+        Assert.Equal(0, store.GroupSeries(group.Id, T0, 24 * 11).Skip(0).Take(24 * 3).Sum());
+        Assert.Equal(1, store.GroupSeries(group.Id, T0, 24).Sum());
+    }
+
+    [Fact]
+    public void Purging_a_group_or_removing_a_project_drops_its_hourly_counts()
+    {
+        var store = Create();
+        var purged = store.Record(1, EntryLevel.Error, "a", "a", 10, T0, "m", 50);
+        store.MarkSeen(purged.Id, T0);
+        var removed = store.Record(2, EntryLevel.Error, "b", "b", 10, T0, "m", 50);
+
+        store.PurgeQuiet(T0.AddHours(1));
+        store.RemoveProject(2);
+
+        Assert.Equal(0, store.GroupSeries(purged.Id, T0, 24).Sum());
+        Assert.Equal(0, store.ProjectSeries(1, T0, 24).Sum());
+        Assert.Equal(0, store.GroupSeries(removed.Id, T0, 24).Sum());
+        Assert.Equal(0, store.ProjectSeries(2, T0, 24).Sum());
+    }
+
+    [Fact]
     public void Display_order_puts_pending_first_and_then_the_most_recent()
     {
         var store = Create();
@@ -217,6 +305,36 @@ public sealed class SqliteEventStoreTests : EventStoreContract
         Assert.Equal(1, restored.PendingCount);
         Assert.NotNull(restored.SeenAt);
         Assert.Equal(3, second.Occurrences(restored.Id).Count);
+        Assert.Equal(3, second.GroupSeries(restored.Id, new DateTimeOffset(2026, 1, 1, 11, 30, 0, TimeSpan.Zero), 24).Sum());
+    }
+
+    [Fact]
+    public void A_version_four_database_is_migrated_keeping_its_events()
+    {
+        var path = Path.Combine(_dir, "v4.db");
+        var v4 = SqliteDatabase.Open(path, Migrations.All.Take(4).ToList());
+        using (var connection = v4.CreateConnection())
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText = """
+                INSERT INTO event_groups (id, project_id, level, key, title, count, first_seen, last_seen, pending_count)
+                VALUES (1, 1, 5, 'k', 'old event', 3, 1000, 2000, 3);
+                INSERT INTO event_occurrences (group_id, source_id, at, message) VALUES (1, 10, 2000, 'old message');
+                """;
+            command.ExecuteNonQuery();
+        }
+
+        var current = SqliteDatabase.Open(path);
+
+        Assert.Equal(DatabaseStatus.Ready, current.Status);
+        var store = new SqliteEventStore(current);
+        var group = store.Groups(1).Single();
+        Assert.Equal("old event", group.Title);
+        Assert.Null(group.Location);
+        var occurrence = Assert.Single(store.Occurrences(1));
+        Assert.Equal("old message", occurrence.Message);
+        Assert.Null(occurrence.Context);
+        Assert.Equal(0, store.GroupSeries(1, DateTimeOffset.UtcNow, 24).Sum());
     }
 
     [Fact]

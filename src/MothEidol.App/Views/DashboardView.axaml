@@ -42,7 +42,7 @@
                     <DataTemplate x:DataType="views:TileModel">
                         <Button Click="OnTileClicked" Padding="0" Margin="0,0,16,16"
                                 Background="Transparent" BorderThickness="0">
-                            <Border Width="260" Height="120" CornerRadius="6" ClipToBounds="True"
+                            <Border Width="270" Height="150" CornerRadius="6" ClipToBounds="True"
                                     Background="{DynamicResource MothSurfaceBrush}"
                                     BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1">
                                 <Grid>
@@ -55,6 +55,13 @@
                                             <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold"
                                                        Foreground="{Binding StatusBrush}" />
                                             <TextBlock Text="{Binding Detail}" FontSize="12"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Foreground="{DynamicResource MothTextMutedBrush}" />
+                                            <views:SparklineControl IsVisible="{Binding HasSeries}" Height="26"
+                                                                    Margin="0,4,0,0" HorizontalAlignment="Stretch"
+                                                                    Values="{Binding Series}"
+                                                                    Brush="{Binding StatusBrush}" />
+                                            <TextBlock Text="{Binding HealthText}" FontSize="11"
                                                        TextTrimming="CharacterEllipsis"
                                                        Foreground="{DynamicResource MothTextMutedBrush}" />
                                         </StackPanel>

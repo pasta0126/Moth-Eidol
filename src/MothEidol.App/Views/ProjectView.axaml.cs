@@ -56,7 +56,9 @@ public partial class ProjectView : UserControl
         var status = _projects.StatusOf(project.Id);
         var pending = _events?.Pending(project.Id) ?? PendingSummary.None;
         EventsTab.Header = pending.Occurrences > 0 ? $"Events ({pending.Occurrences:N0})" : "Events";
-        var tile = TileModel.For(project, status, _projects.SourcesOf(project.Id).Count, pending);
+        var tile = TileModel.For(
+            project, status, _projects.SourcesOf(project.Id).Count, pending,
+            _events?.ProjectSeries(project.Id, DateTimeOffset.UtcNow, 48) ?? new int[48]);
         StatusText.Text = status.Health == ProjectHealth.Degraded ? $"{tile.StatusText} · {tile.Detail}" : tile.StatusText;
         StatusDot.Fill = tile.StatusBrush;
 

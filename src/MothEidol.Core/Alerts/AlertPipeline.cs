@@ -17,6 +17,12 @@ public sealed record AlertOptions
     /// <summary>How often cooldowns and intervals are checked.</summary>
     public TimeSpan TickInterval { get; init; } = TimeSpan.FromSeconds(1);
 
+    /// <summary>Entries kept before each occurrence to show what led to it.</summary>
+    public int ContextEntries { get; init; } = 10;
+
+    /// <summary>Longest text kept per context entry.</summary>
+    public int MaxContextTextLength { get; init; } = 600;
+
     /// <summary>How often old seen groups are purged.</summary>
     public TimeSpan PurgeInterval { get; init; } = TimeSpan.FromHours(1);
 }
@@ -35,6 +41,7 @@ public sealed class AlertPipeline : IAsyncDisposable
     private readonly object _gate = new();
     private readonly FrequencyPolicySet _policies = new();
     private readonly HashSet<long> _knownProjects = [];
+    private readonly Dictionary<long, Queue<ContextEntry>> _recent = [];
     private readonly CancellationTokenSource _cancellation = new();
     private Subscription<LogEntry>? _subscription;
     private Task _reader = Task.CompletedTask;
@@ -97,13 +104,16 @@ public sealed class AlertPipeline : IAsyncDisposable
     private IReadOnlyList<AlertDelivery> Process(LogEntry entry)
     {
         if (_projects.ProjectOfSource(entry.SourceId) is not { } projectId) return [];
+
+        var at = entry.Timestamp ?? entry.ReadAt;
+        var context = RecentBefore(entry, at);
         if (_projects.Lookup(projectId) is not { Enabled: true } project) return [];
         if (!AlertEvaluator.IsAlertLevel(entry.Level, project.Alerts)) return [];
 
-        var at = entry.Timestamp ?? entry.ReadAt;
+        var description = EventDescriber.Describe(entry.Message);
         _store.Record(
-            projectId, entry.Level, EventGrouping.Key(entry.Level, entry.Message), EventGrouping.Title(entry.Message),
-            entry.SourceId, at, entry.Message, _options.MaxOccurrencesPerGroup);
+            projectId, entry.Level, EventGrouping.Key(entry.Level, entry.Message), description.Title,
+            entry.SourceId, at, entry.Message, _options.MaxOccurrencesPerGroup, description.Location, context);
 
         var alert = new AlertEvent(projectId, entry.SourceId, entry.Level, entry.Message, at);
         lock (_gate)
@@ -111,6 +121,23 @@ public sealed class AlertPipeline : IAsyncDisposable
             _knownProjects.Add(projectId);
             return _policies.OnAlert(alert, project.Alerts, _time.GetUtcNow());
         }
+    }
+
+    /// <summary>
+    /// What this source logged just before the entry, then remembers the entry itself for the ones after it.
+    /// Only the reader task calls this, so the rings need no lock.
+    /// </summary>
+    private IReadOnlyList<ContextEntry> RecentBefore(LogEntry entry, DateTimeOffset at)
+    {
+        if (!_recent.TryGetValue(entry.SourceId, out var ring)) _recent[entry.SourceId] = ring = new Queue<ContextEntry>();
+
+        var before = ring.ToArray();
+        var text = entry.Message.Length > _options.MaxContextTextLength
+            ? entry.Message[.._options.MaxContextTextLength] + "…"
+            : entry.Message;
+        ring.Enqueue(new ContextEntry(at, entry.Level, text));
+        while (ring.Count > _options.ContextEntries) ring.Dequeue();
+        return before;
     }
 
     private async Task TickAsync(CancellationToken cancellationToken)
@@ -138,7 +165,11 @@ public sealed class AlertPipeline : IAsyncDisposable
                 if (now - lastPurge >= _options.PurgeInterval)
                 {
                     lastPurge = now;
-                    try { _store.PurgeQuiet(now - _options.Retention); }
+                    try
+                    {
+                        _store.PurgeQuiet(now - _options.Retention);
+                        _store.PruneBuckets(now - TimeSpan.FromDays(8)); // The timeline reaches back 7 days.
+                    }
                     catch (Exception) { /* Retry on the next purge. */ }
                 }
             }

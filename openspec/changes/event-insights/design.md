@@ -30,5 +30,5 @@
 
 - [Stack trace formats vary between .NET versions and async state machines] → unrecognized lines are shown as plain text; tests use the real fixtures.
 - [Framework prefix list misclassifies some libraries] → the source-location rule covers most cases; the list is a constant that is easy to extend.
-- [Hourly buckets add writes on noisy logs] → increments are batched per flush interval, not per occurrence.
+- [Hourly buckets add writes on noisy logs] → the increment shares the transaction of the occurrence it belongs to (one extra statement); batching per flush interval is the next step if it ever shows up as a cost.
 - [Context entries enlarge storage] → capped count and length per occurrence, and only for stored occurrences.

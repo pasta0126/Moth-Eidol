@@ -66,5 +66,18 @@ public static class Migrations
             );
             CREATE INDEX ix_event_occurrences_group ON event_occurrences (group_id, id DESC);
             """),
+        new Migration(5, """
+            ALTER TABLE event_groups ADD COLUMN location TEXT NULL;
+            ALTER TABLE event_occurrences ADD COLUMN context TEXT NULL;
+            -- Occurrences per group per UTC hour (hour = unix seconds / 3600) for sparklines, trends and timelines.
+            CREATE TABLE event_buckets (
+                group_id   INTEGER NOT NULL,
+                project_id INTEGER NOT NULL,
+                hour       INTEGER NOT NULL,
+                count      INTEGER NOT NULL,
+                PRIMARY KEY (group_id, hour)
+            );
+            CREATE INDEX ix_event_buckets_project ON event_buckets (project_id, hour);
+            """),
     ];
 }

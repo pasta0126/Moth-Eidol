@@ -10,7 +10,10 @@ public sealed class InMemoryEventStore : IEventStore
         public required EventGroup Group { get; set; }
         public required string Key { get; init; }
         public List<EventOccurrence> Occurrences { get; } = [];
+        public Dictionary<long, int> Buckets { get; } = [];
     }
+
+    private static long HourOf(DateTimeOffset at) => at.ToUnixTimeSeconds() / 3600;
 
     private readonly object _gate = new();
     private readonly List<Entry> _groups = [];
@@ -19,7 +22,8 @@ public sealed class InMemoryEventStore : IEventStore
 
     public EventGroup Record(
         long projectId, EntryLevel level, string key, string title,
-        long sourceId, DateTimeOffset at, string message, int maxOccurrences)
+        long sourceId, DateTimeOffset at, string message, int maxOccurrences,
+        string? location = null, IReadOnlyList<ContextEntry>? context = null)
     {
         lock (_gate)
         {
@@ -38,13 +42,15 @@ public sealed class InMemoryEventStore : IEventStore
             entry.Group = group with
             {
                 Title = title,
+                Location = location,
                 Count = group.Count + 1,
                 PendingCount = group.PendingCount + 1,
                 FirstSeen = at < group.FirstSeen ? at : group.FirstSeen,
                 LastSeen = at > group.LastSeen ? at : group.LastSeen,
             };
 
-            entry.Occurrences.Add(new EventOccurrence(_nextOccurrenceId++, group.Id, sourceId, at, message));
+            entry.Occurrences.Add(new EventOccurrence(_nextOccurrenceId++, group.Id, sourceId, at, message, context));
+            entry.Buckets[HourOf(at)] = entry.Buckets.GetValueOrDefault(HourOf(at)) + 1;
             if (entry.Occurrences.Count > maxOccurrences)
                 entry.Occurrences.RemoveRange(0, entry.Occurrences.Count - maxOccurrences);
             return entry.Group;
@@ -102,5 +108,48 @@ public sealed class InMemoryEventStore : IEventStore
     public void RemoveProject(long projectId)
     {
         lock (_gate) _groups.RemoveAll(e => e.Group.ProjectId == projectId);
+    }
+
+    public IReadOnlyList<int> GroupSeries(long groupId, DateTimeOffset now, int hours)
+    {
+        lock (_gate) return Series(_groups.Where(e => e.Group.Id == groupId), now, hours);
+    }
+
+    public IReadOnlyList<int> ProjectSeries(long projectId, DateTimeOffset now, int hours)
+    {
+        lock (_gate) return Series(_groups.Where(e => e.Group.ProjectId == projectId), now, hours);
+    }
+
+    public int PruneBuckets(DateTimeOffset olderThan)
+    {
+        var cutoff = HourOf(olderThan);
+        var removed = 0;
+        lock (_gate)
+        {
+            foreach (var entry in _groups)
+            {
+                foreach (var hour in entry.Buckets.Keys.Where(h => h < cutoff).ToList())
+                {
+                    entry.Buckets.Remove(hour);
+                    removed++;
+                }
+            }
+        }
+        return removed;
+    }
+
+    private static int[] Series(IEnumerable<Entry> entries, DateTimeOffset now, int hours)
+    {
+        var result = new int[hours];
+        var current = HourOf(now);
+        foreach (var entry in entries)
+        {
+            foreach (var (hour, count) in entry.Buckets)
+            {
+                var index = hours - 1 - (int)(current - hour);
+                if (index >= 0 && index < hours) result[index] += count;
+            }
+        }
+        return result;
     }
 }

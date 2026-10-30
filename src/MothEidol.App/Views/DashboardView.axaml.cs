@@ -50,7 +50,9 @@ public partial class DashboardView : UserControl
         if (_projects is null || _events is null) return;
 
         var tiles = _projects.Projects
-            .Select(p => TileModel.For(p, _projects.StatusOf(p.Id), _projects.SourcesOf(p.Id).Count, _events.Pending(p.Id)))
+            .Select(p => TileModel.For(
+                p, _projects.StatusOf(p.Id), _projects.SourcesOf(p.Id).Count, _events.Pending(p.Id),
+                _events.ProjectSeries(p.Id, DateTimeOffset.UtcNow, 48)))
             .Append(TileModel.NewProject())
             .ToList();
 
