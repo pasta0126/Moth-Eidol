@@ -18,8 +18,8 @@ Native notifications are out of the MVP: the dev machine is macOS, which needs a
 - **Abstraction**: `INotifier.NotifyAsync(AlertEvent)` in `Core`; a dispatcher fans out to enabled notifiers in parallel and isolates failures.
 - **Toast**: a small borderless, topmost Avalonia window anchored to a screen corner, stacked with a cap on simultaneous toasts. Rejected: native toasts (see Context).
 - **Tray state/counter**: swap the tray icon and tooltip; a numeric badge is drawn on the icon image where the platform allows it.
-- **Sound**: a bundled short audio file played through a small cross-platform audio abstraction; implementation chosen at apply time (kept behind an interface).
-- **Configuration**: one boolean setting per channel in `local-persistence`.
+- **Sound**: behind `IAudioPlayer`. Decided at apply time: the platform's own alert sound (`afplay` on macOS, `MessageBeep` on Windows, the freedesktop sound theme on Linux), so no audio package and no bundled file are needed. A failure is reported by the dispatcher against the sound channel. The channel is off by default: an unexpected beep is more annoying than a missing one.
+- **Configuration**: one boolean setting per channel in `local-persistence`, with a default per channel (toast and tray on, sound off); the settings screen is built from the registered channels, so a new channel appears without changing it.
 
 ## Risks / Trade-offs
 

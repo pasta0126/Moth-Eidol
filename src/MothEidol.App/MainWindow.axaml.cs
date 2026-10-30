@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using MothEidol.App.Views;
 using MothEidol.Core.Alerts;
 using MothEidol.Core.Logs;
+using MothEidol.Core.Notifications;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Projects;
 using MothEidol.Core.Settings;
@@ -26,7 +27,9 @@ public partial class MainWindow : Window
         TailingService tailing,
         ProjectService projects,
         ProjectTails tails,
-        IEventStore events) : this()
+        IEventStore events,
+        NotificationDispatcher notifications,
+        UnreadCounter unread) : this()
     {
         if (!string.IsNullOrEmpty(notice))
         {
@@ -36,7 +39,10 @@ public partial class MainWindow : Window
 
         Dashboard.Initialize(projects, tailing, events, OpenProject, () => Show(SettingsScreen));
         ProjectScreen.Initialize(projects, tailing, tails, events, settings, ShowDashboard);
-        SettingsScreen.Initialize(autostart, settings, ShowDashboard);
+        SettingsScreen.Initialize(autostart, settings, notifications, ShowDashboard);
+
+        // Opening the application is how alerts get acknowledged: the tray counter returns to normal.
+        Activated += (_, _) => unread.Acknowledge();
 
         // The version stays visible on every screen: the footer lives outside the screens.
         Title = $"Moth-Eidol v{version}";

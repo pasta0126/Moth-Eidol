@@ -9,6 +9,7 @@ using Avalonia.Threading;
 using MothEidol.Core;
 using MothEidol.Core.Alerts;
 using MothEidol.Core.Logs;
+using MothEidol.Core.Notifications;
 using MothEidol.Core.Projects;
 using MothEidol.App.Platform;
 using MothEidol.Core.Platform;
@@ -26,6 +27,9 @@ public partial class App : Application
     private EntryPipeline? _entries;
     private ProjectTails? _tails;
     private AlertPipeline? _alerts;
+    private NotificationDispatcher? _notifications;
+    private UnreadCounter? _unread;
+    private ToastPresenter? _toasts;
 
     public override void Initialize()
     {
@@ -69,18 +73,30 @@ public partial class App : Application
                 _entries.Entries, projects, storage.Events,
                 new AlertOptions { Retention = TimeSpan.FromDays(settings.EventRetentionDays) });
             _alerts.Start();
+
+            // Alerts reach the user through independent channels, each of which can be switched off.
+            _unread = new UnreadCounter();
+            var toastStack = new ToastStack();
+            _notifications = new NotificationDispatcher(n => settings.IsChannelEnabled(n.Id, n.EnabledByDefault));
+            _notifications.Register(new ToastNotifier(toastStack, projects));
+            _notifications.Register(new TrayNotifier(_unread));
+            _notifications.Register(new SoundNotifier(new SystemAudioPlayer()));
+            _notifications.Start(_alerts.Deliveries);
+
             _tails = new ProjectTails(_entries.Entries, projects.ProjectOfSource, settings.ViewerMaxLines);
             _tailing.Start();
             desktop.Exit += (_, _) => StopTailing();
 
-            _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, projects, _tails, storage.Events);
+            _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, projects, _tails, storage.Events, _notifications, _unread);
             desktop.MainWindow = _mainWindow;
 
             var trayIcons = TrayIcon.GetIcons(this);
             if (trayIcons is { Count: > 0 })
             {
-                trayIcons[0].ToolTipText = $"Moth-Eidol v{version}";
+                _ = new TrayPresenter(trayIcons[0], version, _unread);
             }
+
+            _toasts = new ToastPresenter(toastStack, _mainWindow);
 
             if (OperatingSystem.IsMacOS())
             {
@@ -143,6 +159,7 @@ public partial class App : Application
         try
         {
             _tailing?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(3));
+            _notifications?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(2));
             _alerts?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(2));
             _tails?.Dispose();
             _entries?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(2));
@@ -186,6 +203,8 @@ public partial class App : Application
     private void OnTrayClicked(object? sender, EventArgs e) => ShowMainWindow();
 
     private void OnOpenClicked(object? sender, EventArgs e) => ShowMainWindow();
+
+    private void OnAcknowledgeClicked(object? sender, EventArgs e) => _unread?.Acknowledge();
 
     private void OnQuitClicked(object? sender, EventArgs e)
     {

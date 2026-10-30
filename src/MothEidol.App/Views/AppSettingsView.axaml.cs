@@ -1,4 +1,6 @@
 using Avalonia.Controls;
+using Avalonia.Threading;
+using MothEidol.Core.Notifications;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Settings;
 
@@ -15,11 +17,12 @@ public partial class AppSettingsView : UserControl
         InitializeComponent();
     }
 
-    public void Initialize(IAutostart autostart, AppSettings settings, Action back)
+    public void Initialize(IAutostart autostart, AppSettings settings, NotificationDispatcher dispatcher, Action back)
     {
         _autostart = autostart;
         _settings = settings;
         BackButton.Click += (_, _) => back();
+        BuildChannels(settings, dispatcher);
 
         if (autostart.IsSupported)
         {
@@ -32,6 +35,43 @@ public partial class AppSettingsView : UserControl
             AutostartNote.Text = autostart.UnsupportedReason;
             AutostartNote.IsVisible = true;
         }
+    }
+
+    /// <summary>One switch per channel, built from the registered ones so new channels appear without changes here.</summary>
+    private void BuildChannels(AppSettings settings, NotificationDispatcher dispatcher)
+    {
+        var problems = new Dictionary<string, TextBlock>();
+
+        foreach (var notifier in dispatcher.Notifiers)
+        {
+            var check = new CheckBox
+            {
+                Content = notifier.DisplayName,
+                IsChecked = settings.IsChannelEnabled(notifier.Id, notifier.EnabledByDefault),
+                Foreground = ThemeBrushes.Get("MothTextBrush"),
+            };
+            check.Click += (_, _) => settings.SetChannelEnabled(notifier.Id, check.IsChecked == true);
+
+            var problem = new TextBlock
+            {
+                IsVisible = false,
+                TextWrapping = Avalonia.Media.TextWrapping.Wrap,
+                Margin = new Avalonia.Thickness(28, 0, 0, 0),
+                Foreground = ThemeBrushes.Get("MothErrorBrush"),
+            };
+            problems[notifier.Id] = problem;
+
+            ChannelsPanel.Children.Add(check);
+            ChannelsPanel.Children.Add(problem);
+        }
+
+        // A channel that fails is reported here instead of failing silently.
+        dispatcher.ChannelFailed += (_, e) => Dispatcher.UIThread.Post(() =>
+        {
+            if (!problems.TryGetValue(e.ChannelId, out var text)) return;
+            text.Text = $"Last problem: {e.Error.Message}";
+            text.IsVisible = true;
+        });
     }
 
     private void OnAutostartChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

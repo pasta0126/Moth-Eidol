@@ -11,6 +11,7 @@ public sealed class AppSettings(ISettingsRepository repository)
         public const string PollIntervalMs = "tail.poll_interval_ms";
         public const string ViewerMaxLines = "viewer.max_lines";
         public const string EventRetentionDays = "alerts.retention_days";
+        public const string ChannelPrefix = "notify.";
     }
 
     public bool StartWithSession
@@ -39,6 +40,13 @@ public sealed class AppSettings(ISettingsRepository repository)
         get => GetInt(Keys.EventRetentionDays, defaultValue: 30, min: 1);
         set => SetInt(Keys.EventRetentionDays, value);
     }
+
+    /// <summary>Whether a notification channel is on; channels that were never touched use their default.</summary>
+    public bool IsChannelEnabled(string channelId, bool defaultValue) =>
+        GetBool(Keys.ChannelPrefix + channelId + ".enabled", defaultValue);
+
+    public void SetChannelEnabled(string channelId, bool enabled) =>
+        SetBool(Keys.ChannelPrefix + channelId + ".enabled", enabled);
 
     private int GetInt(string key, int defaultValue, int min) =>
         int.TryParse(repository.Get(key), NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)

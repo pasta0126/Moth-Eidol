@@ -12,6 +12,13 @@
         <TextBlock x:Name="AutostartNote" TextWrapping="Wrap" IsVisible="False"
                    Foreground="{DynamicResource MothTextMutedBrush}" />
 
+        <Separator Margin="0,8" Background="{DynamicResource MothBorderBrush}" />
+        <TextBlock Text="Notification channels" FontWeight="SemiBold" FontSize="16"
+                   Foreground="{DynamicResource MothAccentBrush}" />
+        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+                   Text="How Moth-Eidol tells you about alerts. Each channel can be switched on or off on its own." />
+        <StackPanel x:Name="ChannelsPanel" Spacing="8" />
+
         <TextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
                    Foreground="{DynamicResource MothTextMutedBrush}"
                    TextWrapping="Wrap" Margin="0,8,0,0" />
