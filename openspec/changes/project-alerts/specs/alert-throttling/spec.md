@@ -37,9 +37,9 @@ The system SHALL apply the frequency policy independently to each project, using
 - **WHEN** two projects produce alerts at the same time
 - **THEN** each follows its own mode, interval and cooldown
 
-### Requirement: Complete history regardless of throttling
-The system SHALL record every alert in the history, including those not delivered individually, marked as suppressed.
+### Requirement: Complete event record regardless of throttling
+The system SHALL record every alert-level entry in its event group, including those not delivered individually.
 
 #### Scenario: Suppressed alert
 - **WHEN** an alert is suppressed by the frequency policy
-- **THEN** it is still recorded in the history and marked as suppressed
+- **THEN** it still counts in its event group and remains pending until the user marks it as seen

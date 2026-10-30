@@ -12,7 +12,8 @@ Cross-platform .NET desktop application to monitor log files.
 Goals:
 
 - Monitor log files in real time (active follow, `tail -f` style), local or on network shares reachable with the OS user.
-- Organize monitoring by project (name, log folder, file pattern) and raise alerts per project according to the log level: info is shown but never alerts, warning alerts depending on the project configuration, error and above always alert.
+- Organize monitoring by project (name, log folders, file patterns) and flag entries per project according to the log level: info is shown but never alerts, warning alerts depending on the project configuration, error and above always alert.
+- Home screen is a dashboard with one status tile per project (is anything pending?); a tile opens the project screen with its events (grouped, pending/seen), the live tail and its settings.
 - Alert frequency is configurable per project (immediate with cooldown, or periodic summary).
 - Each team member runs the app on their own PC (macOS or Windows) and reads the logs with their OS user permissions; the app only alerts while it is running (tray/background).
 - Run on Windows (priority), Linux (if easy) and macOS (latest; this is the development machine).
@@ -49,8 +50,8 @@ Do not invent requirements that are not in a spec; if something is missing, prop
 | 3 | `log-samples` | Dev tooling: anonymizer for real logs into fixtures, log simulator (replay, generate, rotation scenarios) |
 | 4 | `core-log-tailing` | Sources (file, or folder + pattern following the newest file), polling tail, rotation, offsets, live viewer |
 | 5 | `serilog-parsing` | `LogEntry` with level/timestamp/message, multi-line grouping (stack traces), pluggable parser, viewer coloring and level filter |
-| 6 | `projects` | Projects with name, folders, pattern and per-project alert configuration (level threshold, frequency mode) |
-| 7 | `project-alerts` | Level-based alerts per project, per-project cooldown or periodic summary, history with retention |
+| 6 | `projects` | Projects, dashboard with status tiles (home screen), project screen with tail and settings; replaces the global Live/Sources tabs |
+| 7 | `project-alerts` | Level-based alert-level detection per project, grouped events with pending/seen, events section and tile pending state, per-project cooldown or periodic summary, retention |
 | 8 | `notification-channels` | In-app toast, tray counter, sound, channel chain |
 
 Native OS notifications and team-wide channels (email, webhook) are out of the MVP; the notifier chain must stay pluggable.
@@ -58,6 +59,12 @@ Native OS notifications and team-wide channels (email, webhook) are out of the M
 Test corpus: `logs/` (git-ignored, one subfolder per project) holds real Serilog logs used as templates; only anonymized subsets may be committed under `tests/fixtures/logs/`, produced by `tools/MothEidol.LogSim` (`log-samples`). The private term list lives in `logs/anonymize.json` and is never committed.
 
 Backlog (not scheduled): `tray-icon-theming` (black/white tray icon per OS theme; macOS template image), user-defined regex rules, export/import of project configuration, team-wide notification channels.
+
+## UI structure
+
+- Home: dashboard of project tiles (status at a glance) plus a "New project" tile; application settings reachable from it.
+- Project screen (from a tile): Events (landing, from `project-alerts`), Tail, Settings. Project parameters are edited only here.
+- Until `projects` is delivered, the interim Live / Sources / Settings tabs from `core-log-tailing` remain.
 
 ## Versioning and release flow
 
