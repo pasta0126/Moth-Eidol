@@ -1,0 +1,75 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:MothEidol.App.Views"
+             x:Class="MothEidol.App.Views.EventsView">
+    <Grid>
+        <DockPanel x:Name="ListPanel" Margin="0,12,0,0">
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <ComboBox x:Name="FilterCombo" MinWidth="170" SelectedIndex="0">
+                    <ComboBoxItem Content="Pending only" />
+                    <ComboBoxItem Content="All events" />
+                </ComboBox>
+                <TextBlock x:Name="SummaryText" Grid.Column="1" VerticalAlignment="Center"
+                           Foreground="{DynamicResource MothTextMutedBrush}" />
+                <Button x:Name="MarkAllButton" Grid.Column="2" Content="Mark all as seen" />
+            </Grid>
+
+            <TextBlock x:Name="EmptyText" DockPanel.Dock="Top" Margin="0,16,0,0" TextWrapping="Wrap"
+                       Foreground="{DynamicResource MothTextMutedBrush}" />
+
+            <ListBox x:Name="GroupList" Margin="0,12,0,0" Background="Transparent">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="views:EventGroupRow">
+                        <Grid ColumnDefinitions="44,*,Auto,110,160" ColumnSpacing="12" Margin="0,3">
+                            <TextBlock Text="{Binding LevelText}" FontWeight="Bold" VerticalAlignment="Center"
+                                       FontFamily="Menlo,Consolas,Monospace" Foreground="{Binding LevelBrush}" />
+                            <TextBlock Grid.Column="1" Text="{Binding Title}" FontWeight="{Binding TitleWeight}"
+                                       TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource MothTextBrush}" />
+                            <TextBlock Grid.Column="2" Text="{Binding CountText}" VerticalAlignment="Center"
+                                       Foreground="{DynamicResource MothTextMutedBrush}" />
+                            <TextBlock Grid.Column="3" Text="{Binding PendingText}" VerticalAlignment="Center"
+                                       Foreground="{Binding PendingBrush}" />
+                            <TextBlock Grid.Column="4" Text="{Binding LastSeenText}" VerticalAlignment="Center"
+                                       FontSize="12" Foreground="{DynamicResource MothTextMutedBrush}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+
+        <DockPanel x:Name="DetailPanel" IsVisible="False" Margin="0,12,0,0">
+            <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                <Button x:Name="DetailBackButton" Content="&#x2190; Events" VerticalAlignment="Top" />
+                <StackPanel Grid.Column="1" Spacing="2">
+                    <TextBlock x:Name="DetailTitle" FontSize="16" FontWeight="SemiBold" TextWrapping="Wrap"
+                               Foreground="{DynamicResource MothTextBrush}" />
+                    <TextBlock x:Name="DetailMeta" Foreground="{DynamicResource MothTextMutedBrush}" />
+                </StackPanel>
+                <Button x:Name="DetailSeenButton" Grid.Column="2" Content="Mark as seen" Classes="accent"
+                        VerticalAlignment="Top" />
+            </Grid>
+            <TextBlock DockPanel.Dock="Top" Margin="0,12,0,0" x:Name="DetailNote"
+                       Foreground="{DynamicResource MothTextMutedBrush}" />
+            <ListBox x:Name="OccurrenceList" Margin="0,8,0,0"
+                     Background="{DynamicResource MothSurfaceBrush}"
+                     BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="views:OccurrenceRow">
+                        <StackPanel Margin="0,6" Spacing="2">
+                            <StackPanel Orientation="Horizontal" Spacing="12">
+                                <TextBlock Text="{Binding Time}" FontWeight="SemiBold"
+                                           Foreground="{DynamicResource MothAccentSoftBrush}" />
+                                <TextBlock Text="{Binding Source}"
+                                           Foreground="{DynamicResource MothTextMutedBrush}" />
+                            </StackPanel>
+                            <TextBlock Text="{Binding Message}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
+                                       TextWrapping="NoWrap" Foreground="{DynamicResource MothTextBrush}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+    </Grid>
+</UserControl>

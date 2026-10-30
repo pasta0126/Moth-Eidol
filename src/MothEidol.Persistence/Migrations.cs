@@ -42,5 +42,29 @@ public static class Migrations
                SET project_id = (SELECT id FROM projects WHERE name = 'Unassigned')
              WHERE EXISTS (SELECT 1 FROM projects WHERE name = 'Unassigned');
             """),
+        new Migration(4, """
+            CREATE TABLE event_groups (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                project_id    INTEGER NOT NULL,
+                level         INTEGER NOT NULL,
+                key           TEXT NOT NULL,
+                title         TEXT NOT NULL,
+                count         INTEGER NOT NULL,
+                first_seen    INTEGER NOT NULL,
+                last_seen     INTEGER NOT NULL,
+                seen_at       INTEGER NULL,
+                pending_count INTEGER NOT NULL,
+                UNIQUE (project_id, key)
+            );
+            CREATE INDEX ix_event_groups_project ON event_groups (project_id, last_seen DESC);
+            CREATE TABLE event_occurrences (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                group_id  INTEGER NOT NULL,
+                source_id INTEGER NOT NULL,
+                at        INTEGER NOT NULL,
+                message   TEXT NOT NULL
+            );
+            CREATE INDEX ix_event_occurrences_group ON event_occurrences (group_id, id DESC);
+            """),
     ];
 }

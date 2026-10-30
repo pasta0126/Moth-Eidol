@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using MothEidol.App.Views;
+using MothEidol.Core.Alerts;
 using MothEidol.Core.Logs;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Projects;
@@ -24,7 +25,8 @@ public partial class MainWindow : Window
         string? notice,
         TailingService tailing,
         ProjectService projects,
-        ProjectTails tails) : this()
+        ProjectTails tails,
+        IEventStore events) : this()
     {
         if (!string.IsNullOrEmpty(notice))
         {
@@ -32,8 +34,8 @@ public partial class MainWindow : Window
             NoticeBanner.IsVisible = true;
         }
 
-        Dashboard.Initialize(projects, tailing, OpenProject, () => Show(SettingsScreen));
-        ProjectScreen.Initialize(projects, tailing, tails, settings, ShowDashboard);
+        Dashboard.Initialize(projects, tailing, events, OpenProject, () => Show(SettingsScreen));
+        ProjectScreen.Initialize(projects, tailing, tails, events, settings, ShowDashboard);
         SettingsScreen.Initialize(autostart, settings, ShowDashboard);
 
         // The version stays visible on every screen: the footer lives outside the screens.

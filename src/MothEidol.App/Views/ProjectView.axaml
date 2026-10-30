@@ -15,6 +15,9 @@
             </StackPanel>
         </Grid>
         <TabControl x:Name="Sections" Margin="0,12,0,0">
+            <TabItem x:Name="EventsTab" Header="Events">
+                <views:EventsView x:Name="Events" />
+            </TabItem>
             <TabItem Header="Tail">
                 <views:TailView x:Name="Tail" />
             </TabItem>

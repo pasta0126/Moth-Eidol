@@ -2,6 +2,7 @@ using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
+using MothEidol.Core.Alerts;
 using MothEidol.Core.Logs;
 using MothEidol.Core.Projects;
 
@@ -10,7 +11,9 @@ namespace MothEidol.App.Views;
 /// <summary>The home screen: one status tile per project and a tile to create another.</summary>
 public partial class DashboardView : UserControl
 {
+    private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(2) };
     private ProjectService? _projects;
+    private IEventStore? _events;
     private Action<Project, bool>? _openProject;
 
     public DashboardView()
@@ -19,9 +22,11 @@ public partial class DashboardView : UserControl
     }
 
     public void Initialize(
-        ProjectService projects, TailingService tailing, Action<Project, bool> openProject, Action openSettings)
+        ProjectService projects, TailingService tailing, IEventStore events,
+        Action<Project, bool> openProject, Action openSettings)
     {
         _projects = projects;
+        _events = events;
         _openProject = openProject;
 
         SettingsButton.Click += (_, _) => openSettings();
@@ -35,15 +40,17 @@ public partial class DashboardView : UserControl
 
         projects.Changed += (_, _) => Dispatcher.UIThread.Post(Refresh);
         tailing.StatusChanged += (_, _) => Dispatcher.UIThread.Post(Refresh);
+        _timer.Tick += (_, _) => { if (IsEffectivelyVisible) Refresh(); }; // New events change the tiles.
+        _timer.Start();
         Refresh();
     }
 
     public void Refresh()
     {
-        if (_projects is null) return;
+        if (_projects is null || _events is null) return;
 
         var tiles = _projects.Projects
-            .Select(p => TileModel.For(p, _projects.StatusOf(p.Id), _projects.SourcesOf(p.Id).Count))
+            .Select(p => TileModel.For(p, _projects.StatusOf(p.Id), _projects.SourcesOf(p.Id).Count, _events.Pending(p.Id)))
             .Append(TileModel.NewProject())
             .ToList();
 

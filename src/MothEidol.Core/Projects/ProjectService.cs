@@ -1,3 +1,4 @@
+using MothEidol.Core.Alerts;
 using MothEidol.Core.Logs;
 
 namespace MothEidol.Core.Projects;
@@ -10,14 +11,19 @@ public sealed class ProjectService
 {
     private readonly IProjectRepository _projects;
     private readonly TailingService _tailing;
+    private readonly IEventStore? _events;
     private readonly object _gate = new();
     private Dictionary<long, long> _sourceProject = [];
+    private Dictionary<long, Project> _snapshot = [];
 
-    public ProjectService(IProjectRepository projects, TailingService tailing)
+    /// <param name="events">When given, a project's recorded events are removed together with the project.</param>
+    public ProjectService(IProjectRepository projects, TailingService tailing, IEventStore? events = null)
     {
         _projects = projects;
         _tailing = tailing;
+        _events = events;
         RefreshSourceMap();
+        RefreshSnapshot();
     }
 
     /// <summary>Raised after any change to projects or their configuration.</summary>
@@ -28,6 +34,12 @@ public sealed class ProjectService
         [.. _projects.List().OrderBy(p => p.Name, StringComparer.CurrentCultureIgnoreCase)];
 
     public Project? Get(long id) => _projects.List().FirstOrDefault(p => p.Id == id);
+
+    /// <summary>A project from memory, cheap enough to call for every entry; refreshed after every change.</summary>
+    public Project? Lookup(long id)
+    {
+        lock (_gate) return _snapshot.GetValueOrDefault(id);
+    }
 
     public bool IsEnabled(long id) => Get(id)?.Enabled ?? false;
 
@@ -81,6 +93,7 @@ public sealed class ProjectService
         Require(id);
         foreach (var source in SourcesOf(id)) await _tailing.RemoveAsync(source.Id);
         _projects.Remove(id);
+        _events?.RemoveProject(id);
         RefreshSourceMap();
         RaiseChanged();
     }
@@ -124,5 +137,15 @@ public sealed class ProjectService
         lock (_gate) _sourceProject = map;
     }
 
-    private void RaiseChanged() => Changed?.Invoke(this, EventArgs.Empty);
+    private void RefreshSnapshot()
+    {
+        var snapshot = _projects.List().ToDictionary(p => p.Id);
+        lock (_gate) _snapshot = snapshot;
+    }
+
+    private void RaiseChanged()
+    {
+        RefreshSnapshot();
+        Changed?.Invoke(this, EventArgs.Empty);
+    }
 }

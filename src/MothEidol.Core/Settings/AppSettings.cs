@@ -10,6 +10,7 @@ public sealed class AppSettings(ISettingsRepository repository)
         public const string StartWithSession = "app.start_with_session";
         public const string PollIntervalMs = "tail.poll_interval_ms";
         public const string ViewerMaxLines = "viewer.max_lines";
+        public const string EventRetentionDays = "alerts.retention_days";
     }
 
     public bool StartWithSession
@@ -30,6 +31,13 @@ public sealed class AppSettings(ISettingsRepository repository)
     {
         get => GetInt(Keys.ViewerMaxLines, defaultValue: 5000, min: 100);
         set => SetInt(Keys.ViewerMaxLines, value);
+    }
+
+    /// <summary>How long a seen event group is kept without new occurrences; pending groups are never removed automatically.</summary>
+    public int EventRetentionDays
+    {
+        get => GetInt(Keys.EventRetentionDays, defaultValue: 30, min: 1);
+        set => SetInt(Keys.EventRetentionDays, value);
     }
 
     private int GetInt(string key, int defaultValue, int min) =>
