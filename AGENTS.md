@@ -42,7 +42,7 @@ Project definitions live in `openspec/` and **the spec comes before the code**.
 
 Do not invent requirements that are not in a spec; if something is missing, propose it as a change.
 
-### Planned changes (MVP order)
+### Planned changes (MVP order) — all delivered (see `openspec/specs/` and the tags `v0.1.0`–`v0.8.0`)
 
 | Order | Change | Content |
 |---|---|---|
@@ -65,8 +65,8 @@ Backlog (not scheduled): `tray-icon-theming` (black/white tray icon per OS theme
 ## UI structure
 
 - Home: dashboard of project tiles (status at a glance) plus a "New project" tile; application settings reachable from it.
-- Project screen (from a tile): Events (landing, from `project-alerts`), Tail, Settings. Project parameters are edited only here.
-- Until `projects` is delivered, the interim Live / Sources / Settings tabs from `core-log-tailing` remain.
+- Project screen (from a tile): Events (landing), Tail, Settings. Project parameters are edited only here.
+- Application settings (autostart, notification channels) are reachable from the dashboard.
 
 ## Versioning and release flow
 
