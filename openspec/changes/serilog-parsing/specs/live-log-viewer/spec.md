@@ -3,7 +3,7 @@
 ### Requirement: Live display
 The system SHALL show in a view the new entries of the selected source as they are emitted, each colored according to its level.
 
-#### Scenario: New entry
+#### Scenario: New line
 - **WHEN** an entry from the selected source is emitted
 - **THEN** it appears at the end of the view, colored by its level
 
