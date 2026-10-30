@@ -23,5 +23,5 @@
 ## 4. Verification
 
 - [x] 4.1 Tests: validation, persistence, migration of existing sources, hot reload, removal stops sources, status derivation
-- [ ] 4.2 Run on macOS with the demo projects (generator per project) and check tiles, navigation, tail and settings
+- [ ] 4.2 Run on macOS with the demo projects (generator per project) and check tiles, navigation, tail and settings (deferred: the maintainer could not view the app when this was released; only the data migration was verified in the running app)
 - [ ] 4.3 Close the change: archive, bump the version (semver), commit, push and tag it
