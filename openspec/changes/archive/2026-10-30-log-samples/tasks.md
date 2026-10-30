@@ -17,4 +17,4 @@
 - [x] 3.1 Add test project; unit tests for each rule, leak check, determinism and scenarios
 - [x] 3.2 Generate fixtures into `tests/fixtures/logs/` and review them manually
 - [x] 3.3 Allow fixture `.log` files in `.gitignore`; document usage in the README
-- [ ] 3.4 Close the change: archive, bump the version (semver) if warranted, commit, push and tag it
+- [x] 3.4 Close the change: archive, bump the version (semver) if warranted, commit, push and tag it (no version bump: development tooling only)
