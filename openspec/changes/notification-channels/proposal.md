@@ -4,7 +4,7 @@ Alerts must reach the user even when the window is hidden. Native OS notificatio
 
 ## What Changes
 
-- A pluggable chain of notification channels fed by throttled alert events.
+- A pluggable chain of notification channels fed by per-project throttled alert events.
 - In-app toast channel (always-on-top, corner of the screen).
 - Tray icon state and unread-alert counter.
 - Sound channel.
@@ -21,5 +21,5 @@ Alerts must reach the user even when the window is hidden. Native OS notificatio
 ## Impact
 
 - New code in `MothEidol.Core` (channel abstraction) and `MothEidol.App` (toast, tray state, sound).
-- Consumes the throttled alert stream from `alert-rules`; settings via `local-persistence`.
-- Native OS notifications are explicitly not implemented here.
+- Consumes the throttled alert stream from `project-alerts`; settings via `local-persistence`.
+- Native OS notifications and team-wide channels (email, webhook) are explicitly not implemented here.

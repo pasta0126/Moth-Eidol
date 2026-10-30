@@ -5,7 +5,7 @@ Defines how the user configures and manages the log files being monitored and ho
 ## ADDED Requirements
 
 ### Requirement: Adding and removing sources
-The system SHALL allow adding and removing log sources by the path of a file, either local or on a network share accessible with the operating system user.
+The system SHALL allow adding and removing log sources by the path of a file (or a folder source, see below), either local or on a network share accessible with the operating system user.
 
 #### Scenario: Add a valid source
 - **WHEN** the user adds the path of an existing, readable file
@@ -18,6 +18,21 @@ The system SHALL allow adding and removing log sources by the path of a file, ei
 #### Scenario: Remove a source
 - **WHEN** the user removes a source
 - **THEN** it stops being monitored and disappears from the list
+
+### Requirement: Folder sources
+The system SHALL allow a source to be defined as a folder plus a file-name pattern, and SHALL monitor the newest file matching the pattern.
+
+#### Scenario: Add a folder source
+- **WHEN** the user adds a folder and a pattern such as `MailNotifier*.log`
+- **THEN** the source monitors the newest matching file in that folder
+
+#### Scenario: New daily file appears
+- **WHEN** a newer file matching the pattern appears in the folder
+- **THEN** the remainder of the previous file is read, then the new file is read from its beginning
+
+#### Scenario: No matching file
+- **WHEN** the folder contains no file matching the pattern
+- **THEN** the source is "unavailable" and is retried periodically until a file appears
 
 ### Requirement: Source activation
 The system SHALL allow enabling or disabling a source without removing it.

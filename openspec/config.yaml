@@ -7,7 +7,10 @@ context: |
   Platforms: Windows (priority), Linux (if easy), macOS latest (dev machine).
   Log sources: local files and network shares (SMB) accessible with the
   logged-in OS user. Tail uses polling, not FileSystemWatcher alone.
-  MVP: tail + regex rules + notifications, tray, background (same process).
+  Logs are Serilog text files (`yyyy-MM-dd HH:mm:ss.fff +zz:zz [LVL] message`,
+  daily files named `<Project>yyyyMMdd.log`, multi-line stack traces, UTF-8 + CRLF).
+  MVP: tail + projects + level-based alerts + notifications, tray, background
+  (same process). The app runs on each user's PC (macOS/Windows).
   MVP notification channels: in-app toast, tray icon state/counter, sound.
   Native OS notifications are out of MVP; INotifier is a pluggable chain.
   Monitoring/alert core must be UI- and platform-independent and testable.

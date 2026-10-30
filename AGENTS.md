@@ -12,7 +12,9 @@ Cross-platform .NET desktop application to monitor log files.
 Goals:
 
 - Monitor log files in real time (active follow, `tail -f` style), local or on network shares reachable with the OS user.
-- Raise alerts when user-defined regex rules match.
+- Organize monitoring by project (name, log folder, file pattern) and raise alerts per project according to the log level: info is shown but never alerts, warning alerts depending on the project configuration, error and above always alert.
+- Alert frequency is configurable per project (immediate with cooldown, or periodic summary).
+- Each team member runs the app on their own PC (macOS or Windows) and reads the logs with their OS user permissions; the app only alerts while it is running (tray/background).
 - Run on Windows (priority), Linux (if easy) and macOS (latest; this is the development machine).
 
 ## Stack
@@ -44,13 +46,18 @@ Do not invent requirements that are not in a spec; if something is missing, prop
 |---|---|---|
 | 1 | `app-shell` | Solution, Avalonia window, tray, background, single instance |
 | 2 | `local-persistence` | SQLite, migrations, settings |
-| 3 | `core-log-tailing` | Sources, polling tail, rotation, offsets, live viewer |
-| 4 | `alert-rules` | Regex rules, throttling, history |
-| 5 | `notification-channels` | In-app toast, tray counter, sound, channel chain |
+| 3 | `log-samples` | Dev tooling: anonymizer for real logs into fixtures, log simulator (replay, generate, rotation scenarios) |
+| 4 | `core-log-tailing` | Sources (file, or folder + pattern following the newest file), polling tail, rotation, offsets, live viewer |
+| 5 | `serilog-parsing` | `LogEntry` with level/timestamp/message, multi-line grouping (stack traces), pluggable parser, viewer coloring and level filter |
+| 6 | `projects` | Projects with name, folders, pattern and per-project alert configuration (level threshold, frequency mode) |
+| 7 | `project-alerts` | Level-based alerts per project, per-project cooldown or periodic summary, history with retention |
+| 8 | `notification-channels` | In-app toast, tray counter, sound, channel chain |
 
-Native OS notifications are out of the MVP; the notifier chain must stay pluggable.
+Native OS notifications and team-wide channels (email, webhook) are out of the MVP; the notifier chain must stay pluggable.
 
-Backlog (not scheduled): `tray-icon-theming` (black/white tray icon per OS theme; macOS template image).
+Test corpus: `logs/` (git-ignored, one subfolder per project) holds real Serilog logs used as templates; only anonymized subsets may be committed under `tests/fixtures/logs/`, produced by `tools/MothEidol.LogSim` (`log-samples`). The private term list lives in `logs/anonymize.json` and is never committed.
+
+Backlog (not scheduled): `tray-icon-theming` (black/white tray icon per OS theme; macOS template image), user-defined regex rules, export/import of project configuration, team-wide notification channels.
 
 ## Versioning and release flow
 

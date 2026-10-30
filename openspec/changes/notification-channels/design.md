@@ -1,6 +1,6 @@
 ## Context
 
-Native notifications are out of the MVP: the dev machine is macOS, which needs a signed app bundle for the native API, and the Windows backend could not be tested locally. See `proposal.md`. Depends on `alert-rules` (throttled `AlertEvent` stream) and `app-shell` (tray).
+Native notifications are out of the MVP: the dev machine is macOS, which needs a signed app bundle for the native API, and the Windows backend could not be tested locally. See `proposal.md`. Depends on `project-alerts` (throttled `AlertEvent` stream) and `app-shell` (tray).
 
 ## Goals / Non-Goals
 
@@ -10,8 +10,8 @@ Native notifications are out of the MVP: the dev machine is macOS, which needs a
 
 **Non-Goals:**
 - Native OS notifications (Windows toast, macOS `UNUserNotificationCenter`, Linux D-Bus).
-- Remote channels (webhook, ntfy, email, run command).
-- Per-rule routing to different channels.
+- Remote or team-wide channels (webhook, ntfy, email, run command).
+- Per-project routing to different channels.
 
 ## Decisions
 

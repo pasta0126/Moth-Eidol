@@ -12,11 +12,11 @@ The system SHALL deliver each alert to every enabled notification channel indepe
 - **THEN** the remaining enabled channels still deliver the alert and the failure is recorded
 
 ### Requirement: In-app toast
-The system SHALL show an in-app toast for an alert, above other windows, without requiring the main window to be open, showing the rule, the source and the matching line.
+The system SHALL show an in-app toast for an alert, above other windows, without requiring the main window to be open, showing the project, the level and the entry text.
 
 #### Scenario: Alert with the window hidden
 - **WHEN** an alert is produced while the main window is hidden in the tray
-- **THEN** a toast is shown with the rule, source and line
+- **THEN** a toast is shown with the project, level and entry text
 
 #### Scenario: Toast dismissal
 - **WHEN** the user dismisses a toast or its display time elapses
