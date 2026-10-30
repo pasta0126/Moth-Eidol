@@ -24,6 +24,7 @@
     <Grid>
         <views:DashboardView x:Name="Dashboard" />
         <views:ProjectView x:Name="ProjectScreen" IsVisible="False" />
+        <views:ProjectWizardView x:Name="WizardScreen" IsVisible="False" />
         <views:AppSettingsView x:Name="SettingsScreen" IsVisible="False" />
     </Grid>
     </DockPanel>

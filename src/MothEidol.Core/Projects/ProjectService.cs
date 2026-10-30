@@ -67,6 +67,41 @@ public sealed class ProjectService
         return project;
     }
 
+    /// <summary>
+    /// Creates a project together with its sources and alert settings, all or nothing: everything is validated
+    /// first, and if saving fails midway what was already saved is undone.
+    /// </summary>
+    public async Task<Project> CreateWithSourcesAsync(ProjectDraft draft)
+    {
+        var name = ValidName(draft.Name, exceptId: null);
+        draft.Alerts.Validate();
+        if (draft.ValidateSources() is { } noSources) throw new ArgumentException(noSources);
+        var sources = draft.Sources.Select(s => s.Normalized()).ToList();
+        foreach (var source in sources)
+        {
+            if (ProjectDraft.ValidateSource(source) is { } invalid) throw new ArgumentException(invalid);
+        }
+
+        var project = _projects.Add(name);
+        var added = new List<LogSource>();
+        try
+        {
+            _projects.Update(project with { Alerts = draft.Alerts });
+            foreach (var source in sources) added.Add(_tailing.Add(source.Kind, source.Path, source.Pattern, project.Id));
+        }
+        catch
+        {
+            foreach (var source in added) await _tailing.RemoveAsync(source.Id);
+            _projects.Remove(project.Id);
+            RefreshSourceMap();
+            throw;
+        }
+
+        RefreshSourceMap();
+        RaiseChanged();
+        return project with { Alerts = draft.Alerts };
+    }
+
     public void Rename(long id, string name)
     {
         var project = Require(id);

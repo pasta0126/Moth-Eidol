@@ -12,23 +12,8 @@
             <Button x:Name="SettingsButton" Grid.Column="1" Content="Settings" VerticalAlignment="Top" />
         </Grid>
 
-        <Border x:Name="CreatePanel" DockPanel.Dock="Top" IsVisible="False" Margin="0,16,0,0" Padding="12"
-                CornerRadius="4" Background="{DynamicResource MothSurfaceBrush}">
-            <StackPanel Spacing="8">
-                <TextBlock Text="Name of the new project" FontWeight="SemiBold"
-                           Foreground="{DynamicResource MothAccentBrush}" />
-                <Grid ColumnDefinitions="*,Auto,Auto" ColumnSpacing="8">
-                    <TextBox x:Name="NameBox" PlaceholderText="For example: Billing service" />
-                    <Button x:Name="CreateButton" Grid.Column="1" Content="Create" Classes="accent" />
-                    <Button x:Name="CancelButton" Grid.Column="2" Content="Cancel" />
-                </Grid>
-                <TextBlock x:Name="ErrorText" TextWrapping="Wrap"
-                           Foreground="{DynamicResource MothErrorBrush}" />
-            </StackPanel>
-        </Border>
-
         <TextBlock x:Name="HintText" DockPanel.Dock="Top" Margin="0,16,0,0" IsVisible="False" TextWrapping="Wrap"
-                   Text="No projects yet. Create one, then add the log folders it should follow."
+                   Text="No projects yet. Create one and the wizard will guide you through its log folders and alerts."
                    Foreground="{DynamicResource MothTextMutedBrush}" />
 
         <ScrollViewer Margin="0,16,0,0">

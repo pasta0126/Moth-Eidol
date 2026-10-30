@@ -36,11 +36,15 @@ The system SHALL show on each tile the project's name and a status distinguishab
 - **THEN** its tile shows the pending state of its worst pending level
 
 ### Requirement: Create from the dashboard
-The system SHALL let the user create a project from the dashboard by giving only a name, and SHALL then open the new project's screen so its parameters can be set.
+The system SHALL let the user create a project from the dashboard through the project setup wizard (see `project-wizard`), and SHALL then open the new project's screen on its events section.
 
 #### Scenario: New project
-- **WHEN** the user creates a project named "Billing"
-- **THEN** it appears on the dashboard and its screen opens on the settings section
+- **WHEN** the user completes the wizard for a project named "Billing"
+- **THEN** it appears on the dashboard and its screen opens on the events section
+
+#### Scenario: Wizard cancelled
+- **WHEN** the user cancels the wizard
+- **THEN** the dashboard is shown unchanged
 
 ### Requirement: Navigation
 The system SHALL open a project's screen when its tile is clicked and SHALL allow returning to the dashboard from it, and SHALL keep application settings and the version visible or reachable from the dashboard.

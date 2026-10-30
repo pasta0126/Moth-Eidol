@@ -1,5 +1,4 @@
 using Avalonia.Controls;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using MothEidol.Core.Alerts;
@@ -15,6 +14,7 @@ public partial class DashboardView : UserControl
     private ProjectService? _projects;
     private IEventStore? _events;
     private Action<Project, bool>? _openProject;
+    private Action? _newProject;
 
     public DashboardView()
     {
@@ -23,20 +23,14 @@ public partial class DashboardView : UserControl
 
     public void Initialize(
         ProjectService projects, TailingService tailing, IEventStore events,
-        Action<Project, bool> openProject, Action openSettings)
+        Action<Project, bool> openProject, Action openSettings, Action newProject)
     {
         _projects = projects;
         _events = events;
         _openProject = openProject;
+        _newProject = newProject;
 
         SettingsButton.Click += (_, _) => openSettings();
-        CreateButton.Click += (_, _) => CreateProject();
-        CancelButton.Click += (_, _) => HideCreate();
-        NameBox.KeyDown += (_, e) =>
-        {
-            if (e.Key == Key.Enter) CreateProject();
-            else if (e.Key == Key.Escape) HideCreate();
-        };
 
         projects.Changed += (_, _) => Dispatcher.UIThread.Post(Refresh);
         tailing.StatusChanged += (_, _) => Dispatcher.UIThread.Post(Refresh);
@@ -66,35 +60,11 @@ public partial class DashboardView : UserControl
 
         if (tile.IsNew)
         {
-            CreatePanel.IsVisible = true;
-            NameBox.Focus();
+            _newProject?.Invoke();
         }
         else if (_projects.Get(tile.ProjectId) is { } project)
         {
             _openProject?.Invoke(project, false);
         }
-    }
-
-    private void CreateProject()
-    {
-        if (_projects is null) return;
-
-        try
-        {
-            var project = _projects.Create(NameBox.Text ?? "");
-            HideCreate();
-            _openProject?.Invoke(project, true); // Its parameters are set on its own screen.
-        }
-        catch (ArgumentException ex)
-        {
-            ErrorText.Text = ex.Message;
-        }
-    }
-
-    private void HideCreate()
-    {
-        CreatePanel.IsVisible = false;
-        NameBox.Text = "";
-        ErrorText.Text = "";
     }
 }

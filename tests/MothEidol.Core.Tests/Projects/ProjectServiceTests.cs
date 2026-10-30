@@ -294,4 +294,71 @@ public sealed class ProjectServiceTests : IDisposable
         Assert.NotEqual(0, source.Id);
         await tailing.DisposeAsync();
     }
+
+    [Fact]
+    public async Task Create_with_sources_saves_project_sources_and_alerts_together()
+    {
+        var draft = new ProjectDraft { Name = " Billing ", Alerts = new AlertSettings(true, FrequencyMode.Summary, 15) };
+        draft.AddSource(new SourceDraft(SourceKind.Folder, _temp.Path, "*.log"));
+        draft.AddSource(new SourceDraft(SourceKind.File, _temp.File("a.log"), null));
+
+        var project = await _projects.CreateWithSourcesAsync(draft);
+
+        Assert.Equal("Billing", project.Name);
+        Assert.Equal(new AlertSettings(true, FrequencyMode.Summary, 15), _projects.Get(project.Id)!.Alerts);
+        Assert.Equal(2, _projects.SourcesOf(project.Id).Count);
+    }
+
+    [Fact]
+    public async Task Create_with_sources_rejects_a_duplicate_name_and_saves_nothing()
+    {
+        _projects.Create("Billing");
+        var draft = new ProjectDraft { Name = "billing" };
+        draft.AddSource(new SourceDraft(SourceKind.File, _temp.File("a.log"), null));
+
+        await Assert.ThrowsAsync<ArgumentException>(() => _projects.CreateWithSourcesAsync(draft));
+
+        Assert.Single(_projects.Projects);
+        Assert.Empty(_tailing.Sources);
+    }
+
+    [Fact]
+    public async Task Create_with_sources_rejects_a_draft_without_sources_and_saves_nothing()
+    {
+        await Assert.ThrowsAsync<ArgumentException>(() => _projects.CreateWithSourcesAsync(new ProjectDraft { Name = "Empty" }));
+
+        Assert.Empty(_projects.Projects);
+    }
+
+    [Fact]
+    public async Task Create_with_sources_undoes_everything_when_saving_fails_midway()
+    {
+        var failing = new TailingService(
+            new FailingSecondAddRepository(), new InMemoryReadPositionStore(), Fast);
+        await using var _ = failing;
+        var projects = new ProjectService(_repository, failing);
+        var draft = new ProjectDraft { Name = "Billing" };
+        draft.AddSource(new SourceDraft(SourceKind.File, _temp.File("a.log"), null));
+        draft.AddSource(new SourceDraft(SourceKind.File, _temp.File("b.log"), null));
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => projects.CreateWithSourcesAsync(draft));
+
+        Assert.Empty(_repository.List());
+        Assert.Empty(failing.Sources);
+    }
+
+    private sealed class FailingSecondAddRepository : ILogSourceRepository
+    {
+        private readonly InMemoryLogSourceRepository _inner = new();
+        private int _adds;
+
+        public IReadOnlyList<LogSource> List() => _inner.List();
+
+        public LogSource Add(SourceKind kind, string path, string? pattern, long projectId = 0) =>
+            ++_adds == 2 ? throw new InvalidOperationException("disk full") : _inner.Add(kind, path, pattern, projectId);
+
+        public void Remove(long id) => _inner.Remove(id);
+
+        public void SetEnabled(long id, bool enabled) => _inner.SetEnabled(id, enabled);
+    }
 }

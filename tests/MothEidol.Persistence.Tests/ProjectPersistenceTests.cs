@@ -105,4 +105,26 @@ public sealed class ProjectPersistenceTests : IDisposable
 
         Assert.Empty(new SqliteProjectRepository(current).List());
     }
+
+    [Fact]
+    public async Task Project_created_by_the_wizard_survives_a_restart_with_sources_and_alerts()
+    {
+        var db = SqliteDatabase.Open(DbPath);
+        var projects = new SqliteProjectRepository(db);
+        await using (var tailing = new TailingService(new SqliteLogSourceRepository(db), new SqliteReadPositionStore(db), new TailOptions()))
+        {
+            var service = new ProjectService(projects, tailing);
+            var draft = new ProjectDraft { Name = "Billing", Alerts = new AlertSettings(true, FrequencyMode.Summary, 30) };
+            draft.AddSource(new SourceDraft(SourceKind.Folder, _dir, "*.log"));
+            await service.CreateWithSourcesAsync(draft);
+        }
+
+        var restarted = SqliteDatabase.Open(DbPath);
+        var project = Assert.Single(new SqliteProjectRepository(restarted).List());
+        var source = Assert.Single(new SqliteLogSourceRepository(restarted).List());
+
+        Assert.Equal(new AlertSettings(true, FrequencyMode.Summary, 30), project.Alerts);
+        Assert.Equal(project.Id, source.ProjectId);
+        Assert.Equal("*.log", source.Pattern);
+    }
 }

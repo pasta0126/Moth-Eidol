@@ -37,7 +37,8 @@ public partial class MainWindow : Window
             NoticeBanner.IsVisible = true;
         }
 
-        Dashboard.Initialize(projects, tailing, events, OpenProject, () => Show(SettingsScreen));
+        Dashboard.Initialize(projects, tailing, events, OpenProject, () => Show(SettingsScreen), StartWizard);
+        WizardScreen.Initialize(projects, project => OpenProject(project, false), ShowDashboard);
         ProjectScreen.Initialize(projects, tailing, tails, events, settings, ShowDashboard);
         SettingsScreen.Initialize(autostart, settings, notifications, ShowDashboard);
 
@@ -88,6 +89,12 @@ public partial class MainWindow : Window
         Show(Dashboard);
     }
 
+    private void StartWizard()
+    {
+        WizardScreen.Start();
+        Show(WizardScreen);
+    }
+
     private void OpenProject(Project project, bool settingsFirst)
     {
         ProjectScreen.Open(project, settingsFirst);
@@ -98,6 +105,7 @@ public partial class MainWindow : Window
     {
         Dashboard.IsVisible = screen == Dashboard;
         ProjectScreen.IsVisible = screen == ProjectScreen;
+        WizardScreen.IsVisible = screen == WizardScreen;
         SettingsScreen.IsVisible = screen == SettingsScreen;
     }
 }

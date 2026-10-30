@@ -42,7 +42,7 @@ Project definitions live in `openspec/` and **the spec comes before the code**.
 
 Do not invent requirements that are not in a spec; if something is missing, propose it as a change.
 
-### Planned changes (MVP order) — all delivered (see `openspec/specs/` and the tags `v0.1.0`–`v0.8.0`)
+### Planned changes (MVP order) — all delivered (see `openspec/specs/` and the tags `v0.1.0`–`v0.9.0`)
 
 | Order | Change | Content |
 |---|---|---|
@@ -55,6 +55,7 @@ Do not invent requirements that are not in a spec; if something is missing, prop
 | 7 | `project-alerts` | Level-based alert-level detection per project, grouped events with pending/seen, events section and tile pending state, per-project cooldown or periodic summary, retention |
 | 8 | `event-insights` | Sentry-like presentation: readable titles and location, relative times, sparklines and trends, New/Regressed badges, ordered stack trace, context before the error, occurrence timeline, copy summary |
 | 9 | `notification-channels` | In-app toast, tray counter, sound, channel chain |
+| 10 | `project-setup-wizard` | Guided project creation: name, checked log location, alerts, review; atomic creation |
 
 Native OS notifications and team-wide channels (email, webhook) are out of the MVP; the notifier chain must stay pluggable.
 
@@ -64,7 +65,7 @@ Backlog (not scheduled): `tray-icon-theming` (black/white tray icon per OS theme
 
 ## UI structure
 
-- Home: dashboard of project tiles (status at a glance) plus a "New project" tile; application settings reachable from it.
+- Home: dashboard of project tiles (status at a glance) plus a "New project" tile that starts the setup wizard; application settings reachable from it.
 - Project screen (from a tile): Events (landing), Tail, Settings. Project parameters are edited only here.
 - Application settings (autostart, notification channels) are reachable from the dashboard.
 
