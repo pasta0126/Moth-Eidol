@@ -57,6 +57,7 @@ Do not invent requirements that are not in a spec; if something is missing, prop
 | 9 | `notification-channels` | In-app toast, tray counter, sound, channel chain |
 | 10 | `project-setup-wizard` | Guided project creation: name, checked log location, alerts, review; atomic creation |
 | 11 | `distribution-packaging` | Self-contained per-platform zips (macOS `.app` bundle), publish scripts |
+| 12 | `store-packaging` | Microsoft Store MSIX (`packaging/`, identity in the git-ignored `packaging/store-identity.local.json`), packaged autostart, Store listing; submitted as `1.0.0` |
 
 Native OS notifications and team-wide channels (email, webhook) are out of the MVP; the notifier chain must stay pluggable.
 
@@ -110,6 +111,7 @@ Distribution (self-contained single-file zips that run after unzipping: no .NET,
 ```sh
 scripts/publish.sh [win-x64|osx-arm64|osx-x64|linux-x64 ...]   # default: all; output in artifacts/
 scripts\publish.cmd                                             # Windows host, win-x64 only
+powershell -File scripts\publish-msix.ps1                      # Microsoft Store MSIX, Windows host + Windows SDK (or the "Build MSIX" GitHub workflow)
 ```
 
 Shortcut to build and launch the app: `scripts/run.sh` (macOS/Linux) or `scripts\run.cmd` (Windows).

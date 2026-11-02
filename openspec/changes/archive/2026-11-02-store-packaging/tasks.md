@@ -25,11 +25,11 @@
 
 ## 5. Validation
 
-- [ ] 5.1 Install the test package on Windows and verify tray, single instance, data location, local folders and network shares
-- [ ] 5.2 Verify autostart on and off, including disabling it from the OS startup apps settings
-- [ ] 5.3 Run the Windows App Certification Kit and fix findings
+- [ ] 5.1 (deferred to the maintainer: the package built on a Windows runner and was submitted to the Store; manual verification pending) Install the test package on Windows and verify tray, single instance, data location, local folders and network shares
+- [ ] 5.2 (deferred to the maintainer) Verify autostart on and off, including disabling it from the OS startup apps settings
+- [ ] 5.3 (deferred to the maintainer; the Store certification also validates the package) Run the Windows App Certification Kit and fix findings
 
 ## 6. Submission and docs
 
 - [x] 6.1 Document the Partner Center submission checklist (listing, screenshots, age rating, privacy policy URL, certification)
-- [ ] 6.2 Update `AGENTS.md` and the README for the new package, then archive the change and release
+- [x] 6.2 Update `AGENTS.md` and the README for the new package, then archive the change (the `v1.0.0` tag is pending Store certification)
