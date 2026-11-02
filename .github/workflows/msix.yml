@@ -1,0 +1,49 @@
+name: Build MSIX
+
+# Manual build of the Microsoft Store package on a Windows runner (makeappx needs Windows).
+# The identity values come from Partner Center > Product management > Product identity; they are not secrets
+# (they are visible in the published package), so they are passed as inputs instead of being committed.
+on:
+  workflow_dispatch:
+    inputs:
+      identity_name:
+        description: Package/Identity/Name
+        required: true
+      publisher:
+        description: Package/Identity/Publisher (CN=...)
+        required: true
+      publisher_display_name:
+        description: Package/Properties/PublisherDisplayName
+        required: true
+
+jobs:
+  msix:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Build the test package (self-signed, not submittable)
+        shell: powershell
+        run: ./scripts/publish-msix.ps1 -IdentityFile does-not-exist.json
+
+      - name: Build the Store package (unsigned, the Store signs it)
+        shell: powershell
+        env:
+          IDENTITY_NAME: ${{ inputs.identity_name }}
+          PUBLISHER: ${{ inputs.publisher }}
+          PUBLISHER_DISPLAY_NAME: ${{ inputs.publisher_display_name }}
+        run: |
+          @{ identityName = $env:IDENTITY_NAME; publisher = $env:PUBLISHER; publisherDisplayName = $env:PUBLISHER_DISPLAY_NAME } |
+            ConvertTo-Json | Set-Content packaging/store-identity.local.json
+          ./scripts/publish-msix.ps1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: moth-eidol-msix
+          path: |
+            artifacts/*.msix
+            artifacts/*.cer

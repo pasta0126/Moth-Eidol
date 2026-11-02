@@ -15,6 +15,8 @@
 - [x] 3.2 Build the `.msix` with `makeappx` and fail clearly when the SDK tools are missing
 - [x] 3.3 Sign a test package with a local certificate when no store identity is provided, and state that it cannot be submitted
 
+- [x] 3.4 Add a manual GitHub Actions workflow that builds the test and Store packages on a Windows runner
+
 ## 4. Autostart when packaged
 
 - [x] 4.1 Add a startup-task implementation of `IAutostart` and select it when the app runs packaged
