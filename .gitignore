@@ -92,3 +92,6 @@ CLAUDE.local.md
 
 # Anonymized test fixtures are versioned (see tools/MothEidol.LogSim)
 !tests/fixtures/**/*.log
+
+# Microsoft Store package identity (from Partner Center; see packaging/store-identity.example.json)
+/packaging/store-identity.local.json

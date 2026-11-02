@@ -1,0 +1,5 @@
+{
+  "identityName": "<Package/Identity/Name from Partner Center>",
+  "publisher": "CN=<Package/Identity/Publisher from Partner Center>",
+  "publisherDisplayName": "<Package/Properties/PublisherDisplayName>"
+}

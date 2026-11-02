@@ -9,6 +9,7 @@ Windows users expect to find and update applications through the Microsoft Store
 - Add a script that builds the MSIX, plus local test signing for sideload testing (the Store signs the final package).
 - Start with the session through the MSIX startup task when the app runs packaged; the registry value is kept for the zip build.
 - Derive the four-part MSIX version `x.y.z.0` from `Directory.Build.props`.
+- Partner Center registration is free for individual and company accounts (since 2025/2026), so there is no registration cost.
 - Document the Partner Center submission checklist (listing, screenshots, age rating, privacy policy URL, certification).
 - Packaged identity (`Identity Name`, `Publisher`) comes from Partner Center and is pending until the account exists.
 

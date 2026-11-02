@@ -55,7 +55,13 @@ public partial class App : Application
             desktop.Exit += (_, _) => _instanceGuard.Dispose();
 
             var version = AppVersion.FromAssembly(Assembly.GetExecutingAssembly());
-            var autostart = AutostartFactory.Create(Environment.ProcessPath);
+            var autostart = AutostartFactory.Create(
+                Environment.ProcessPath,
+#if WINDOWS10_0_19041_0_OR_GREATER
+                new Platform.WindowsStartupTaskGateway());
+#else
+                null);
+#endif
             var storage = OpenStorage();
             var settings = storage.Settings;
             ReconcileAutostart(settings, autostart);
