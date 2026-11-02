@@ -95,3 +95,6 @@ CLAUDE.local.md
 
 # Microsoft Store package identity (from Partner Center; see packaging/store-identity.example.json)
 /packaging/store-identity.local.json
+
+# Original screenshots (the processed ones in packaging/store-listing/screenshots are committed)
+/packaging/store-listing/screenshots/source/
