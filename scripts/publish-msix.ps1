@@ -58,8 +58,10 @@ Move-Item (Join-Path $pub 'MothEidol.App.exe') (Join-Path $stage 'MothEidol.exe'
 Copy-Item (Join-Path $root 'packaging\msix\Assets') (Join-Path $stage 'Assets') -Recurse
 
 $manifest = Get-Content (Join-Path $root 'packaging\msix\AppxManifest.template.xml') -Raw
-$manifest = $manifest.Replace('@IDENTITY_NAME@', $identity.identityName).Replace('@PUBLISHER@', $identity.publisher) `
-    .Replace('@PUBLISHER_DISPLAY_NAME@', $identity.publisherDisplayName).Replace('@VERSION@', $msixVersion)
+$manifest = $manifest.Replace('@IDENTITY_NAME@', $identity.identityName)
+$manifest = $manifest.Replace('@PUBLISHER@', $identity.publisher)
+$manifest = $manifest.Replace('@PUBLISHER_DISPLAY_NAME@', $identity.publisherDisplayName)
+$manifest = $manifest.Replace('@VERSION@', $msixVersion)
 Set-Content (Join-Path $stage 'AppxManifest.xml') $manifest -Encoding UTF8
 
 $package = Join-Path $out ("MothEidol-$version-win-x64" + $(if ($isTest) { '-test' } else { '' }) + '.msix')
