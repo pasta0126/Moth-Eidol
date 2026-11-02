@@ -99,7 +99,7 @@ public partial class App : Application
             var trayIcons = TrayIcon.GetIcons(this);
             if (trayIcons is { Count: > 0 })
             {
-                _ = new TrayPresenter(trayIcons[0], version, _unread);
+                _ = new TrayPresenter(trayIcons[0], _unread);
             }
 
             _toasts = new ToastPresenter(toastStack, _mainWindow);

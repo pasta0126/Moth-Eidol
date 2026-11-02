@@ -45,8 +45,8 @@ public partial class MainWindow : Window
         // Opening the application is how alerts get acknowledged: the tray counter returns to normal.
         Activated += (_, _) => unread.Acknowledge();
 
-        // The version stays visible on every screen: the footer lives outside the screens.
-        Title = $"Moth-Eidol v{version}";
+        // The version is shown only in the footer, which lives outside the screens; the title carries the name alone.
+        Title = "Moth-Eidol";
         VersionText.Text = $"Moth-Eidol v{version}";
         ShowDashboard();
     }

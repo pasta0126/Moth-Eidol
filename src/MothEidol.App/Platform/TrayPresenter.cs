@@ -18,11 +18,11 @@ public sealed class TrayPresenter
     private readonly UnreadCounter _counter;
     private readonly Bitmap _baseIcon;
 
-    public TrayPresenter(TrayIcon tray, string version, UnreadCounter counter)
+    public TrayPresenter(TrayIcon tray, UnreadCounter counter)
     {
         _tray = tray;
         _counter = counter;
-        _baseTooltip = $"Moth-Eidol v{version}";
+        _baseTooltip = "Moth-Eidol";
         _baseIcon = new Bitmap(AssetLoader.Open(new Uri("avares://MothEidol.App/Assets/tray.png")));
 
         counter.Changed += (_, _) => Dispatcher.UIThread.Post(Update);

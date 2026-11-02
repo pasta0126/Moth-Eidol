@@ -73,7 +73,7 @@ Backlog (not scheduled): `splash-screen` (branded splash shown while the app sta
 ## Versioning and release flow
 
 - Semantic versioning `x.y.z`, starting at `0.1.0`. Version numbers are not pre-assigned to planned changes; the number is decided at release time according to what was actually delivered.
-- The version lives in a single place (`Directory.Build.props`); the app always displays it (window title, persistent footer, tray tooltip). Any new window or screen must keep it visible or not hide the footer.
+- The version lives in a single place (`Directory.Build.props`); the app shows it only in the persistent footer of the main window (never in the window title, tray tooltip or images). Any new window or screen must not hide the footer.
 - Each time a change (spec) is finished:
   1. Archive the OpenSpec change.
   2. Bump the version according to semver and what was delivered.
