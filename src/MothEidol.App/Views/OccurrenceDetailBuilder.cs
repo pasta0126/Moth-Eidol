@@ -31,7 +31,7 @@ internal static class OccurrenceDetailBuilder
         foreach (var text in root.GetLogicalDescendants().OfType<SelectableTextBlock>())
         {
             text.TextWrapping = TextWrapping.Wrap;
-            text.TextTrimming = null;
+            text.TextTrimming = TextTrimming.None;
         }
     }
 
