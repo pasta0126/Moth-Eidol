@@ -21,6 +21,7 @@ public partial class TailView : UserControl
 
     private readonly AvaloniaList<EntryItem> _items = [];
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(150) };
+    private WordWrapState? _wrap;
     private ProjectTails? _tails;
     private AppSettings? _settings;
     private ViewBuffer<LogEntry>? _buffer;
@@ -47,8 +48,12 @@ public partial class TailView : UserControl
         UpdateScrollState();
     }
 
-    public void Initialize(ProjectTails tails, AppSettings settings)
+    public void Initialize(ProjectTails tails, AppSettings settings, WordWrapState wrap)
     {
+        _wrap = wrap;
+        WrapCheck.IsCheckedChanged += (_, _) => wrap.Enabled = WrapCheck.IsChecked == true;
+        wrap.Changed += (_, _) => ApplyWrap();
+        ApplyWrap();
         _tails = tails;
         _settings = settings;
         MaxLinesBox.Value = settings.ViewerMaxLines;
@@ -143,6 +148,15 @@ public partial class TailView : UserControl
     private void TrimView(int max)
     {
         if (_items.Count > max) _items.RemoveRange(0, _items.Count - max);
+    }
+
+    private void ApplyWrap()
+    {
+        var wrap = _wrap?.Enabled ?? true;
+        WrapCheck.IsChecked = wrap;
+        LinesList.Classes.Set("wrap", wrap);
+        ScrollViewer.SetHorizontalScrollBarVisibility(
+            LinesList, wrap ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto);
     }
 
     private void OnEntryAttached(object? sender, Avalonia.VisualTreeAttachmentEventArgs e)

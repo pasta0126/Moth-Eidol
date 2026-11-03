@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
@@ -23,6 +24,8 @@ public partial class EventsView : UserControl
     private long _shownOccurrence;
     private bool _loadingDetail;
 
+    private WordWrapState? _wrap;
+
     public EventsView()
     {
         InitializeComponent();
@@ -42,8 +45,12 @@ public partial class EventsView : UserControl
         _timer.Tick += (_, _) => { if (IsEffectivelyVisible) Refresh(); };
     }
 
-    public void Initialize(ProjectService projects, IEventStore store)
+    public void Initialize(ProjectService projects, IEventStore store, WordWrapState wrap)
     {
+        _wrap = wrap;
+        DetailWrapCheck.IsCheckedChanged += (_, _) => wrap.Enabled = DetailWrapCheck.IsChecked == true;
+        wrap.Changed += (_, _) => { ApplyWrap(); ShowSelectedOccurrence(); };
+        ApplyWrap();
         _projects = projects;
         _store = store;
         _timer.Start();
@@ -177,7 +184,20 @@ public partial class EventsView : UserControl
     private void OnOccurrenceSelected(object? sender, SelectionChangedEventArgs e)
     {
         if (_loadingDetail || OccurrenceList.SelectedItem is not OccurrenceRow row) return;
-        OccurrenceDetail.Content = OccurrenceDetailBuilder.Build(row.Occurrence);
+        OccurrenceDetail.Content = OccurrenceDetailBuilder.Build(row.Occurrence, _wrap?.Enabled ?? true);
+    }
+
+    private void ShowSelectedOccurrence()
+    {
+        if (OccurrenceList.SelectedItem is OccurrenceRow row)
+            OccurrenceDetail.Content = OccurrenceDetailBuilder.Build(row.Occurrence, _wrap?.Enabled ?? true);
+    }
+
+    private void ApplyWrap()
+    {
+        var wrap = _wrap?.Enabled ?? true;
+        DetailWrapCheck.IsChecked = wrap;
+        DetailScroll.HorizontalScrollBarVisibility = wrap ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto;
     }
 
     private void UpdateTimeline()

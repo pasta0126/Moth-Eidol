@@ -28,8 +28,9 @@ public partial class ProjectView : UserControl
         _projects = projects;
         _events = events;
         BackButton.Click += (_, _) => back();
-        Events.Initialize(projects, events);
-        Tail.Initialize(tails, settings);
+        var wrap = new WordWrapState(settings);
+        Events.Initialize(projects, events, wrap);
+        Tail.Initialize(tails, settings, wrap);
         SettingsSection.Initialize(projects, tailing, back);
 
         projects.Changed += (_, _) => Dispatcher.UIThread.Post(() => Refresh());

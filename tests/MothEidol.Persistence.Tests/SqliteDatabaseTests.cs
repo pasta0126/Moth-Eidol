@@ -49,6 +49,19 @@ public sealed class SqliteDatabaseTests : IDisposable
     }
 
     [Fact]
+    public void TailWordWrap_DefaultsToOnAndPersists()
+    {
+        var first = SqliteDatabase.Open(DbPath);
+        var settings = new AppSettings(new SqliteSettingsRepository(first));
+        Assert.True(settings.TailWordWrap);
+
+        settings.TailWordWrap = false;
+
+        var second = SqliteDatabase.Open(DbPath);
+        Assert.False(new AppSettings(new SqliteSettingsRepository(second)).TailWordWrap);
+    }
+
+    [Fact]
     public void OlderSchema_IsMigratedPreservingData()
     {
         var v1 = Migrations.All;

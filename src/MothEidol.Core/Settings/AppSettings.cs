@@ -10,6 +10,7 @@ public sealed class AppSettings(ISettingsRepository repository)
         public const string StartWithSession = "app.start_with_session";
         public const string PollIntervalMs = "tail.poll_interval_ms";
         public const string ViewerMaxLines = "viewer.max_lines";
+        public const string TailWordWrap = "viewer.word_wrap";
         public const string EventRetentionDays = "alerts.retention_days";
         public const string ChannelPrefix = "notify.";
     }
@@ -32,6 +33,13 @@ public sealed class AppSettings(ISettingsRepository repository)
     {
         get => GetInt(Keys.ViewerMaxLines, defaultValue: 5000, min: 100);
         set => SetInt(Keys.ViewerMaxLines, value);
+    }
+
+    /// <summary>Whether the tail and the event detail wrap long lines to the window width (on by default).</summary>
+    public bool TailWordWrap
+    {
+        get => GetBool(Keys.TailWordWrap, defaultValue: true);
+        set => SetBool(Keys.TailWordWrap, value);
     }
 
     /// <summary>How long a seen event group is kept without new occurrences; pending groups are never removed automatically.</summary>

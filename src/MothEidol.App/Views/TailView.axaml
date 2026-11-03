@@ -3,7 +3,7 @@
              xmlns:views="using:MothEidol.App.Views"
              x:Class="MothEidol.App.Views.TailView">
     <DockPanel Margin="0,12,0,0">
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
             <ComboBox x:Name="SourceCombo" HorizontalAlignment="Stretch" />
             <ComboBox x:Name="LevelCombo" Grid.Column="1" MinWidth="170" SelectedIndex="0">
                 <ComboBoxItem Content="All levels" />
@@ -11,14 +11,15 @@
                 <ComboBoxItem Content="Error and above" />
             </ComboBox>
             <ToggleButton x:Name="PauseToggle" Grid.Column="2" Content="Pause auto-scroll" />
-            <Button x:Name="ClearButton" Grid.Column="3" Content="Clear" />
-            <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+            <CheckBox x:Name="WrapCheck" Grid.Column="3" Content="Word wrap" IsChecked="True" />
+            <Button x:Name="ClearButton" Grid.Column="4" Content="Clear" />
+            <StackPanel Grid.Column="5" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
                 <SelectableTextBlock Text="Max lines" VerticalAlignment="Center"
                            Foreground="{DynamicResource MothTextMutedBrush}" />
                 <NumericUpDown x:Name="MaxLinesBox" Minimum="100" Maximum="200000" Increment="500"
                                FormatString="0" Width="130" />
             </StackPanel>
-            <SelectableTextBlock x:Name="ScrollStateText" Grid.Column="5" VerticalAlignment="Center" MinWidth="130"
+            <SelectableTextBlock x:Name="ScrollStateText" Grid.Column="6" VerticalAlignment="Center" MinWidth="130"
                        Foreground="{DynamicResource MothTextMutedBrush}" />
         </Grid>
 
@@ -36,6 +37,12 @@
                 </ContextMenu>
             </ListBox.ContextMenu>
             <ListBox.Styles>
+                <Style Selector="SelectableTextBlock.msg">
+                    <Setter Property="TextWrapping" Value="NoWrap" />
+                </Style>
+                <Style Selector="ListBox.wrap SelectableTextBlock.msg">
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                </Style>
                 <Style Selector="ListBoxItem">
                     <Setter Property="Padding" Value="6,1" />
                     <Setter Property="MinHeight" Value="0" />
@@ -43,15 +50,16 @@
             </ListBox.Styles>
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="views:EntryItem">
-                    <StackPanel Orientation="Horizontal" Spacing="8" Background="Transparent"
-                                AttachedToVisualTree="OnEntryAttached">
+                    <Grid ColumnDefinitions="Auto,Auto,*" ColumnSpacing="8" Background="Transparent"
+                          AttachedToVisualTree="OnEntryAttached">
                         <SelectableTextBlock Text="{Binding Time}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
                                    Foreground="{DynamicResource MothTextMutedBrush}" />
-                        <SelectableTextBlock Text="{Binding LevelText}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
+                        <SelectableTextBlock Grid.Column="1" Text="{Binding LevelText}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
                                    FontWeight="Bold" Foreground="{Binding LevelBrush}" />
-                        <SelectableTextBlock Text="{Binding Text}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
-                                   TextWrapping="NoWrap" Foreground="{DynamicResource MothTextBrush}" />
-                    </StackPanel>
+                        <SelectableTextBlock Grid.Column="2" Classes="msg" Text="{Binding Text}"
+                                   FontFamily="Menlo,Consolas,Monospace" FontSize="12"
+                                   Foreground="{DynamicResource MothTextBrush}" />
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

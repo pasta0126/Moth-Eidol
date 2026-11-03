@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.LogicalTree;
 using Avalonia.Layout;
 using Avalonia.Media;
 using MothEidol.Core.Alerts;
@@ -15,12 +16,23 @@ internal static class OccurrenceDetailBuilder
 {
     private const string Mono = "Menlo,Consolas,Monospace";
 
-    public static Control Build(EventOccurrence occurrence)
+    public static Control Build(EventOccurrence occurrence, bool wrapAll = false)
     {
         var panel = new StackPanel { Spacing = 18 };
         panel.Children.Add(StackSection(occurrence.Message));
         panel.Children.Add(ContextSection(occurrence));
+        if (wrapAll) WrapEverything(panel);
         return panel;
+    }
+
+    /// <summary>Makes every line wrap to the available width instead of running off to the right.</summary>
+    private static void WrapEverything(Control root)
+    {
+        foreach (var text in root.GetLogicalDescendants().OfType<SelectableTextBlock>())
+        {
+            text.TextWrapping = TextWrapping.Wrap;
+            text.TextTrimming = null;
+        }
     }
 
     private static Control StackSection(string message)
