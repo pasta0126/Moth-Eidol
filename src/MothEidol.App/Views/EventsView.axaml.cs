@@ -29,10 +29,14 @@ public partial class EventsView : UserControl
         GroupList.ItemsSource = _rows;
         FilterCombo.SelectionChanged += (_, _) => Refresh();
         MarkAllButton.Click += OnMarkAllClicked;
-        GroupList.SelectionChanged += OnGroupSelected;
         DetailBackButton.Click += (_, _) => CloseDetail();
         DetailSeenButton.Click += OnDetailSeenClicked;
         CopyButton.Click += OnCopyClicked;
+        CopyAllItem.Click += async (_, _) =>
+        {
+            if (OccurrenceList.SelectedItem is OccurrenceRow row && TopLevel.GetTopLevel(this)?.Clipboard is { } clipboard)
+                await clipboard.SetTextAsync(OccurrenceCopyText.Build(row.Occurrence));
+        };
         RangeCombo.SelectionChanged += (_, _) => UpdateTimeline();
         OccurrenceList.SelectionChanged += OnOccurrenceSelected;
         _timer.Tick += (_, _) => { if (IsEffectivelyVisible) Refresh(); };
@@ -97,9 +101,20 @@ public partial class EventsView : UserControl
         while (_rows.Count > target.Count) _rows.RemoveAt(_rows.Count - 1);
     }
 
-    private void OnGroupSelected(object? sender, SelectionChangedEventArgs e)
+    private void OnGroupRowAttached(object? sender, Avalonia.VisualTreeAttachmentEventArgs e)
     {
-        if (GroupList.SelectedItem is not EventGroupRow row) return;
+        if (sender is Control row) ClickGesture.Attach(row, OpenGroupRow);
+    }
+
+    private void OnOccurrenceRowAttached(object? sender, Avalonia.VisualTreeAttachmentEventArgs e)
+    {
+        if (sender is Control row)
+            ClickGesture.Attach(row, c => { if (c.DataContext is OccurrenceRow o) OccurrenceList.SelectedItem = o; });
+    }
+
+    private void OpenGroupRow(Control control)
+    {
+        if (control.DataContext is not EventGroupRow row) return;
 
         GroupList.SelectedItem = null;
         _openGroup = row.Id;

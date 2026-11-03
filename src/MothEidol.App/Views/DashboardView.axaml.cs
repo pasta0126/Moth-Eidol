@@ -54,9 +54,14 @@ public partial class DashboardView : UserControl
         HintText.IsVisible = tiles.Count == 1;
     }
 
-    private void OnTileClicked(object? sender, RoutedEventArgs e)
+    private void OnTileAttached(object? sender, Avalonia.VisualTreeAttachmentEventArgs e)
     {
-        if (_projects is null || sender is not Button { DataContext: TileModel tile }) return;
+        if (sender is Control tile) ClickGesture.Attach(tile, OnTileClicked);
+    }
+
+    private void OnTileClicked(Control sender)
+    {
+        if (_projects is null || sender is not { DataContext: TileModel tile }) return;
 
         if (tile.IsNew)
         {

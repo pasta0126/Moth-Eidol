@@ -13,22 +13,28 @@
             <ToggleButton x:Name="PauseToggle" Grid.Column="2" Content="Pause auto-scroll" />
             <Button x:Name="ClearButton" Grid.Column="3" Content="Clear" />
             <StackPanel Grid.Column="4" Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
-                <TextBlock Text="Max lines" VerticalAlignment="Center"
+                <SelectableTextBlock Text="Max lines" VerticalAlignment="Center"
                            Foreground="{DynamicResource MothTextMutedBrush}" />
                 <NumericUpDown x:Name="MaxLinesBox" Minimum="100" Maximum="200000" Increment="500"
                                FormatString="0" Width="130" />
             </StackPanel>
-            <TextBlock x:Name="ScrollStateText" Grid.Column="5" VerticalAlignment="Center" MinWidth="130"
+            <SelectableTextBlock x:Name="ScrollStateText" Grid.Column="5" VerticalAlignment="Center" MinWidth="130"
                        Foreground="{DynamicResource MothTextMutedBrush}" />
         </Grid>
 
-        <TextBlock x:Name="HintText" DockPanel.Dock="Top" Margin="0,12,0,0"
+        <SelectableTextBlock x:Name="HintText" DockPanel.Dock="Top" Margin="0,12,0,0"
                    Foreground="{DynamicResource MothTextMutedBrush}" TextWrapping="Wrap" />
 
-        <ListBox x:Name="LinesList" Margin="0,12,0,0"
+        <ListBox x:Name="LinesList" Margin="0,12,0,0" SelectionMode="Multiple"
                  Background="{DynamicResource MothSurfaceBrush}"
                  BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1"
                  ScrollViewer.HorizontalScrollBarVisibility="Auto">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem x:Name="CopySelectedItem" Header="Copy selected entries" />
+                    <MenuItem x:Name="CopyVisibleItem" Header="Copy all visible" />
+                </ContextMenu>
+            </ListBox.ContextMenu>
             <ListBox.Styles>
                 <Style Selector="ListBoxItem">
                     <Setter Property="Padding" Value="6,1" />
@@ -38,12 +44,12 @@
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="views:EntryItem">
                     <StackPanel Orientation="Horizontal" Spacing="8" Background="Transparent"
-                                Tapped="OnEntryTapped">
-                        <TextBlock Text="{Binding Time}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
+                                AttachedToVisualTree="OnEntryAttached">
+                        <SelectableTextBlock Text="{Binding Time}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
                                    Foreground="{DynamicResource MothTextMutedBrush}" />
-                        <TextBlock Text="{Binding LevelText}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
+                        <SelectableTextBlock Text="{Binding LevelText}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
                                    FontWeight="Bold" Foreground="{Binding LevelBrush}" />
-                        <TextBlock Text="{Binding Text}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
+                        <SelectableTextBlock Text="{Binding Text}" FontFamily="Menlo,Consolas,Monospace" FontSize="12"
                                    TextWrapping="NoWrap" Foreground="{DynamicResource MothTextBrush}" />
                     </StackPanel>
                 </DataTemplate>

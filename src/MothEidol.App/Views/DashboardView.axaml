@@ -5,14 +5,14 @@
     <DockPanel Margin="24">
         <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto">
             <StackPanel>
-                <TextBlock Text="MOTH-EIDOL" FontSize="28" FontWeight="Bold"
+                <SelectableTextBlock Text="MOTH-EIDOL" FontSize="28" FontWeight="Bold"
                            Foreground="{DynamicResource MothPrimaryBrush}" />
-                <TextBlock Text="Projects" Foreground="{DynamicResource MothAccentSoftBrush}" />
+                <SelectableTextBlock Text="Projects" Foreground="{DynamicResource MothAccentSoftBrush}" />
             </StackPanel>
             <Button x:Name="SettingsButton" Grid.Column="1" Content="Settings" VerticalAlignment="Top" />
         </Grid>
 
-        <TextBlock x:Name="HintText" DockPanel.Dock="Top" Margin="0,16,0,0" IsVisible="False" TextWrapping="Wrap"
+        <SelectableTextBlock x:Name="HintText" DockPanel.Dock="Top" Margin="0,16,0,0" IsVisible="False" TextWrapping="Wrap"
                    Text="No projects yet. Create one and the wizard will guide you through its log folders and alerts."
                    Foreground="{DynamicResource MothTextMutedBrush}" />
 
@@ -25,8 +25,7 @@
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="views:TileModel">
-                        <Button Click="OnTileClicked" Padding="0" Margin="0,0,16,16"
-                                Background="Transparent" BorderThickness="0">
+                        <Border AttachedToVisualTree="OnTileAttached" Cursor="Hand" Margin="0,0,16,16" Background="Transparent">
                             <Border Width="270" Height="150" CornerRadius="6" ClipToBounds="True"
                                     Background="{DynamicResource MothSurfaceBrush}"
                                     BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1">
@@ -34,33 +33,33 @@
                                     <Grid IsVisible="{Binding IsProject}" ColumnDefinitions="6,*">
                                         <Border Background="{Binding StatusBrush}" />
                                         <StackPanel Grid.Column="1" Margin="14,12" Spacing="6">
-                                            <TextBlock Text="{Binding Name}" FontSize="17" FontWeight="SemiBold"
+                                            <SelectableTextBlock Text="{Binding Name}" FontSize="17" FontWeight="SemiBold"
                                                        TextTrimming="CharacterEllipsis"
                                                        Foreground="{DynamicResource MothTextBrush}" />
-                                            <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold"
+                                            <SelectableTextBlock Text="{Binding StatusText}" FontWeight="SemiBold"
                                                        Foreground="{Binding StatusBrush}" />
-                                            <TextBlock Text="{Binding Detail}" FontSize="12"
+                                            <SelectableTextBlock Text="{Binding Detail}" FontSize="12"
                                                        TextTrimming="CharacterEllipsis"
                                                        Foreground="{DynamicResource MothTextMutedBrush}" />
                                             <views:SparklineControl IsVisible="{Binding HasSeries}" Height="26"
                                                                     Margin="0,4,0,0" HorizontalAlignment="Stretch"
                                                                     Values="{Binding Series}"
                                                                     Brush="{Binding StatusBrush}" />
-                                            <TextBlock Text="{Binding HealthText}" FontSize="11"
+                                            <SelectableTextBlock Text="{Binding HealthText}" FontSize="11"
                                                        TextTrimming="CharacterEllipsis"
                                                        Foreground="{DynamicResource MothTextMutedBrush}" />
                                         </StackPanel>
                                     </Grid>
                                     <StackPanel IsVisible="{Binding IsNew}" VerticalAlignment="Center"
                                                 HorizontalAlignment="Center" Spacing="4">
-                                        <TextBlock Text="+" FontSize="34" HorizontalAlignment="Center"
+                                        <SelectableTextBlock Text="+" FontSize="34" HorizontalAlignment="Center"
                                                    Foreground="{DynamicResource MothPrimaryBrush}" />
-                                        <TextBlock Text="New project" HorizontalAlignment="Center"
+                                        <SelectableTextBlock Text="New project" HorizontalAlignment="Center"
                                                    Foreground="{DynamicResource MothAccentSoftBrush}" />
                                     </StackPanel>
                                 </Grid>
                             </Border>
-                        </Button>
+                        </Border>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

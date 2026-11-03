@@ -4,16 +4,16 @@
              x:Class="MothEidol.App.Views.ProjectWizardView">
     <DockPanel Margin="24">
         <StackPanel DockPanel.Dock="Top" Spacing="2">
-            <TextBlock Text="New project" FontSize="28" FontWeight="Bold"
+            <SelectableTextBlock Text="New project" FontSize="28" FontWeight="Bold"
                        Foreground="{DynamicResource MothPrimaryBrush}" />
-            <TextBlock x:Name="StepText" Foreground="{DynamicResource MothAccentSoftBrush}" />
+            <SelectableTextBlock x:Name="StepText" Foreground="{DynamicResource MothAccentSoftBrush}" />
         </StackPanel>
 
         <Border DockPanel.Dock="Bottom" Margin="0,12,0,0" Padding="0,12,0,0"
                 BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="0,1,0,0">
             <Grid ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="8">
                 <Button x:Name="CancelButton" Content="Cancel" />
-                <TextBlock x:Name="ErrorText" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"
+                <SelectableTextBlock x:Name="ErrorText" Grid.Column="1" VerticalAlignment="Center" TextWrapping="Wrap"
                            Foreground="{DynamicResource MothErrorBrush}" />
                 <Button x:Name="BackButton" Grid.Column="2" Content="Back" />
                 <Button x:Name="NextButton" Grid.Column="3" Content="Next" Classes="accent" />
@@ -24,17 +24,17 @@
             <StackPanel MaxWidth="900" HorizontalAlignment="Left" Margin="0,0,16,0">
 
                 <StackPanel x:Name="NameStep" Spacing="8">
-                    <TextBlock Text="What is the project called?" FontSize="18" FontWeight="SemiBold"
+                    <SelectableTextBlock Text="What is the project called?" FontSize="18" FontWeight="SemiBold"
                                Foreground="{DynamicResource MothAccentBrush}" />
-                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+                    <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
                                Text="Use the name your team knows the application by. It is how its tile and its alerts will be labelled." />
                     <TextBox x:Name="NameBox" PlaceholderText="For example: Billing service" />
                 </StackPanel>
 
                 <StackPanel x:Name="LocationStep" Spacing="10" IsVisible="False">
-                    <TextBlock Text="Where are its logs?" FontSize="18" FontWeight="SemiBold"
+                    <SelectableTextBlock Text="Where are its logs?" FontSize="18" FontWeight="SemiBold"
                                Foreground="{DynamicResource MothAccentBrush}" />
-                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+                    <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
                                Text="Point to a single log file, or to the folder where daily files are written plus a name pattern (the newest match is followed). It can be a local path or a network share your user can read. You can add several." />
                     <StackPanel Orientation="Horizontal" Spacing="16">
                         <RadioButton x:Name="FolderRadio" GroupName="kind" IsChecked="True"
@@ -52,34 +52,34 @@
 
                     <Border Padding="12" CornerRadius="4" Background="{DynamicResource MothSurfaceBrush}">
                         <StackPanel Spacing="6">
-                            <TextBlock x:Name="CheckText" TextWrapping="Wrap" FontWeight="SemiBold"
+                            <SelectableTextBlock x:Name="CheckText" TextWrapping="Wrap" FontWeight="SemiBold"
                                        Foreground="{DynamicResource MothTextMutedBrush}" />
-                            <TextBlock x:Name="WarningText" TextWrapping="Wrap"
+                            <SelectableTextBlock x:Name="WarningText" TextWrapping="Wrap"
                                        Foreground="{DynamicResource MothWarningBrush}" />
                             <StackPanel x:Name="FilesPanel" IsVisible="False" Spacing="2">
-                                <TextBlock x:Name="FilesTitle" FontSize="12"
+                                <SelectableTextBlock x:Name="FilesTitle" FontSize="12"
                                            Foreground="{DynamicResource MothTextMutedBrush}" />
                                 <ItemsControl x:Name="FileList">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="x:String">
-                                            <TextBlock Text="{Binding}" FontSize="12" TextTrimming="CharacterEllipsis"
+                                            <SelectableTextBlock Text="{Binding}" FontSize="12" TextTrimming="CharacterEllipsis"
                                                        Foreground="{DynamicResource MothTextBrush}" />
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
                             </StackPanel>
                             <StackPanel x:Name="SamplePanel" IsVisible="False" Spacing="2">
-                                <TextBlock Text="Latest entries found (this is how the app reads them)" FontSize="12"
+                                <SelectableTextBlock Text="Latest entries found (this is how the app reads them)" FontSize="12"
                                            Foreground="{DynamicResource MothTextMutedBrush}" />
                                 <ItemsControl x:Name="SampleList">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="views:SampleRow">
                                             <Grid ColumnDefinitions="64,36,*" ColumnSpacing="8">
-                                                <TextBlock Text="{Binding Time}" FontSize="12"
+                                                <SelectableTextBlock Text="{Binding Time}" FontSize="12"
                                                            Foreground="{DynamicResource MothTextMutedBrush}" />
-                                                <TextBlock Grid.Column="1" Text="{Binding Level}" FontSize="12"
+                                                <SelectableTextBlock Grid.Column="1" Text="{Binding Level}" FontSize="12"
                                                            FontWeight="SemiBold" Foreground="{Binding LevelBrush}" />
-                                                <TextBlock Grid.Column="2" Text="{Binding Message}" FontSize="12"
+                                                <SelectableTextBlock Grid.Column="2" Text="{Binding Message}" FontSize="12"
                                                            TextTrimming="CharacterEllipsis"
                                                            Foreground="{DynamicResource MothTextBrush}" />
                                             </Grid>
@@ -92,21 +92,21 @@
 
                     <StackPanel Orientation="Horizontal" Spacing="12">
                         <Button x:Name="AddButton" Content="Add this source" Classes="accent" IsEnabled="False" />
-                        <TextBlock x:Name="AddError" VerticalAlignment="Center" TextWrapping="Wrap"
+                        <SelectableTextBlock x:Name="AddError" VerticalAlignment="Center" TextWrapping="Wrap"
                                    Foreground="{DynamicResource MothErrorBrush}" />
                     </StackPanel>
 
-                    <TextBlock Text="Sources of this project" FontWeight="SemiBold" Margin="0,8,0,0"
+                    <SelectableTextBlock Text="Sources of this project" FontWeight="SemiBold" Margin="0,8,0,0"
                                Foreground="{DynamicResource MothAccentBrush}" />
-                    <TextBlock x:Name="NoSourcesText" Text="None added yet."
+                    <SelectableTextBlock x:Name="NoSourcesText" Text="None added yet."
                                Foreground="{DynamicResource MothTextMutedBrush}" />
                     <ItemsControl x:Name="SourceList">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate x:DataType="views:WizardSourceRow">
                                 <Grid ColumnDefinitions="70,*,Auto" ColumnSpacing="12" Margin="0,4">
-                                    <TextBlock Text="{Binding Kind}" FontWeight="SemiBold" VerticalAlignment="Center"
+                                    <SelectableTextBlock Text="{Binding Kind}" FontWeight="SemiBold" VerticalAlignment="Center"
                                                Foreground="{DynamicResource MothInfoBrush}" />
-                                    <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"
+                                    <SelectableTextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center"
                                                TextTrimming="CharacterEllipsis"
                                                Foreground="{DynamicResource MothTextBrush}" />
                                     <Button Grid.Column="2" Content="Remove" Click="OnSourceRemoveClicked" />
@@ -117,9 +117,9 @@
                 </StackPanel>
 
                 <StackPanel x:Name="AlertsStep" Spacing="10" IsVisible="False">
-                    <TextBlock Text="When should it alert you?" FontSize="18" FontWeight="SemiBold"
+                    <SelectableTextBlock Text="When should it alert you?" FontSize="18" FontWeight="SemiBold"
                                Foreground="{DynamicResource MothAccentBrush}" />
-                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+                    <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
                                Text="Errors and above always raise an alert; information entries never do. Warnings are up to you." />
                     <CheckBox x:Name="WarningsCheck" Content="Also raise alerts for warnings"
                               Foreground="{DynamicResource MothTextBrush}" />
@@ -127,10 +127,10 @@
                         <ComboBoxItem Content="Immediate, then group alerts during a cooldown" />
                         <ComboBoxItem Content="One summary per interval" />
                     </ComboBox>
-                    <TextBlock x:Name="ModeHelp" TextWrapping="Wrap"
+                    <SelectableTextBlock x:Name="ModeHelp" TextWrapping="Wrap"
                                Foreground="{DynamicResource MothTextMutedBrush}" />
                     <StackPanel Orientation="Horizontal" Spacing="12">
-                        <TextBlock x:Name="MinutesLabel" VerticalAlignment="Center"
+                        <SelectableTextBlock x:Name="MinutesLabel" VerticalAlignment="Center"
                                    Foreground="{DynamicResource MothTextMutedBrush}" />
                         <NumericUpDown x:Name="MinutesBox" Minimum="1" Maximum="1440" Increment="1"
                                        FormatString="0" Width="130" />
@@ -138,19 +138,19 @@
                 </StackPanel>
 
                 <StackPanel x:Name="ReviewStep" Spacing="8" IsVisible="False">
-                    <TextBlock Text="Everything look right?" FontSize="18" FontWeight="SemiBold"
+                    <SelectableTextBlock Text="Everything look right?" FontSize="18" FontWeight="SemiBold"
                                Foreground="{DynamicResource MothAccentBrush}" />
-                    <TextBlock x:Name="ReviewName" FontSize="20" FontWeight="SemiBold"
+                    <SelectableTextBlock x:Name="ReviewName" FontSize="20" FontWeight="SemiBold"
                                Foreground="{DynamicResource MothTextBrush}" />
-                    <TextBlock Text="Log sources" FontWeight="SemiBold" Margin="0,8,0,0"
+                    <SelectableTextBlock Text="Log sources" FontWeight="SemiBold" Margin="0,8,0,0"
                                Foreground="{DynamicResource MothAccentSoftBrush}" />
-                    <TextBlock x:Name="ReviewSources" TextWrapping="Wrap"
+                    <SelectableTextBlock x:Name="ReviewSources" TextWrapping="Wrap"
                                Foreground="{DynamicResource MothTextBrush}" />
-                    <TextBlock Text="Alerts" FontWeight="SemiBold" Margin="0,8,0,0"
+                    <SelectableTextBlock Text="Alerts" FontWeight="SemiBold" Margin="0,8,0,0"
                                Foreground="{DynamicResource MothAccentSoftBrush}" />
-                    <TextBlock x:Name="ReviewAlerts" TextWrapping="Wrap"
+                    <SelectableTextBlock x:Name="ReviewAlerts" TextWrapping="Wrap"
                                Foreground="{DynamicResource MothTextBrush}" />
-                    <TextBlock TextWrapping="Wrap" Margin="0,8,0,0"
+                    <SelectableTextBlock TextWrapping="Wrap" Margin="0,8,0,0"
                                Foreground="{DynamicResource MothTextMutedBrush}"
                                Text="Monitoring starts as soon as you create the project. You can change all of this later in the project's Settings." />
                 </StackPanel>

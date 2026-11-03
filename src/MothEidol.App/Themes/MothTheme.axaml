@@ -40,4 +40,7 @@
     <SolidColorBrush x:Key="MothInfoBrush" Color="{StaticResource MothInfoColor}" />
     <SolidColorBrush x:Key="MothWarningBrush" Color="{StaticResource MothWarningColor}" />
     <SolidColorBrush x:Key="MothErrorBrush" Color="{StaticResource MothErrorColor}" />
+
+    <!-- Text selection: amber highlight with obsidian text -->
+    <SolidColorBrush x:Key="TextControlSelectionHighlightColor" Color="{StaticResource MothPrimaryColor}" />
 </ResourceDictionary>

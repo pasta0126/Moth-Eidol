@@ -40,7 +40,7 @@ public partial class AppSettingsView : UserControl
     /// <summary>One switch per channel, built from the registered ones so new channels appear without changes here.</summary>
     private void BuildChannels(AppSettings settings, NotificationDispatcher dispatcher)
     {
-        var problems = new Dictionary<string, TextBlock>();
+        var problems = new Dictionary<string, SelectableTextBlock>();
 
         foreach (var notifier in dispatcher.Notifiers)
         {
@@ -52,7 +52,7 @@ public partial class AppSettingsView : UserControl
             };
             check.Click += (_, _) => settings.SetChannelEnabled(notifier.Id, check.IsChecked == true);
 
-            var problem = new TextBlock
+            var problem = new SelectableTextBlock
             {
                 IsVisible = false,
                 TextWrapping = Avalonia.Media.TextWrapping.Wrap,

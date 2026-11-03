@@ -6,7 +6,7 @@
         <StackPanel Margin="0,16,16,16" Spacing="20" MaxWidth="900" HorizontalAlignment="Left">
 
             <StackPanel Spacing="8">
-                <TextBlock Text="General" FontWeight="SemiBold" FontSize="16"
+                <SelectableTextBlock Text="General" FontWeight="SemiBold" FontSize="16"
                            Foreground="{DynamicResource MothAccentBrush}" />
                 <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
                     <TextBox x:Name="NameBox" PlaceholderText="Project name" />
@@ -14,12 +14,12 @@
                 </Grid>
                 <CheckBox x:Name="EnabledCheck" Content="Monitor this project"
                           Foreground="{DynamicResource MothTextBrush}" />
-                <TextBlock x:Name="GeneralError" TextWrapping="Wrap"
+                <SelectableTextBlock x:Name="GeneralError" TextWrapping="Wrap"
                            Foreground="{DynamicResource MothErrorBrush}" />
             </StackPanel>
 
             <StackPanel Spacing="8">
-                <TextBlock Text="Log sources" FontWeight="SemiBold" FontSize="16"
+                <SelectableTextBlock Text="Log sources" FontWeight="SemiBold" FontSize="16"
                            Foreground="{DynamicResource MothAccentBrush}" />
                 <Border Padding="12" CornerRadius="4" Background="{DynamicResource MothSurfaceBrush}">
                     <StackPanel Spacing="8">
@@ -39,24 +39,24 @@
                                  PlaceholderText="File name pattern, for example MyService*.log" />
                         <StackPanel Orientation="Horizontal" Spacing="12">
                             <Button x:Name="AddButton" Content="Add source" Classes="accent" />
-                            <TextBlock x:Name="SourceError" VerticalAlignment="Center" TextWrapping="Wrap"
+                            <SelectableTextBlock x:Name="SourceError" VerticalAlignment="Center" TextWrapping="Wrap"
                                        Foreground="{DynamicResource MothErrorBrush}" />
                         </StackPanel>
                     </StackPanel>
                 </Border>
 
-                <TextBlock x:Name="NoSourcesText" Text="No sources yet." IsVisible="False"
+                <SelectableTextBlock x:Name="NoSourcesText" Text="No sources yet." IsVisible="False"
                            Foreground="{DynamicResource MothTextMutedBrush}" />
                 <ItemsControl x:Name="SourceList">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="views:SourceRow">
                             <Grid ColumnDefinitions="110,*,Auto,Auto" ColumnSpacing="12" Margin="0,4">
-                                <TextBlock Text="{Binding StatusText}" FontWeight="SemiBold"
+                                <SelectableTextBlock Text="{Binding StatusText}" FontWeight="SemiBold"
                                            Foreground="{Binding StatusBrush}" VerticalAlignment="Center" />
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"
+                                    <SelectableTextBlock Text="{Binding Name}" TextTrimming="CharacterEllipsis"
                                                Foreground="{DynamicResource MothTextBrush}" />
-                                    <TextBlock Text="{Binding Detail}" FontSize="11" TextTrimming="CharacterEllipsis"
+                                    <SelectableTextBlock Text="{Binding Detail}" FontSize="11" TextTrimming="CharacterEllipsis"
                                                Foreground="{DynamicResource MothTextMutedBrush}" />
                                 </StackPanel>
                                 <CheckBox Grid.Column="2" Content="Enabled" IsChecked="{Binding Enabled, Mode=OneWay}"
@@ -69,9 +69,9 @@
             </StackPanel>
 
             <StackPanel Spacing="8">
-                <TextBlock Text="Alerts" FontWeight="SemiBold" FontSize="16"
+                <SelectableTextBlock Text="Alerts" FontWeight="SemiBold" FontSize="16"
                            Foreground="{DynamicResource MothAccentBrush}" />
-                <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+                <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
                            Text="Errors always raise alerts and information never does. Choose what happens with warnings and how often alerts are delivered." />
                 <CheckBox x:Name="WarningsCheck" Content="Raise alerts for warnings"
                           Foreground="{DynamicResource MothTextBrush}" />
@@ -80,21 +80,21 @@
                         <ComboBoxItem Content="Immediate, then group alerts during a cooldown" />
                         <ComboBoxItem Content="One summary per interval" />
                     </ComboBox>
-                    <TextBlock x:Name="MinutesLabel" VerticalAlignment="Center"
+                    <SelectableTextBlock x:Name="MinutesLabel" VerticalAlignment="Center"
                                Foreground="{DynamicResource MothTextMutedBrush}" />
                     <NumericUpDown x:Name="MinutesBox" Minimum="1" Maximum="1440" Increment="1"
                                    FormatString="0" Width="130" />
                 </StackPanel>
-                <TextBlock x:Name="AlertError" TextWrapping="Wrap"
+                <SelectableTextBlock x:Name="AlertError" TextWrapping="Wrap"
                            Foreground="{DynamicResource MothErrorBrush}" />
             </StackPanel>
 
             <StackPanel Spacing="8">
-                <TextBlock Text="Remove" FontWeight="SemiBold" FontSize="16"
+                <SelectableTextBlock Text="Remove" FontWeight="SemiBold" FontSize="16"
                            Foreground="{DynamicResource MothErrorBrush}" />
                 <Button x:Name="RemoveButton" Content="Remove this project" HorizontalAlignment="Left" />
                 <StackPanel x:Name="ConfirmPanel" IsVisible="False" Spacing="8">
-                    <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextBrush}"
+                    <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextBrush}"
                                Text="This stops monitoring and deletes the project together with its sources. It cannot be undone." />
                     <StackPanel Orientation="Horizontal" Spacing="8">
                         <Button x:Name="ConfirmRemoveButton" Content="Yes, remove it" />

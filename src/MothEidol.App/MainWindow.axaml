@@ -11,14 +11,14 @@
     <Border DockPanel.Dock="Bottom"
             BorderBrush="{DynamicResource MothBorderBrush}"
             BorderThickness="0,1,0,0" Padding="24,8">
-        <TextBlock x:Name="VersionText" FontSize="12"
+        <SelectableTextBlock x:Name="VersionText" FontSize="12"
                    Foreground="{DynamicResource MothTextMutedBrush}" />
     </Border>
     <Border x:Name="NoticeBanner" DockPanel.Dock="Top" IsVisible="False" Padding="12" Margin="16,16,16,0"
             CornerRadius="4" BorderThickness="1"
             Background="{DynamicResource MothSurfaceAltBrush}"
             BorderBrush="{DynamicResource MothWarningBrush}">
-        <TextBlock x:Name="NoticeText" TextWrapping="Wrap"
+        <SelectableTextBlock x:Name="NoticeText" TextWrapping="Wrap"
                    Foreground="{DynamicResource MothTextBrush}" />
     </Border>
     <Grid>

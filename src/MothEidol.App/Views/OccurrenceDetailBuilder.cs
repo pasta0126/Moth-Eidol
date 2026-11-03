@@ -107,7 +107,7 @@ internal static class OccurrenceDetailBuilder
 
         if (occurrence.Context is not { Count: > 0 } context)
         {
-            panel.Children.Add(new TextBlock
+            panel.Children.Add(new SelectableTextBlock
             {
                 Text = "No earlier entries from this source were read before this one.",
                 Foreground = ThemeBrushes.Get("MothTextMutedBrush"),
@@ -118,14 +118,14 @@ internal static class OccurrenceDetailBuilder
         foreach (var entry in context)
         {
             var row = new Grid { ColumnDefinitions = new ColumnDefinitions("90,36,*"), ColumnSpacing = 8 };
-            row.Children.Add(new TextBlock
+            row.Children.Add(new SelectableTextBlock
             {
                 Text = Before(occurrence.At - entry.At),
                 Foreground = ThemeBrushes.Get("MothTextMutedBrush"),
                 FontSize = 12,
             });
 
-            var level = new TextBlock
+            var level = new SelectableTextBlock
             {
                 Text = LevelText(entry.Level),
                 FontFamily = new FontFamily(Mono),
@@ -136,7 +136,7 @@ internal static class OccurrenceDetailBuilder
             Grid.SetColumn(level, 1);
             row.Children.Add(level);
 
-            var text = new TextBlock
+            var text = new SelectableTextBlock
             {
                 Text = entry.Text.Split('\n', 2)[0],
                 FontFamily = new FontFamily(Mono),
@@ -180,7 +180,7 @@ internal static class OccurrenceDetailBuilder
         _ => "MothTextMutedBrush",
     };
 
-    private static TextBlock Heading(string text) => new()
+    private static SelectableTextBlock Heading(string text) => new()
     {
         Text = text,
         FontWeight = FontWeight.SemiBold,

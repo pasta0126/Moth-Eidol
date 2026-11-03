@@ -2,6 +2,7 @@ using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Input;
+using Avalonia.Input.Platform;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using MothEidol.Core.Logs;
@@ -36,6 +37,10 @@ public partial class TailView : UserControl
         SourceCombo.SelectionChanged += (_, _) => { if (!_loading) ResetView(); };
         LevelCombo.SelectionChanged += (_, _) => ResetView();
         ClearButton.Click += OnClearClicked;
+        CopySelectedItem.Click += (_, _) =>
+            _ = CopyAsync((LinesList.SelectedItems ?? new List<object>()).OfType<EntryItem>().OrderBy(i => _items.IndexOf(i)));
+        CopyVisibleItem.Click += (_, _) => _ = CopyAsync(_items);
+        LinesList.KeyDown += OnListKeyDown;
         PauseToggle.IsCheckedChanged += (_, _) => UpdateScrollState();
         MaxLinesBox.ValueChanged += OnMaxLinesChanged;
         _timer.Tick += (_, _) => Sync();
@@ -140,12 +145,31 @@ public partial class TailView : UserControl
         if (_items.Count > max) _items.RemoveRange(0, _items.Count - max);
     }
 
-    private void OnEntryTapped(object? sender, TappedEventArgs e)
+    private void OnEntryAttached(object? sender, Avalonia.VisualTreeAttachmentEventArgs e)
     {
-        if (sender is Control { DataContext: EntryItem { IsMultiLine: true } item })
-        {
-            item.Expanded = !item.Expanded;
-        }
+        if (sender is Control row) ClickGesture.Attach(row, ToggleEntry);
+    }
+
+    private static void ToggleEntry(Control row)
+    {
+        if (row.DataContext is EntryItem { IsMultiLine: true } item) item.Expanded = !item.Expanded;
+    }
+
+    private async Task CopyAsync(IEnumerable<EntryItem> items)
+    {
+        var text = EntryCopyText.Build(items.Select(i => i.Entry));
+        if (text.Length == 0) return;
+        if (TopLevel.GetTopLevel(this)?.Clipboard is { } clipboard) await clipboard.SetTextAsync(text);
+    }
+
+    private void OnListKeyDown(object? sender, KeyEventArgs e)
+    {
+        // Ctrl/Cmd+C copies the selected entries unless text inside a line is selected (that one copies itself).
+        if (e.Key != Key.C || !e.KeyModifiers.HasFlag(KeyModifiers.Control) && !e.KeyModifiers.HasFlag(KeyModifiers.Meta)) return;
+        if (LinesList.SelectedItems is not { Count: > 0 } selected) return;
+
+        e.Handled = true;
+        _ = CopyAsync(selected.OfType<EntryItem>().OrderBy(i => _items.IndexOf(i)));
     }
 
     private void OnListTemplateApplied(object? sender, TemplateAppliedEventArgs e)

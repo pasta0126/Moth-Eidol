@@ -3,23 +3,23 @@
              x:Class="MothEidol.App.Views.AppSettingsView">
     <StackPanel Margin="24" Spacing="12">
         <Button x:Name="BackButton" Content="&#x2190; Dashboard" HorizontalAlignment="Left" />
-        <TextBlock Text="Settings" FontSize="28" FontWeight="Bold"
+        <SelectableTextBlock Text="Settings" FontSize="28" FontWeight="Bold"
                    Foreground="{DynamicResource MothPrimaryBrush}" />
         <Separator Margin="0,8" Background="{DynamicResource MothBorderBrush}" />
 
         <CheckBox x:Name="AutostartCheck" Content="Start with my session"
                   Foreground="{DynamicResource MothTextBrush}" />
-        <TextBlock x:Name="AutostartNote" TextWrapping="Wrap" IsVisible="False"
+        <SelectableTextBlock x:Name="AutostartNote" TextWrapping="Wrap" IsVisible="False"
                    Foreground="{DynamicResource MothTextMutedBrush}" />
 
         <Separator Margin="0,8" Background="{DynamicResource MothBorderBrush}" />
-        <TextBlock Text="Notification channels" FontWeight="SemiBold" FontSize="16"
+        <SelectableTextBlock Text="Notification channels" FontWeight="SemiBold" FontSize="16"
                    Foreground="{DynamicResource MothAccentBrush}" />
-        <TextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+        <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
                    Text="How Moth-Eidol tells you about alerts. Each channel can be switched on or off on its own." />
         <StackPanel x:Name="ChannelsPanel" Spacing="8" />
 
-        <TextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
+        <SelectableTextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
                    Foreground="{DynamicResource MothTextMutedBrush}"
                    TextWrapping="Wrap" Margin="0,8,0,0" />
     </StackPanel>
