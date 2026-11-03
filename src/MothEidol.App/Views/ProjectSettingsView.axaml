@@ -50,7 +50,7 @@
                 <ItemsControl x:Name="SourceList">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate x:DataType="views:SourceRow">
-                            <Grid ColumnDefinitions="110,*,Auto,Auto" ColumnSpacing="12" Margin="0,4">
+                            <Grid ColumnDefinitions="110,*,Auto,Auto,Auto" ColumnSpacing="12" Margin="0,4">
                                 <SelectableTextBlock Text="{Binding StatusText}" FontWeight="SemiBold"
                                            Foreground="{Binding StatusBrush}" VerticalAlignment="Center" />
                                 <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -61,7 +61,8 @@
                                 </StackPanel>
                                 <CheckBox Grid.Column="2" Content="Enabled" IsChecked="{Binding Enabled, Mode=OneWay}"
                                           Click="OnSourceEnabledClicked" Foreground="{DynamicResource MothTextBrush}" />
-                                <Button Grid.Column="3" Content="Remove" Click="OnSourceRemoveClicked" />
+                                <Button Grid.Column="3" Content="Open folder" Click="OnSourceOpenClicked" />
+                                <Button Grid.Column="4" Content="Remove" Click="OnSourceRemoveClicked" />
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

@@ -12,6 +12,7 @@ namespace MothEidol.App.Views;
 public partial class ProjectSettingsView : UserControl
 {
     private readonly ObservableCollection<SourceRow> _rows = [];
+    private readonly LogLocationOpener _opener = new(new MothEidol.Core.Platform.SystemFileManager());
     private ProjectService? _projects;
     private TailingService? _tailing;
     private Action? _removed;
@@ -177,6 +178,16 @@ public partial class ProjectSettingsView : UserControl
         {
             SourceError.Text = $"Could not change the source: {ex.Message}";
         }
+    }
+
+    private async void OnSourceOpenClicked(object? sender, RoutedEventArgs e)
+    {
+        if (_projects is null || sender is not Button { DataContext: SourceRow row }) return;
+
+        SourceError.Text = "";
+        if (_projects.SourcesOf(_projectId).FirstOrDefault(s => s.Id == row.Id) is not { } source) return;
+        var result = await _opener.OpenAsync(source);
+        SourceError.Text = result.Message ?? "";
     }
 
     private async void OnSourceRemoveClicked(object? sender, RoutedEventArgs e)

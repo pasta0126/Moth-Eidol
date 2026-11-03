@@ -3,7 +3,7 @@
              xmlns:views="using:MothEidol.App.Views"
              x:Class="MothEidol.App.Views.TailView">
     <DockPanel Margin="0,12,0,0">
-        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
+        <Grid DockPanel.Dock="Top" ColumnDefinitions="*,Auto,Auto,Auto,Auto,Auto,Auto,Auto" ColumnSpacing="12">
             <ComboBox x:Name="SourceCombo" HorizontalAlignment="Stretch" />
             <ComboBox x:Name="LevelCombo" Grid.Column="1" MinWidth="170" SelectedIndex="0">
                 <ComboBoxItem Content="All levels" />
@@ -19,9 +19,13 @@
                 <NumericUpDown x:Name="MaxLinesBox" Minimum="100" Maximum="200000" Increment="500"
                                FormatString="0" Width="130" />
             </StackPanel>
-            <SelectableTextBlock x:Name="ScrollStateText" Grid.Column="6" VerticalAlignment="Center" MinWidth="130"
+            <Button x:Name="OpenFolderButton" Grid.Column="6" Content="Open folder" />
+            <SelectableTextBlock x:Name="ScrollStateText" Grid.Column="7" VerticalAlignment="Center" MinWidth="130"
                        Foreground="{DynamicResource MothTextMutedBrush}" />
         </Grid>
+
+        <SelectableTextBlock x:Name="OpenMessage" DockPanel.Dock="Top" Margin="0,8,0,0" TextWrapping="Wrap"
+                   Foreground="{DynamicResource MothWarningBrush}" />
 
         <SelectableTextBlock x:Name="HintText" DockPanel.Dock="Top" Margin="0,12,0,0"
                    Foreground="{DynamicResource MothTextMutedBrush}" TextWrapping="Wrap" />

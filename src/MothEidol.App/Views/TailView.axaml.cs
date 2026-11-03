@@ -21,6 +21,8 @@ public partial class TailView : UserControl
 
     private readonly AvaloniaList<EntryItem> _items = [];
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromMilliseconds(150) };
+    private readonly LogLocationOpener _opener = new(new MothEidol.Core.Platform.SystemFileManager());
+    private IReadOnlyList<LogSource> _sources = [];
     private WordWrapState? _wrap;
     private ProjectTails? _tails;
     private AppSettings? _settings;
@@ -38,6 +40,7 @@ public partial class TailView : UserControl
         SourceCombo.SelectionChanged += (_, _) => { if (!_loading) ResetView(); };
         LevelCombo.SelectionChanged += (_, _) => ResetView();
         ClearButton.Click += OnClearClicked;
+        OpenFolderButton.Click += OnOpenFolderClicked;
         CopySelectedItem.Click += (_, _) =>
             _ = CopyAsync((LinesList.SelectedItems ?? new List<object>()).OfType<EntryItem>().OrderBy(i => _items.IndexOf(i)));
         CopyVisibleItem.Click += (_, _) => _ = CopyAsync(_items);
@@ -65,6 +68,7 @@ public partial class TailView : UserControl
     {
         if (_tails is null) return;
 
+        _sources = sources;
         var changedProject = _buffer != _tails.For(projectId);
         _buffer = _tails.For(projectId);
 
@@ -148,6 +152,44 @@ public partial class TailView : UserControl
     private void TrimView(int max)
     {
         if (_items.Count > max) _items.RemoveRange(0, _items.Count - max);
+    }
+
+    /// <summary>Opens the folder of the selected source; with all sources, the shared folder or a choice of them.</summary>
+    private async void OnOpenFolderClicked(object? sender, RoutedEventArgs e)
+    {
+        OpenMessage.Text = "";
+        if ((SourceCombo.SelectedItem as SourceChoice)?.SourceId is { } id)
+        {
+            if (_sources.FirstOrDefault(s => s.Id == id) is { } source) await OpenAsync(() => _opener.OpenAsync(source));
+            return;
+        }
+
+        var folders = LogLocationOpener.FoldersOf(_sources);
+        if (folders.Count == 0)
+        {
+            OpenMessage.Text = "This project has no sources yet.";
+        }
+        else if (folders.Count == 1)
+        {
+            await OpenAsync(() => _opener.OpenFolderAsync(folders[0]));
+        }
+        else
+        {
+            var menu = new ContextMenu();
+            foreach (var folder in folders)
+            {
+                var item = new MenuItem { Header = folder };
+                item.Click += async (_, _) => await OpenAsync(() => _opener.OpenFolderAsync(folder));
+                menu.Items.Add(item);
+            }
+            menu.Open(OpenFolderButton);
+        }
+    }
+
+    private async Task OpenAsync(Func<Task<OpenResult>> open)
+    {
+        var result = await open();
+        OpenMessage.Text = result.Message ?? "";
     }
 
     private void ApplyWrap()
