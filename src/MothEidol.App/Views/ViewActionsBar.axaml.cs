@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Metadata;
 
 namespace MothEidol.App.Views;
@@ -8,13 +9,25 @@ namespace MothEidol.App.Views;
 /// (it never overlays text or scrollbars) and wraps when the window is narrow. Declare the actions
 /// as children, in the order they must appear.
 /// </summary>
-public partial class ViewActionsBar : UserControl
+/// <remarks>
+/// Built in code on purpose: the control exposes its children as the XAML content property, so an
+/// AXAML root element would be added through <see cref="Actions"/> before the host panel exists.
+/// </remarks>
+public class ViewActionsBar : UserControl
 {
+    private readonly WrapPanel _host = new()
+    {
+        Orientation = Orientation.Horizontal,
+        ItemSpacing = 12,
+        LineSpacing = 4,
+    };
+
     public ViewActionsBar()
     {
-        InitializeComponent();
+        HorizontalAlignment = HorizontalAlignment.Right;
+        Content = _host;
     }
 
     [Content]
-    public Avalonia.Controls.Controls Actions => Host.Children;
+    public Avalonia.Controls.Controls Actions => _host.Children;
 }
