@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using Avalonia.Input.Platform;
 using Avalonia.Threading;
 using MothEidol.Core.Notifications;
 using MothEidol.Core.Platform;
@@ -11,6 +12,7 @@ public partial class AppSettingsView : UserControl
 {
     private IAutostart? _autostart;
     private AppSettings? _settings;
+    private readonly IUrlOpener _urlOpener = new SystemUrlOpener();
 
     public AppSettingsView()
     {
@@ -24,6 +26,7 @@ public partial class AppSettingsView : UserControl
         BackButton.Click += (_, _) => back();
         BuildChannels(settings, dispatcher);
         BuildSound(settings);
+        BuildAbout();
 
         if (autostart.IsSupported)
         {
@@ -82,6 +85,61 @@ public partial class AppSettingsView : UserControl
         var defaultOn = NotificationDefaults.SoundEnabledByDefault(OperatingSystem.IsWindows());
         SoundCombo.SelectedIndex = settings.IsAlertSoundEnabled(defaultOn) ? 0 : 1;
         SoundCombo.SelectionChanged += (_, _) => settings.SetAlertSoundEnabled(SoundCombo.SelectedIndex == 0);
+    }
+
+    /// <summary>The discreet About block: plain text links that only open the default browser.</summary>
+    private void BuildAbout()
+    {
+        ToolTip.SetTip(CoffeeLink, SupportLinks.BuyMeACoffee);
+        CoffeeLink.Click += async (_, _) => await OpenAsync(SupportLinks.BuyMeACoffee);
+        AddLink("Suggestions & bugs", SupportLinks.SuggestionsAndBugs);
+        AddLink("GitHub", SupportLinks.GitHub);
+    }
+
+    private void AddLink(string text, string url)
+    {
+        var link = new Button
+        {
+            Content = text,
+            Padding = new Avalonia.Thickness(0),
+            FontSize = 12,
+            Background = Avalonia.Media.Brushes.Transparent,
+            BorderThickness = new Avalonia.Thickness(0),
+            Foreground = ThemeBrushes.Get("MothAccentBrush"),
+            Cursor = new Avalonia.Input.Cursor(Avalonia.Input.StandardCursorType.Hand),
+        };
+        ToolTip.SetTip(link, url);
+        link.Click += async (_, _) => await OpenAsync(url);
+        AboutLinks.Children.Add(link);
+    }
+
+    /// <summary>Opens the address; when the browser cannot be started it says so and copies the address instead of failing.</summary>
+    private async Task OpenAsync(string url)
+    {
+        if (_urlOpener.TryOpen(url, out var error))
+        {
+            AboutNote.IsVisible = false;
+            return;
+        }
+
+        var copied = false;
+        try
+        {
+            if (TopLevel.GetTopLevel(this)?.Clipboard is { } clipboard)
+            {
+                await clipboard.SetTextAsync(url);
+                copied = true;
+            }
+        }
+        catch (Exception)
+        {
+            // Copying is a courtesy; the address is shown below anyway.
+        }
+
+        AboutNote.Text = copied
+            ? $"{error} The address was copied: {url}"
+            : $"{error} Address: {url}";
+        AboutNote.IsVisible = true;
     }
 
     private void OnAutostartChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

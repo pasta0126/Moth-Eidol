@@ -4,7 +4,7 @@ title: Moth-Eidol privacy policy
 
 # Moth-Eidol privacy policy
 
-_Last updated: 2026-11-02_
+_Last updated: 2026-11-05_
 
 Moth-Eidol is an open-source desktop application that monitors log files on your own computer.
 Source code: <https://github.com/pasta0126/Moth-Eidol>
@@ -18,6 +18,12 @@ Source code: <https://github.com/pasta0126/Moth-Eidol>
 - **No data is shared or sold.** We have no access to your logs, projects or settings.
 - **Network shares.** If you point a project at a network share, the app reads it through your operating system,
   exactly as any other program running as you would.
+
+## Links
+
+The Settings screen has links (support the author, suggestions and bugs, the author's GitHub). They only open your web browser
+when you click them; the app sends nothing with them. Suggestions and bug reports are public GitHub issues that you write yourself,
+on GitHub, with your own account. The app never collects or sends feedback on its own.
 
 ## Notifications and startup
 
