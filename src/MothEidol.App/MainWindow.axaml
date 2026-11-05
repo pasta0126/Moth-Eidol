@@ -8,7 +8,7 @@
         Background="{DynamicResource MothBgBrush}"
         WindowStartupLocation="CenterScreen">
     <DockPanel>
-    <Border DockPanel.Dock="Bottom"
+    <Border DockPanel.Dock="Bottom" Margin="0,8,0,0"
             BorderBrush="{DynamicResource MothBorderBrush}"
             BorderThickness="0,1,0,0" Padding="24,8">
         <SelectableTextBlock x:Name="VersionText" FontSize="12"

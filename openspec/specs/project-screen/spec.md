@@ -46,7 +46,7 @@ The system SHALL keep the application version visible on the project screen.
 - **THEN** the version footer is visible
 
 ### Requirement: Open log folder
-The system SHALL provide in the project tail and in each source of the project settings an action that opens the source's location in the operating system file manager, revealing the followed file when the platform supports it and otherwise opening its folder.
+The system SHALL provide in the view actions bar of the project tail and in each source of the project settings an action that opens the source's location in the operating system file manager, revealing the followed file when the platform supports it and otherwise opening its folder.
 
 #### Scenario: Open from the tail with one source selected
 - **WHEN** the user selects a source and chooses "Open folder"
