@@ -15,16 +15,7 @@ public sealed class EntryItem(LogEntry entry) : INotifyPropertyChanged
 
     public string Time => Entry.Timestamp?.ToString("yyyy-MM-dd HH:mm:ss.fff") ?? "";
 
-    public string LevelText => Entry.Level switch
-    {
-        EntryLevel.Verbose => "VRB",
-        EntryLevel.Debug => "DBG",
-        EntryLevel.Information => "INF",
-        EntryLevel.Warning => "WRN",
-        EntryLevel.Error => "ERR",
-        EntryLevel.Fatal => "FTL",
-        _ => "   ",
-    };
+    public string LevelText => RawLogText.LevelCode(Entry.Level);
 
     /// <summary>Semantic colors from the theme: info, warning and error; everything else is muted.</summary>
     public IBrush? LevelBrush => ThemeBrushes.Get(Entry.Level switch

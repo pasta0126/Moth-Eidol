@@ -32,4 +32,18 @@ public class CopyTextTests
         var occurrence = new EventOccurrence(1, 1, 1, DateTimeOffset.UtcNow, "boom");
         Assert.Equal("boom", OccurrenceCopyText.Build(occurrence));
     }
+
+    [Fact]
+    public void OccurrenceCopyText_IsWhatTheRawDetailAndTheCopyButtonShow()
+    {
+        // The Raw detail and the per-occurrence Copy button both use this builder, so they cannot disagree.
+        var at = DateTimeOffset.UtcNow;
+        var occurrence = new EventOccurrence(1, 1, 1, at, "boom\r\n   at B()\r\n",
+            [new ContextEntry(at, EntryLevel.Information, "before\r\n")]);
+
+        var text = OccurrenceCopyText.Build(occurrence);
+
+        Assert.Equal("before\nboom\r\n   at B()", text);
+        Assert.Equal(text, OccurrenceCopyText.Build(occurrence));
+    }
 }

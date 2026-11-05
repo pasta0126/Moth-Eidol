@@ -41,6 +41,8 @@ public partial class TailView : UserControl
         LevelCombo.SelectionChanged += (_, _) => ResetView();
         ClearButton.Click += OnClearClicked;
         OpenFolderButton.Click += OnOpenFolderClicked;
+        RawToggle.IsCheckedChanged += (_, _) => SetRaw(RawToggle.IsChecked == true);
+        RawRefreshButton.Click += (_, _) => TakeSnapshot();
         CopySelectedItem.Click += (_, _) =>
             _ = CopyAsync((LinesList.SelectedItems ?? new List<object>()).OfType<EntryItem>().OrderBy(i => _items.IndexOf(i)));
         CopyVisibleItem.Click += (_, _) => _ = CopyAsync(_items);
@@ -142,10 +144,44 @@ public partial class TailView : UserControl
         _items.AddRange(shown);
         TrimView(_buffer.MaxLines);
 
-        if (PauseToggle.IsChecked != true && !_scrolledAway)
+        // In Raw the styled list is hidden: entries keep arriving into it, and the snapshot is not touched.
+        if (!IsRaw && PauseToggle.IsChecked != true && !_scrolledAway)
         {
             Dispatcher.UIThread.Post(() => _scroll?.ScrollToEnd(), DispatcherPriority.Background);
         }
+    }
+
+    private bool IsRaw => RawToggle.IsChecked == true;
+
+    /// <summary>Switches between the styled live list and the plain-text snapshot.</summary>
+    private void SetRaw(bool raw)
+    {
+        RawBox.IsVisible = raw;
+        RawRefreshButton.IsVisible = raw;
+        LinesList.IsVisible = !raw;
+        if (raw)
+        {
+            TakeSnapshot();
+            return;
+        }
+
+        RawNote.IsVisible = false;
+        RawBox.Text = "";
+        UpdateScrollState();
+        if (PauseToggle.IsChecked != true && !_scrolledAway)
+            Dispatcher.UIThread.Post(() => _scroll?.ScrollToEnd(), DispatcherPriority.Background);
+    }
+
+    /// <summary>Captures the visible entries as plain text; it does not change while new entries arrive.</summary>
+    private void TakeSnapshot()
+    {
+        var result = RawLogText.Build(_items.Select(i => i.Entry));
+        RawBox.Text = result.Text;
+        RawBox.CaretIndex = result.Text.Length;
+        RawNote.IsVisible = true;
+        RawNote.Text = result.Truncated
+            ? $"Snapshot truncated to the last {RawLogText.DefaultMaxLines:N0} lines. Refresh to include new entries."
+            : "Snapshot: new entries are not added until you press Refresh.";
     }
 
     /// <summary>Drops the oldest entries from the view only; monitoring is unaffected.</summary>
@@ -197,6 +233,9 @@ public partial class TailView : UserControl
         var wrap = _wrap?.Enabled ?? true;
         WrapCheck.IsChecked = wrap;
         LinesList.Classes.Set("wrap", wrap);
+        RawBox.TextWrapping = wrap ? Avalonia.Media.TextWrapping.Wrap : Avalonia.Media.TextWrapping.NoWrap;
+        ScrollViewer.SetHorizontalScrollBarVisibility(
+            RawBox, wrap ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto);
         ScrollViewer.SetHorizontalScrollBarVisibility(
             LinesList, wrap ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto);
     }
@@ -245,7 +284,8 @@ public partial class TailView : UserControl
     }
 
     private void UpdateScrollState() =>
-        ScrollStateText.Text = PauseToggle.IsChecked == true ? "Auto-scroll paused"
+        ScrollStateText.Text = IsRaw ? "Raw snapshot (auto-scroll paused)"
+            : PauseToggle.IsChecked == true ? "Auto-scroll paused"
             : _scrolledAway ? "Scrolled up (not following)"
             : "Following";
 }

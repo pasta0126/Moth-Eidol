@@ -29,9 +29,19 @@
                    Foreground="{DynamicResource MothTextMutedBrush}" TextWrapping="Wrap" />
 
         <views:ViewActionsBar DockPanel.Dock="Top" Margin="0,12,0,0">
+            <ToggleButton x:Name="RawToggle" Content="Raw" />
+            <Button x:Name="RawRefreshButton" Content="Refresh" IsVisible="False" />
             <CheckBox x:Name="WrapCheck" Content="Word wrap" IsChecked="True" />
             <Button x:Name="OpenFolderButton" Content="Open folder" />
         </views:ViewActionsBar>
+
+        <SelectableTextBlock x:Name="RawNote" DockPanel.Dock="Top" Margin="0,0,0,6" IsVisible="False" TextWrapping="Wrap"
+                   Foreground="{DynamicResource MothTextMutedBrush}" />
+
+        <TextBox x:Name="RawBox" IsVisible="False" Margin="0,6,0,0" IsReadOnly="True" AcceptsReturn="True"
+                 FontFamily="Menlo,Consolas,Monospace" FontSize="12"
+                 Background="{DynamicResource MothSurfaceBrush}" Foreground="{DynamicResource MothTextBrush}"
+                 BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1" />
 
         <ListBox x:Name="LinesList" Margin="0,6,0,0" SelectionMode="Multiple"
                  Background="{DynamicResource MothSurfaceBrush}"

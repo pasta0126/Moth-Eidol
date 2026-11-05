@@ -2,13 +2,14 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.VisualTree;
 
 namespace MothEidol.App.Views;
 
 /// <summary>
 /// Makes a container react to a click while letting the text inside it be selected: the action runs only when
 /// the pointer is released close to where it was pressed (a drag is a text selection, not a click). The
-/// handlers also see events the selectable text has already handled.
+/// handlers also see events the selectable text has already handled, but ignore presses on buttons.
 /// </summary>
 internal static class ClickGesture
 {
@@ -20,7 +21,9 @@ internal static class ClickGesture
 
         container.AddHandler(InputElement.PointerPressedEvent, (_, e) =>
         {
-            pressedAt = e.GetCurrentPoint(container).Properties.IsLeftButtonPressed
+            // A press on a button inside the container belongs to that button, not to the container.
+            var onButton = (e.Source as Visual)?.FindAncestorOfType<Button>(includeSelf: true) is not null;
+            pressedAt = !onButton && e.GetCurrentPoint(container).Properties.IsLeftButtonPressed
                 ? e.GetPosition(container)
                 : null;
         }, RoutingStrategies.Bubble, handledEventsToo: true);

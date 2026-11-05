@@ -62,6 +62,7 @@
 
         <DockPanel x:Name="DetailPanel" IsVisible="False" Margin="0,12,0,0">
             <views:ViewActionsBar DockPanel.Dock="Top" Margin="0,0,0,6">
+                <ToggleButton x:Name="DetailRawToggle" Content="Raw" />
                 <CheckBox x:Name="DetailWrapCheck" Content="Word wrap" IsChecked="True" />
             </views:ViewActionsBar>
             <Grid DockPanel.Dock="Top" ColumnDefinitions="Auto,*,Auto,Auto" ColumnSpacing="12">
@@ -125,13 +126,19 @@
                              BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1">
                         <ListBox.ItemTemplate>
                             <DataTemplate x:DataType="views:OccurrenceRow">
-                                <StackPanel Margin="0,3" ToolTip.Tip="{Binding Exact}" Background="Transparent"
-                                            AttachedToVisualTree="OnOccurrenceRowAttached">
-                                    <SelectableTextBlock Text="{Binding Relative}" FontWeight="SemiBold"
-                                               Foreground="{DynamicResource MothTextBrush}" />
-                                    <SelectableTextBlock Text="{Binding Source}" FontSize="12" TextTrimming="CharacterEllipsis"
-                                               Foreground="{DynamicResource MothTextMutedBrush}" />
-                                </StackPanel>
+                                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8" Margin="0,3"
+                                      ToolTip.Tip="{Binding Exact}" Background="Transparent"
+                                      AttachedToVisualTree="OnOccurrenceRowAttached">
+                                    <StackPanel>
+                                        <SelectableTextBlock Text="{Binding Relative}" FontWeight="SemiBold"
+                                                   Foreground="{DynamicResource MothTextBrush}" />
+                                        <SelectableTextBlock Text="{Binding Source}" FontSize="12" TextTrimming="CharacterEllipsis"
+                                                   Foreground="{DynamicResource MothTextMutedBrush}" />
+                                    </StackPanel>
+                                    <Button Grid.Column="1" Content="Copy" VerticalAlignment="Center" Padding="8,2"
+                                            ToolTip.Tip="Copy the context and the full message of this occurrence"
+                                            Click="OnOccurrenceCopyClicked" />
+                                </Grid>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
@@ -145,6 +152,11 @@
                         </ContentControl.ContextMenu>
                     </ContentControl>
                 </ScrollViewer>
+                <TextBox x:Name="DetailRawBox" Grid.Column="2" IsVisible="False" Margin="0,0,0,12"
+                         IsReadOnly="True" AcceptsReturn="True"
+                         FontFamily="Menlo,Consolas,Monospace" FontSize="12"
+                         Background="{DynamicResource MothSurfaceBrush}" Foreground="{DynamicResource MothTextBrush}"
+                         BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1" />
             </Grid>
         </DockPanel>
     </Grid>

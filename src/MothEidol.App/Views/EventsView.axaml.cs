@@ -40,6 +40,7 @@ public partial class EventsView : UserControl
             if (OccurrenceList.SelectedItem is OccurrenceRow row && TopLevel.GetTopLevel(this)?.Clipboard is { } clipboard)
                 await clipboard.SetTextAsync(OccurrenceCopyText.Build(row.Occurrence));
         };
+        DetailRawToggle.IsCheckedChanged += (_, _) => ShowSelectedOccurrence();
         RangeCombo.SelectionChanged += (_, _) => UpdateTimeline();
         OccurrenceList.SelectionChanged += OnOccurrenceSelected;
         _timer.Tick += (_, _) => { if (IsEffectivelyVisible) Refresh(); };
@@ -126,6 +127,7 @@ public partial class EventsView : UserControl
         GroupList.SelectedItem = null;
         _openGroup = row.Id;
         CopiedText.Text = "";
+        DetailRawToggle.IsChecked = false;
         _shownOccurrence = 0;
         ShowDetail(row.Id, refreshOnly: false);
     }
@@ -184,13 +186,47 @@ public partial class EventsView : UserControl
     private void OnOccurrenceSelected(object? sender, SelectionChangedEventArgs e)
     {
         if (_loadingDetail || OccurrenceList.SelectedItem is not OccurrenceRow row) return;
-        OccurrenceDetail.Content = OccurrenceDetailBuilder.Build(row.Occurrence, _wrap?.Enabled ?? true);
+        ShowOccurrence(row);
     }
 
     private void ShowSelectedOccurrence()
     {
-        if (OccurrenceList.SelectedItem is OccurrenceRow row)
+        if (OccurrenceList.SelectedItem is OccurrenceRow row) ShowOccurrence(row);
+        else DetailRawBox.Text = "";
+    }
+
+    /// <summary>Shows an occurrence styled, or as the same plain text "Copy all" produces when Raw is on.</summary>
+    private void ShowOccurrence(OccurrenceRow row)
+    {
+        var raw = DetailRawToggle.IsChecked == true;
+        DetailScroll.IsVisible = !raw;
+        DetailRawBox.IsVisible = raw;
+        if (raw)
+        {
+            DetailRawBox.Text = OccurrenceCopyText.Build(row.Occurrence);
+            OccurrenceDetail.Content = null;
+        }
+        else
+        {
             OccurrenceDetail.Content = OccurrenceDetailBuilder.Build(row.Occurrence, _wrap?.Enabled ?? true);
+        }
+    }
+
+    /// <summary>Copies one occurrence without selecting it, so the displayed detail does not change.</summary>
+    private async void OnOccurrenceCopyClicked(object? sender, RoutedEventArgs e)
+    {
+        e.Handled = true;
+        if ((sender as Control)?.DataContext is not OccurrenceRow row) return;
+
+        var clipboard = TopLevel.GetTopLevel(this)?.Clipboard;
+        if (clipboard is null)
+        {
+            CopiedText.Text = "The clipboard is not available.";
+            return;
+        }
+
+        await clipboard.SetTextAsync(OccurrenceCopyText.Build(row.Occurrence));
+        CopiedText.Text = $"Occurrence from {row.Relative} copied to the clipboard.";
     }
 
     private void ApplyWrap()
@@ -198,6 +234,9 @@ public partial class EventsView : UserControl
         var wrap = _wrap?.Enabled ?? true;
         DetailWrapCheck.IsChecked = wrap;
         DetailScroll.HorizontalScrollBarVisibility = wrap ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto;
+        DetailRawBox.TextWrapping = wrap ? Avalonia.Media.TextWrapping.Wrap : Avalonia.Media.TextWrapping.NoWrap;
+        ScrollViewer.SetHorizontalScrollBarVisibility(
+            DetailRawBox, wrap ? ScrollBarVisibility.Disabled : ScrollBarVisibility.Auto);
     }
 
     private void UpdateTimeline()
