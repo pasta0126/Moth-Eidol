@@ -56,6 +56,14 @@ public sealed class AppSettings(ISettingsRepository repository)
     public void SetChannelEnabled(string channelId, bool enabled) =>
         SetBool(Keys.ChannelPrefix + channelId + ".enabled", enabled);
 
+    /// <summary>
+    /// The "Alert sound" setting: with sound (true) or silent. It reuses the sound channel's key, so values stored
+    /// before the setting existed carry over. The default depends on the platform and is passed by the caller.
+    /// </summary>
+    public bool IsAlertSoundEnabled(bool defaultValue) => IsChannelEnabled("sound", defaultValue);
+
+    public void SetAlertSoundEnabled(bool enabled) => SetChannelEnabled("sound", enabled);
+
     private int GetInt(string key, int defaultValue, int min) =>
         int.TryParse(repository.Get(key), NumberStyles.Integer, CultureInfo.InvariantCulture, out var value)
             ? Math.Max(value, min)

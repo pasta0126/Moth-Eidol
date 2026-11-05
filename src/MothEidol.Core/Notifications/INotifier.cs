@@ -7,6 +7,7 @@ public static class ChannelIds
     public const string Toast = "toast";
     public const string Tray = "tray";
     public const string Sound = "sound";
+    public const string Native = "native";
 }
 
 /// <summary>

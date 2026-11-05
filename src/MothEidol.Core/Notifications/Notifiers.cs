@@ -10,13 +10,17 @@ public interface IAudioPlayer
 }
 
 /// <summary>Shows each alert as an in-app toast, even when the main window is hidden in the tray.</summary>
-public sealed class ToastNotifier(ToastStack stack, ProjectService projects, TimeProvider? time = null) : INotifier
+public sealed class ToastNotifier(
+    ToastStack stack, ProjectService projects, TimeProvider? time = null, bool enabledByDefault = true) : INotifier
 {
     public string Id => ChannelIds.Toast;
 
     public string DisplayName => "In-app toast";
 
-    public bool EnabledByDefault => true;
+    public bool EnabledByDefault => enabledByDefault;
+
+    /// <summary>Adds the alert to the stack directly, bypassing the enabled check (used as a fallback).</summary>
+    public void Show(AlertDelivery delivery) => NotifyAsync(delivery, CancellationToken.None).GetAwaiter().GetResult();
 
     public Task NotifyAsync(AlertDelivery delivery, CancellationToken cancellationToken)
     {

@@ -84,9 +84,21 @@ public partial class App : Application
             _unread = new UnreadCounter();
             var toastStack = new ToastStack();
             _notifications = new NotificationDispatcher(n => settings.IsChannelEnabled(n.Id, n.EnabledByDefault));
-            _notifications.Register(new ToastNotifier(toastStack, projects));
+            var windows = OperatingSystem.IsWindows();
+            var toastChannel = new ToastNotifier(toastStack, projects, enabledByDefault: NotificationDefaults.ToastEnabledByDefault(windows));
+            _notifications.Register(toastChannel);
             _notifications.Register(new TrayNotifier(_unread));
+#if WINDOWS10_0_19041_0_OR_GREATER
+            // Windows: the native notification carries the sound itself, so the sound channel is not registered.
+            Platform.WindowsNotifier.RegisterIdentity(ExtractNotificationIcon());
+            _notifications.Register(new Platform.WindowsNotifier(
+                projects,
+                () => settings.IsAlertSoundEnabled(NotificationDefaults.SoundEnabledByDefault(true)),
+                () => Dispatcher.UIThread.Post(ShowMainWindow),
+                toastChannel.Show));
+#else
             _notifications.Register(new SoundNotifier(new SystemAudioPlayer()));
+#endif
             _notifications.Start(_alerts.Deliveries);
 
             _tails = new ProjectTails(_entries.Entries, projects.ProjectOfSource, settings.ViewerMaxLines);
@@ -195,6 +207,28 @@ public partial class App : Application
             // Best effort: the window shows the real state and reports errors on change.
         }
     }
+
+#if WINDOWS10_0_19041_0_OR_GREATER
+    /// <summary>Copies the app icon next to the data so the notification identity can point at a file.</summary>
+    private static string? ExtractNotificationIcon()
+    {
+        try
+        {
+            var path = Path.Combine(DataDirectory.Resolve(), "notification-icon.png");
+            if (!File.Exists(path))
+            {
+                using var source = Avalonia.Platform.AssetLoader.Open(new Uri("avares://MothEidol.App/Assets/app-icon.png"));
+                using var target = File.Create(path);
+                source.CopyTo(target);
+            }
+            return path;
+        }
+        catch (Exception)
+        {
+            return null;
+        }
+    }
+#endif
 
     private void ShowMainWindow()
     {

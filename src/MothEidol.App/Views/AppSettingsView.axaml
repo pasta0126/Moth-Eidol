@@ -19,6 +19,15 @@
                    Text="How Moth-Eidol tells you about alerts. Each channel can be switched on or off on its own." />
         <StackPanel x:Name="ChannelsPanel" Spacing="8" />
 
+        <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,8,0,0">
+            <SelectableTextBlock Text="Alert sound" VerticalAlignment="Center"
+                       Foreground="{DynamicResource MothTextBrush}" />
+            <ComboBox x:Name="SoundCombo" MinWidth="170" SelectedIndex="0">
+                <ComboBoxItem Content="With sound" />
+                <ComboBoxItem Content="Silent" />
+            </ComboBox>
+        </StackPanel>
+
         <SelectableTextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
                    Foreground="{DynamicResource MothTextMutedBrush}"
                    TextWrapping="Wrap" Margin="0,8,0,0" />

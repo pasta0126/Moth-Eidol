@@ -23,6 +23,7 @@ public partial class AppSettingsView : UserControl
         _settings = settings;
         BackButton.Click += (_, _) => back();
         BuildChannels(settings, dispatcher);
+        BuildSound(settings);
 
         if (autostart.IsSupported)
         {
@@ -42,7 +43,8 @@ public partial class AppSettingsView : UserControl
     {
         var problems = new Dictionary<string, SelectableTextBlock>();
 
-        foreach (var notifier in dispatcher.Notifiers)
+        // The sound channel is not a switch of its own: the "Alert sound" setting below drives it.
+        foreach (var notifier in dispatcher.Notifiers.Where(n => n.Id != ChannelIds.Sound))
         {
             var check = new CheckBox
             {
@@ -72,6 +74,14 @@ public partial class AppSettingsView : UserControl
             text.Text = $"Last problem: {e.Error.Message}";
             text.IsVisible = true;
         });
+    }
+
+    /// <summary>"Alert sound": with sound or silent, applied from the next alert without a restart.</summary>
+    private void BuildSound(AppSettings settings)
+    {
+        var defaultOn = NotificationDefaults.SoundEnabledByDefault(OperatingSystem.IsWindows());
+        SoundCombo.SelectedIndex = settings.IsAlertSoundEnabled(defaultOn) ? 0 : 1;
+        SoundCombo.SelectionChanged += (_, _) => settings.SetAlertSoundEnabled(SoundCombo.SelectedIndex == 0);
     }
 
     private void OnAutostartChanged(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
