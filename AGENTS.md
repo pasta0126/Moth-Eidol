@@ -63,7 +63,7 @@ Native OS notifications and team-wide channels (email, webhook) are out of the M
 
 Test corpus: `logs/` (git-ignored, one subfolder per project) holds real Serilog logs used as templates; only anonymized subsets may be committed under `tests/fixtures/logs/`, produced by `tools/MothEidol.LogSim` (`log-samples`). The private term list lives in `logs/anonymize.json` and is never committed.
 
-Backlog (not scheduled): `splash-screen` (branded splash shown while the app starts, in the spirit of Adobe apps; artwork in `assets/branding/moth-eidol-banner.png`), `tray-icon-theming` (black/white tray icon per OS theme; macOS template image), user-defined regex rules, export/import of project configuration, team-wide notification channels.
+Backlog (not scheduled): `splash-screen` (branded splash shown while the app starts, in the spirit of Adobe apps; artwork in `assets/branding/moth-eidol-banner.png`), `tray-icon-theming` (black/white tray icon per OS theme; macOS template image), `vesper-theme` (second theme with the Vesper palette, proposed in `openspec/changes/vesper-theme/`), a generic light theme (to be analysed separately), user-defined regex rules, export/import of project configuration, team-wide notification channels.
 
 ## UI structure
 
