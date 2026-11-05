@@ -8,6 +8,7 @@ Registration in Partner Center is free (start at <https://storedeveloper.microso
 - [ ] Privacy policy published: <https://pasta0126.github.io/Moth-Eidol/privacy> (source: `docs/privacy.md`, GitHub Pages from `main` /docs).
 
 ## Per release (Windows host with the Windows SDK)
+0. Make sure `CHANGELOG.md` has the entry of the version being submitted, and get the Store text with `powershell -File scripts\changelog-section.ps1 -Version <version>`.
 1. `powershell -File scripts\publish-msix.ps1` -> `artifacts\MothEidol-<version>-win-x64.msix` (unsigned; the Store signs it).
 2. Without the identity file the script builds `...-test.msix`, signed with a local certificate, for sideload testing only.
 3. Install the test package and verify: tray, single instance, local folders and network shares, data location, start with session on/off (also from Windows Settings > Apps > Startup).
@@ -17,7 +18,7 @@ Registration in Partner Center is free (start at <https://storedeveloper.microso
    - Properties: category, privacy policy URL, support contact.
    - Age rating questionnaire.
    - Packages: upload the `.msix`.
-   - Store listing: description, screenshots (at least one, 1366x768 or larger), logos.
+   - Store listing: description, "What's new in this version" (the output of step 0), screenshots (at least one, 1366x768 or larger), logos.
    - Notes for certification: explain `runFullTrust` (reads log files on arbitrary local folders and network shares with the user's permissions).
 6. Submit and wait for certification (usually 1-3 business days).
 

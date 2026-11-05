@@ -77,9 +77,11 @@ Backlog (not scheduled): `splash-screen` (branded splash shown while the app sta
 - The version lives in a single place (`Directory.Build.props`); the app shows it only in the persistent footer of the main window (never in the window title, tray tooltip or images). Any new window or screen must not hide the footer.
 - Each time a change (spec) is finished:
   1. Archive the OpenSpec change.
-  2. Bump the version according to semver and what was delivered.
-  3. Commit, push, and push the git tag `vX.Y.Z`.
-  4. **Tell the maintainer** so they can run the application manually and verify it.
+  2. Add the entry of the new version to `CHANGELOG.md` (user-facing language, grouped as Added / Changed / Fixed, with the release date). Only versions published to the Microsoft Store get an entry: a version that is tagged but not submitted is folded into the entry of the next published one, and fixes to bugs that never reached a published version are not listed.
+  3. Bump the version according to semver and what was delivered.
+  4. Commit, push, and push the git tag `vX.Y.Z`.
+  5. **Tell the maintainer** so they can run the application manually and verify it.
+- The changelog is not shown inside the app. For a Microsoft Store submission, the "What's new in this version" text is the changelog entry of that version: `powershell -File scripts/changelog-section.ps1 -Version X.Y.Z` prints it ready to paste (it fails when the entry is missing or too long).
 - Do not start the next change before the maintainer has had the chance to verify.
 
 ## Conventions

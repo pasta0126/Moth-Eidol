@@ -4,18 +4,18 @@ Defines the repository changelog, what each version entry contains and the rule 
 ## ADDED Requirements
 
 ### Requirement: Changelog file
-The repository SHALL contain a `CHANGELOG.md` at its root listing every released version, newest first, each with its release date and its changes grouped as Added, Changed and Fixed, written in user-facing language.
+The repository SHALL contain a `CHANGELOG.md` at its root listing every version published to the Microsoft Store, newest first, with the changes of intermediate unpublished versions folded into the next published entry, each with its release date and its changes grouped as Added, Changed and Fixed, written in user-facing language.
 
 #### Scenario: Read the changelog
 - **WHEN** a person opens `CHANGELOG.md`
 - **THEN** they find each released version with its date and what was added, changed or fixed in plain language
 
-### Requirement: Entry for every release
-Each release SHALL have a changelog entry that is added before the version is bumped and tagged, so that no tagged version is left undocumented.
+### Requirement: Entry for every published version
+Each version published to the Store SHALL have a changelog entry, prepared as changes are finished and before the version is bumped and tagged, so that no published version is left undocumented.
 
 #### Scenario: Finishing a change
 - **WHEN** a change is finished and a new version is prepared
-- **THEN** its entry is added to the changelog before the version is bumped, committed and tagged
+- **THEN** its entry is added to the changelog before the version is bumped, committed and tagged, folded into the entry of the version that will be submitted to the Store
 
 ### Requirement: Not shown inside the application
 The application SHALL NOT display the changelog or release notes itself.

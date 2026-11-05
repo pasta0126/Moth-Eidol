@@ -19,7 +19,9 @@ Built for Serilog-style text logs. Open source.
 ```
 
 ## What's new in this version
-Leave blank (first submission).
+Do not write it by hand: take it from `CHANGELOG.md`. For the version being submitted run
+`powershell -File scripts\changelog-section.ps1 -Version X.Y.Z` and paste the output (it fails when the entry is missing or too long).
+For the first submission (1.0.0) it can be left blank.
 
 ## Product features (one per line)
 - Dashboard with one status tile per project
