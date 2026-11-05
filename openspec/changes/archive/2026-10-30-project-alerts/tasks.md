@@ -25,5 +25,5 @@
 ## 5. Verification
 
 - [x] 5.1 Tests: level matrix, unknown level, normalization, grouping, pending/seen, re-pending, retention, cooldown, summary, empty interval, hot reconfiguration
-- [ ] 5.2 Run on macOS with the demo projects and check tiles, events, detail and seen (deferred: the maintainer could not view the app; the alert pipeline was verified end to end in the running app through its database: groups, counts, pending, disabled and unconfigured projects)
-- [ ] 5.3 Close the change: archive, bump the version (semver), commit, push and tag it
+- [x] 5.2 Run on macOS with the demo projects and check tiles, events, detail and seen
+- [x] 5.3 Close the change: archive, bump the version (semver), commit, push and tag it
