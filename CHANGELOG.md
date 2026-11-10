@@ -4,25 +4,20 @@ All notable changes to Moth-Eidol, newest first. Versions follow [semantic versi
 Only versions published to the Microsoft Store get an entry; versions in between are folded into the next published one.
 Each entry is written for the people who use the app; the technical detail lives in `openspec/`.
 
-## [1.9.0] - 2026-11-10
-
-### Added
-- A second look for the app: the Vesper theme, with warm ivory and cream backgrounds, deep navy and gold. Choose between Moth (dark) and Vesper (light) in Settings; the change applies at once and is remembered.
-
-### Changed
-- The project name on each tile stays readable in both themes: your accent color is kept as is on the tile stripe and frame, and is only adjusted slightly when used for the name.
-- The tray icon looks the same in both themes.
-
-## [1.8.0] - 2026-11-10
+## [1.10.0] - 2026-11-10
 
 ### Added
 - Each project can have its own accent color, chosen in its settings from 16 colors or typed as a hex value (for example `#3FA7D6`), with a button to return to the default. The color appears on the project's tile.
 - Project tiles can be reordered by dragging them; the order is remembered between runs and new projects go last.
+- A second look for the app: the Vesper theme, with warm ivory and cream backgrounds, deep navy and gold. Choose between Moth (dark) and Vesper (light) in Settings; the change applies at once and is remembered.
+- A splash screen with the moth artwork while the app starts. It can be turned off in Settings.
 
 ### Changed
 - The status on each tile is now a colored dot with its text: green when healthy, yellow with pending warnings, orange when a source is unavailable, red with pending errors, and grey when not configured or disabled. The most severe one is shown.
 - Healthy tiles no longer show "Nothing pending" or the number of sources; any other line on a tile now says something you can act on.
 - Tiles are no longer sorted by name automatically. Your existing projects keep their current (alphabetical) order until you move one.
+- The project name on each tile stays readable in both themes: your accent color is kept on the tile stripe and frame, and is only adjusted slightly when used for the name.
+- The tray icon looks the same in both themes.
 
 ## [1.7.0] - 2026-11-05
 
