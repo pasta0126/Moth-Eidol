@@ -58,9 +58,9 @@ public partial class ProjectView : UserControl
         var pending = _events?.Pending(project.Id) ?? PendingSummary.None;
         EventsTab.Header = pending.Occurrences > 0 ? $"Events ({pending.Occurrences:N0})" : "Events";
         var tile = TileModel.For(
-            project, status, _projects.SourcesOf(project.Id).Count, pending,
+            project, status, pending,
             _events?.ProjectSeries(project.Id, DateTimeOffset.UtcNow, 48) ?? new int[48]);
-        StatusText.Text = status.Health == ProjectHealth.Degraded ? $"{tile.StatusText} · {tile.Detail}" : tile.StatusText;
+        StatusText.Text = tile.HasDetail ? $"{tile.StatusText} · {tile.Detail}" : tile.StatusText;
         StatusDot.Fill = tile.StatusBrush;
 
         // Rebinding rebuilds the tail, so only do it when the project or its sources actually changed.

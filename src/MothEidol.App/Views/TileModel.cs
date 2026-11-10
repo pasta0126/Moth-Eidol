@@ -24,6 +24,8 @@ public sealed class TileModel
 
     public string Detail { get; private init; } = "";
 
+    public bool HasDetail { get; private init; }
+
     /// <summary>Alert-level events per hour over the last 24 hours (oldest first), or null when not shown.</summary>
     public IReadOnlyList<int>? Series { get; private init; }
 
@@ -32,46 +34,55 @@ public sealed class TileModel
     /// <summary>"12 events in 24 h · ▲ up from 4", empty when the project is not being monitored.</summary>
     public string HealthText { get; private init; } = "";
 
-    public static TileModel NewProject() => new() { IsNew = true, Name = "New project" };
+    public static TileModel NewProject() =>
+        new() { IsNew = true, Name = "New project", FrameBrush = ThemeBrushes.Get("MothBorderBrush") };
+
+    /// <summary>The project's accent (or the default one) for the tile stripe and name.</summary>
+    public IBrush? AccentBrush { get; private init; }
+
+    /// <summary>The tile frame: the accent for a project, the plain border for the "New project" tile.</summary>
+    public IBrush? FrameBrush { get; private init; }
 
     /// <summary>
-    /// The tile of a project. What waits for the user outweighs a healthy status: pending events take the
-    /// headline, colored by the worst pending level, while the source health stays in the detail.
+    /// The tile of a project: the traffic-light status (see <see cref="TileStatus"/>) with the project's accent,
+    /// the activity trend and, only when it says something the status does not, a detail line.
     /// </summary>
     /// <param name="last48Hours">Alert-level events per hour for the last 48 hours, oldest first.</param>
     public static TileModel For(
-        Project project, ProjectStatus status, int sourceCount, PendingSummary pending, IReadOnlyList<int> last48Hours)
+        Project project, ProjectStatus status, PendingSummary pending, IReadOnlyList<int> last48Hours)
     {
-        var sources = sourceCount == 1 ? "1 source" : $"{sourceCount} sources";
-        var (text, brush, detail) = status.Health switch
-        {
-            ProjectHealth.Healthy => ("Healthy", "MothInfoBrush", $"Nothing pending · {sources}"),
-            ProjectHealth.Degraded => ("Degraded", "MothWarningBrush", Unavailable(status)),
-            ProjectHealth.NotConfigured => ("Not configured", "MothTextMutedBrush", "Add a log source in its settings"),
-            _ => ("Disabled", "MothTextMutedBrush", "Monitoring is off"),
-        };
-
-        if (pending.Occurrences > 0 && status.Health is ProjectHealth.Healthy or ProjectHealth.Degraded)
-        {
-            var errors = pending.WorstLevel >= EntryLevel.Error;
-            text = $"{pending.Occurrences:N0} pending";
-            brush = errors ? "MothErrorBrush" : "MothWarningBrush";
-            detail = $"{(errors ? "Errors" : "Warnings")} to review · " +
-                     (status.Health == ProjectHealth.Degraded ? Unavailable(status) : sources);
-        }
-
+        var tile = TileStatus.From(status, pending);
         var monitored = status.Health is ProjectHealth.Healthy or ProjectHealth.Degraded;
+        var accent = Accent(project.AccentColor);
         return new TileModel
         {
             ProjectId = project.Id,
             Name = project.Name,
-            StatusText = text,
-            StatusBrush = ThemeBrushes.Get(brush),
-            Detail = detail,
+            StatusText = tile.Text,
+            StatusBrush = ThemeBrushes.Get(BrushKey(tile.Light)),
+            AccentBrush = accent,
+            FrameBrush = accent,
+            Detail = tile.Detail,
+            HasDetail = tile.Detail.Length > 0,
             Series = monitored ? [.. last48Hours.Skip(Math.Max(0, last48Hours.Count - 24))] : null,
             HealthText = monitored ? Describe(Trend.From(last48Hours)) : "",
         };
     }
+
+    private static string BrushKey(StatusLight light) => light switch
+    {
+        StatusLight.Green => "MothStatusGreenBrush",
+        StatusLight.Yellow => "MothStatusYellowBrush",
+        StatusLight.Orange => "MothStatusOrangeBrush",
+        StatusLight.Red => "MothStatusRedBrush",
+        _ => "MothTextMutedBrush",
+    };
+
+    /// <summary>The user's accent, or the theme's primary color when none is set (or it cannot be read).</summary>
+    private static IBrush? Accent(string? hex) =>
+        hex is not null && Color.TryParse(hex, out var color)
+            ? new SolidColorBrush(color)
+            : ThemeBrushes.Get("MothPrimaryBrush");
 
     private static string Describe(Trend trend)
     {
@@ -83,13 +94,5 @@ public sealed class TileModel
             TrendDirection.Falling => $"{events} in 24 h · ▼ down from {trend.Previous24Hours:N0}",
             _ => $"{events} in 24 h · same as the day before",
         };
-    }
-
-    private static string Unavailable(ProjectStatus status)
-    {
-        var first = status.AffectedSources[0];
-        return status.AffectedSources.Count == 1
-            ? $"Unavailable: {first}"
-            : $"Unavailable: {first} and {status.AffectedSources.Count - 1} more";
     }
 }

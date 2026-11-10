@@ -29,9 +29,8 @@ public sealed class ProjectService
     /// <summary>Raised after any change to projects or their configuration.</summary>
     public event EventHandler? Changed;
 
-    /// <summary>Projects ordered by name.</summary>
-    public IReadOnlyList<Project> Projects =>
-        [.. _projects.List().OrderBy(p => p.Name, StringComparer.CurrentCultureIgnoreCase)];
+    /// <summary>Projects in the user's order (by name until the user moves one; new projects last).</summary>
+    public IReadOnlyList<Project> Projects => _projects.List();
 
     public Project? Get(long id) => _projects.List().FirstOrDefault(p => p.Id == id);
 
@@ -106,6 +105,26 @@ public sealed class ProjectService
     {
         var project = Require(id);
         _projects.Update(project with { Name = ValidName(name, exceptId: id) });
+        RaiseChanged();
+    }
+
+    /// <summary>Sets the project's accent color; null (or blank) returns to the default. Invalid hex is rejected.</summary>
+    public void SetAccent(long id, string? color)
+    {
+        string? normalized = null;
+        if (!string.IsNullOrWhiteSpace(color))
+        {
+            normalized = AccentColor.Normalize(color)
+                ?? throw new ArgumentException("Enter a color as a hex value, for example #3FA7D6.");
+        }
+        _projects.Update(Require(id) with { AccentColor = normalized });
+        RaiseChanged();
+    }
+
+    /// <summary>Stores the order of the tiles: the given projects first, in that order.</summary>
+    public void Reorder(IReadOnlyList<long> orderedIds)
+    {
+        _projects.Reorder(orderedIds);
         RaiseChanged();
     }
 

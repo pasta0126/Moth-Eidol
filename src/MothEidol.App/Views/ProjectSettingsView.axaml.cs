@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Interactivity;
+using Avalonia.Media;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using MothEidol.Core.Logs;
@@ -18,6 +20,8 @@ public partial class ProjectSettingsView : UserControl
     private Action? _removed;
     private long _projectId;
     private bool _loading;
+    private string? _accent;
+    private readonly List<(Border Swatch, string Hex)> _swatches = [];
 
     public ProjectSettingsView()
     {
@@ -28,6 +32,10 @@ public partial class ProjectSettingsView : UserControl
         BrowseButton.Click += OnBrowseClicked;
         AddButton.Click += OnAddClicked;
         RenameButton.Click += OnRenameClicked;
+        BuildSwatches();
+        ApplyAccentButton.Click += (_, _) => ApplyAccent(HexBox.Text);
+        DefaultAccentButton.Click += (_, _) => ApplyAccent(null);
+        HexBox.KeyDown += (_, e) => { if (e.Key == Key.Enter) ApplyAccent(HexBox.Text); };
         EnabledCheck.Click += OnEnabledClicked;
         WarningsCheck.Click += (_, _) => SaveAlerts();
         ModeCombo.SelectionChanged += (_, _) => { UpdateMinutesLabel(); SaveAlerts(); };
@@ -57,9 +65,10 @@ public partial class ProjectSettingsView : UserControl
         ModeCombo.SelectedIndex = project.Alerts.Mode == FrequencyMode.Immediate ? 0 : 1;
         MinutesBox.Value = project.Alerts.Minutes;
         UpdateMinutesLabel();
+        ShowAccent(project.AccentColor);
         _loading = false;
 
-        GeneralError.Text = SourceError.Text = AlertError.Text = "";
+        GeneralError.Text = SourceError.Text = AlertError.Text = AccentError.Text = "";
         ConfirmPanel.IsVisible = false;
         _rows.Clear();
         RefreshRows();
@@ -82,6 +91,56 @@ public partial class ProjectSettingsView : UserControl
             else row.Update(source, status, detail);
         }
         NoSourcesText.IsVisible = _rows.Count == 0;
+    }
+
+    private void BuildSwatches()
+    {
+        foreach (var hex in AccentColor.Palette)
+        {
+            var swatch = new Border
+            {
+                Width = 28, Height = 28, Margin = new Avalonia.Thickness(0, 0, 6, 6), CornerRadius = new Avalonia.CornerRadius(4),
+                Background = new SolidColorBrush(Color.Parse(hex)), BorderThickness = new Avalonia.Thickness(2),
+                Cursor = new Cursor(StandardCursorType.Hand),
+            };
+            ToolTip.SetTip(swatch, hex);
+            swatch.Tapped += (_, _) => ApplyAccent(hex);
+            _swatches.Add((swatch, hex));
+            SwatchPanel.Children.Add(swatch);
+        }
+    }
+
+    /// <summary>Shows which accent is in use: the selected swatch, the preview and the hex field.</summary>
+    private void ShowAccent(string? hex)
+    {
+        _accent = hex;
+        HexBox.Text = hex ?? "";
+        AccentPreview.Background = hex is not null && Color.TryParse(hex, out var color)
+            ? new SolidColorBrush(color)
+            : ThemeBrushes.Get("MothPrimaryBrush");
+        var selected = ThemeBrushes.Get("MothTextBrush");
+        foreach (var (swatch, swatchHex) in _swatches)
+            swatch.BorderBrush = swatchHex == hex ? selected : Brushes.Transparent;
+    }
+
+    /// <summary>Saves the accent right away (null returns to the default); an invalid value is reported and not saved.</summary>
+    private void ApplyAccent(string? text)
+    {
+        if (_projects is null) return;
+        try
+        {
+            _projects.SetAccent(_projectId, text);
+            AccentError.Text = "";
+            ShowAccent(_projects.Get(_projectId)?.AccentColor);
+        }
+        catch (ArgumentException ex)
+        {
+            AccentError.Text = ex.Message;
+        }
+        catch (Exception ex)
+        {
+            AccentError.Text = $"Could not change the color: {ex.Message}";
+        }
     }
 
     private void UpdateMinutesLabel() =>

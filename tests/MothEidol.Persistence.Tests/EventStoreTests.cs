@@ -342,7 +342,12 @@ public sealed class SqliteEventStoreTests : EventStoreContract
     {
         var path = Path.Combine(_dir, "v3.db");
         var v3 = SqliteDatabase.Open(path, Migrations.All.Take(3).ToList());
-        new SqliteProjectRepository(v3).Add("Billing");
+        using (var connection = v3.CreateConnection())
+        {
+            using var insert = connection.CreateCommand();
+            insert.CommandText = "INSERT INTO projects (name) VALUES ('Billing');";
+            insert.ExecuteNonQuery();
+        }
 
         var current = SqliteDatabase.Open(path);
 

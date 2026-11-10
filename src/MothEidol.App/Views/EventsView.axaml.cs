@@ -77,9 +77,9 @@ public partial class EventsView : UserControl
         Reconcile(shown, now);
 
         var pending = all.Where(g => g.IsPending).ToList();
-        SummaryText.Text = pending.Count == 0
-            ? $"{all.Count} event group(s), nothing pending"
-            : $"{pending.Count} group(s) pending · {pending.Sum(g => g.PendingCount):N0} occurrences";
+        SummaryText.Text = all.Count == 0 ? ""
+            : pending.Count == 0 ? $"Nothing pending · {Plural(all.Count, "event group")} reviewed"
+            : $"{Plural(pending.Count, "group")} pending · {Plural(pending.Sum(g => g.PendingCount), "occurrence")}";
         MarkAllButton.IsEnabled = pending.Count > 0;
         EmptyText.Text = shown.Count > 0 ? ""
             : all.Count == 0 ? "No events yet. Errors (and warnings, if enabled in the settings) will show up here as they are logged."
@@ -87,6 +87,8 @@ public partial class EventsView : UserControl
 
         if (_openGroup is { } open) ShowDetail(open, refreshOnly: true);
     }
+
+    private static string Plural(long count, string noun) => count == 1 ? $"1 {noun}" : $"{count:N0} {noun}s";
 
     /// <summary>Updates the list in place (moving rows instead of rebuilding) so scrolling is not disturbed.</summary>
     private void Reconcile(IReadOnlyList<EventGroup> target, DateTimeOffset now)

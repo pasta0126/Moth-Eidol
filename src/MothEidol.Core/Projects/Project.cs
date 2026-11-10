@@ -27,15 +27,27 @@ public sealed record AlertSettings(bool WarningAlerts, FrequencyMode Mode, int M
     }
 }
 
-public sealed record Project(long Id, string Name, bool Enabled, AlertSettings Alerts);
+/// <param name="AccentColor">A normalized <c>#RRGGBB</c> color chosen by the user, or null for the default accent.</param>
+/// <param name="Position">Place in the user's order of the dashboard tiles (lower first).</param>
+public sealed record Project(
+    long Id, string Name, bool Enabled, AlertSettings Alerts, string? AccentColor = null, int Position = 0);
 
 public interface IProjectRepository
 {
+    /// <summary>All projects in the user's order (by position).</summary>
     IReadOnlyList<Project> List();
+
+    /// <summary>Creates a project placed after all the others.</summary>
 
     Project Add(string name);
 
     void Update(Project project);
 
     void Remove(long id);
+
+    /// <summary>
+    /// Stores the order given: the listed projects first, in that order, then any not listed keeping their
+    /// current relative order. All positions change together or none does.
+    /// </summary>
+    void Reorder(IReadOnlyList<long> orderedIds);
 }

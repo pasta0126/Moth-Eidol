@@ -28,17 +28,22 @@
                         <Border AttachedToVisualTree="OnTileAttached" Cursor="Hand" Margin="0,0,16,16" Background="Transparent">
                             <Border Width="270" Height="150" CornerRadius="6" ClipToBounds="True"
                                     Background="{DynamicResource MothSurfaceBrush}"
-                                    BorderBrush="{DynamicResource MothBorderBrush}" BorderThickness="1">
+                                    BorderBrush="{Binding FrameBrush}" BorderThickness="1">
                                 <Grid>
                                     <Grid IsVisible="{Binding IsProject}" ColumnDefinitions="6,*">
-                                        <Border Background="{Binding StatusBrush}" />
+                                        <Border Background="{Binding AccentBrush}" />
                                         <StackPanel Grid.Column="1" Margin="14,12" Spacing="6">
                                             <SelectableTextBlock Text="{Binding Name}" FontSize="17" FontWeight="SemiBold"
                                                        TextTrimming="CharacterEllipsis"
-                                                       Foreground="{DynamicResource MothTextBrush}" />
-                                            <SelectableTextBlock Text="{Binding StatusText}" FontWeight="SemiBold"
-                                                       Foreground="{Binding StatusBrush}" />
+                                                       Foreground="{Binding AccentBrush}" />
+                                            <StackPanel Orientation="Horizontal" Spacing="6">
+                                                <Ellipse Width="10" Height="10" VerticalAlignment="Center"
+                                                         Fill="{Binding StatusBrush}" />
+                                                <SelectableTextBlock Text="{Binding StatusText}" FontWeight="SemiBold"
+                                                           Foreground="{DynamicResource MothTextBrush}" />
+                                            </StackPanel>
                                             <SelectableTextBlock Text="{Binding Detail}" FontSize="12"
+                                                       IsVisible="{Binding HasDetail}"
                                                        TextTrimming="CharacterEllipsis"
                                                        Foreground="{DynamicResource MothTextMutedBrush}" />
                                             <views:SparklineControl IsVisible="{Binding HasSeries}" Height="26"

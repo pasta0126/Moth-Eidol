@@ -79,5 +79,12 @@ public static class Migrations
             );
             CREATE INDEX ix_event_buckets_project ON event_buckets (project_id, hour);
             """),
+        new Migration(6, """
+            ALTER TABLE projects ADD COLUMN accent_color TEXT NULL;
+            ALTER TABLE projects ADD COLUMN position INTEGER NOT NULL DEFAULT 0;
+            -- Existing projects keep the order they had on the dashboard: by name.
+            UPDATE projects
+               SET position = (SELECT COUNT(*) FROM projects other WHERE other.name < projects.name COLLATE NOCASE) + 1;
+            """),
     ];
 }

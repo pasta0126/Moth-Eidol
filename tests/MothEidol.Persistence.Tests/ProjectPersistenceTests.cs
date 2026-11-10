@@ -40,6 +40,70 @@ public sealed class ProjectPersistenceTests : IDisposable
     }
 
     [Fact]
+    public void Accent_and_order_survive_a_restart()
+    {
+        var first = new SqliteProjectRepository(SqliteDatabase.Open(DbPath));
+        var a = first.Add("Alpha");
+        var b = first.Add("Beta");
+        var c = first.Add("Gamma");
+        first.Update(b with { AccentColor = "#3FA7D6" });
+        first.Reorder([c.Id, a.Id, b.Id]);
+
+        var projects = new SqliteProjectRepository(SqliteDatabase.Open(DbPath)).List();
+
+        Assert.Equal(["Gamma", "Alpha", "Beta"], projects.Select(p => p.Name));
+        Assert.Equal("#3FA7D6", projects[2].AccentColor);
+        Assert.Null(projects[0].AccentColor);
+    }
+
+    [Fact]
+    public void New_projects_go_last_and_removal_keeps_the_order()
+    {
+        var repository = new SqliteProjectRepository(SqliteDatabase.Open(DbPath));
+        var a = repository.Add("Alpha");
+        var b = repository.Add("Beta");
+        repository.Reorder([b.Id, a.Id]);
+
+        var c = repository.Add("Gamma");
+        repository.Remove(a.Id);
+        var d = repository.Add("Delta");
+
+        Assert.Equal([b.Id, c.Id, d.Id], repository.List().Select(p => p.Id));
+    }
+
+    [Fact]
+    public void Reorder_ignores_unknown_ids_and_keeps_unlisted_projects_after_the_listed_ones()
+    {
+        var repository = new SqliteProjectRepository(SqliteDatabase.Open(DbPath));
+        var a = repository.Add("Alpha");
+        var b = repository.Add("Beta");
+        var c = repository.Add("Gamma");
+
+        repository.Reorder([c.Id, 999, c.Id]);
+
+        Assert.Equal([c.Id, a.Id, b.Id], repository.List().Select(p => p.Id));
+    }
+
+    [Fact]
+    public void Existing_projects_are_ordered_by_name_when_the_position_column_is_added()
+    {
+        var beforeOrder = Migrations.All.Where(m => m.Version < 6).ToList();
+        var old = SqliteDatabase.Open(DbPath, beforeOrder);
+        using (var connection = old.CreateConnection())
+        {
+            using var command = connection.CreateCommand();
+            command.CommandText = "INSERT INTO projects (name) VALUES ('orders'), ('Billing'), ('accounts');";
+            command.ExecuteNonQuery();
+        }
+
+        var projects = new SqliteProjectRepository(SqliteDatabase.Open(DbPath)).List();
+
+        Assert.Equal(["accounts", "Billing", "orders"], projects.Select(p => p.Name));
+        Assert.Equal([1, 2, 3], projects.Select(p => p.Position));
+        Assert.All(projects, p => Assert.Null(p.AccentColor));
+    }
+
+    [Fact]
     public void Project_names_are_unique_ignoring_case()
     {
         var repository = new SqliteProjectRepository(SqliteDatabase.Open(DbPath));

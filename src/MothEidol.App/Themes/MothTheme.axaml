@@ -25,6 +25,11 @@
     <Color x:Key="MothInfoColor">#639B9D</Color>
     <Color x:Key="MothWarningColor">#F2932D</Color>
     <Color x:Key="MothErrorColor">#DB2F0C</Color>
+    <!-- Traffic light for project status (neutral uses MothTextMuted) -->
+    <Color x:Key="MothStatusGreenColor">#5DBB63</Color>
+    <Color x:Key="MothStatusYellowColor">#F2D14B</Color>
+    <Color x:Key="MothStatusOrangeColor">#F28C28</Color>
+    <Color x:Key="MothStatusRedColor">#E5432D</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="MothBgBrush" Color="{StaticResource MothBgColor}" />
@@ -40,6 +45,10 @@
     <SolidColorBrush x:Key="MothInfoBrush" Color="{StaticResource MothInfoColor}" />
     <SolidColorBrush x:Key="MothWarningBrush" Color="{StaticResource MothWarningColor}" />
     <SolidColorBrush x:Key="MothErrorBrush" Color="{StaticResource MothErrorColor}" />
+    <SolidColorBrush x:Key="MothStatusGreenBrush" Color="{StaticResource MothStatusGreenColor}" />
+    <SolidColorBrush x:Key="MothStatusYellowBrush" Color="{StaticResource MothStatusYellowColor}" />
+    <SolidColorBrush x:Key="MothStatusOrangeBrush" Color="{StaticResource MothStatusOrangeColor}" />
+    <SolidColorBrush x:Key="MothStatusRedBrush" Color="{StaticResource MothStatusRedColor}" />
 
     <!-- Text selection: amber highlight with obsidian text -->
     <SolidColorBrush x:Key="TextControlSelectionHighlightColor" Color="{StaticResource MothPrimaryColor}" />

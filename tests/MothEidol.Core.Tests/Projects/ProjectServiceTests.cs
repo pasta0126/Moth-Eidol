@@ -35,6 +35,84 @@ public sealed class ProjectServiceTests : IDisposable
         _temp.Dispose();
     }
 
+    [Fact]
+    public void New_projects_go_last_and_the_stored_order_is_kept()
+    {
+        var b = _projects.Create("Billing");
+        var a = _projects.Create("Accounts");
+        var c = _projects.Create("Catalog");
+
+        Assert.Equal([b.Id, a.Id, c.Id], _projects.Projects.Select(p => p.Id));
+
+        _projects.Reorder([c.Id, b.Id, a.Id]);
+        var d = _projects.Create("Delivery");
+
+        Assert.Equal([c.Id, b.Id, a.Id, d.Id], _projects.Projects.Select(p => p.Id));
+    }
+
+    [Fact]
+    public async Task Removing_a_project_keeps_the_order_of_the_others()
+    {
+        var a = _projects.Create("A");
+        var b = _projects.Create("B");
+        var c = _projects.Create("C");
+        _projects.Reorder([c.Id, a.Id, b.Id]);
+
+        await _projects.RemoveAsync(a.Id);
+
+        Assert.Equal([c.Id, b.Id], _projects.Projects.Select(p => p.Id));
+    }
+
+    [Fact]
+    public void Reorder_places_unlisted_projects_after_the_listed_ones()
+    {
+        var a = _projects.Create("A");
+        var b = _projects.Create("B");
+        var c = _projects.Create("C");
+
+        _projects.Reorder([c.Id]);
+
+        Assert.Equal([c.Id, a.Id, b.Id], _projects.Projects.Select(p => p.Id));
+    }
+
+    [Fact]
+    public void Accent_is_normalized_stored_and_cleared()
+    {
+        var project = _projects.Create("Billing");
+
+        _projects.SetAccent(project.Id, "3fa7d6");
+        Assert.Equal("#3FA7D6", _projects.Get(project.Id)!.AccentColor);
+
+        _projects.SetAccent(project.Id, null);
+        Assert.Null(_projects.Get(project.Id)!.AccentColor);
+    }
+
+    [Fact]
+    public void Invalid_accent_is_rejected_and_the_previous_one_kept()
+    {
+        var project = _projects.Create("Billing");
+        _projects.SetAccent(project.Id, "#3FA7D6");
+
+        Assert.Throws<ArgumentException>(() => _projects.SetAccent(project.Id, "#12ZZ99"));
+
+        Assert.Equal("#3FA7D6", _projects.Get(project.Id)!.AccentColor);
+    }
+
+    [Fact]
+    public void Other_updates_do_not_change_the_position_or_the_accent()
+    {
+        var a = _projects.Create("A");
+        var b = _projects.Create("B");
+        _projects.SetAccent(b.Id, "#3FA7D6");
+        _projects.Reorder([b.Id, a.Id]);
+
+        _projects.Rename(b.Id, "B2");
+        _projects.UpdateAlerts(b.Id, new AlertSettings(true, FrequencyMode.Immediate, 3));
+
+        Assert.Equal([b.Id, a.Id], _projects.Projects.Select(p => p.Id));
+        Assert.Equal("#3FA7D6", _projects.Get(b.Id)!.AccentColor);
+    }
+
     private static async Task WaitForAsync(Func<bool> condition)
     {
         var deadline = DateTime.UtcNow + Timeout;
@@ -104,16 +182,6 @@ public sealed class ProjectServiceTests : IDisposable
         _projects.Rename(project.Id, "Billing");
 
         Assert.Equal("Billing", _projects.Get(project.Id)!.Name);
-    }
-
-    [Fact]
-    public void Projects_are_listed_by_name()
-    {
-        _projects.Create("Zeta");
-        _projects.Create("alpha");
-        _projects.Create("Mid");
-
-        Assert.Equal(["alpha", "Mid", "Zeta"], _projects.Projects.Select(p => p.Name));
     }
 
     [Fact]
