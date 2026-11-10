@@ -4,6 +4,15 @@ All notable changes to Moth-Eidol, newest first. Versions follow [semantic versi
 Only versions published to the Microsoft Store get an entry; versions in between are folded into the next published one.
 Each entry is written for the people who use the app; the technical detail lives in `openspec/`.
 
+## [1.9.0] - 2026-11-10
+
+### Added
+- A second look for the app: the Vesper theme, with warm ivory and cream backgrounds, deep navy and gold. Choose between Moth (dark) and Vesper (light) in Settings; the change applies at once and is remembered.
+
+### Changed
+- The project name on each tile stays readable in both themes: your accent color is kept as is on the tile stripe and frame, and is only adjusted slightly when used for the name.
+- The tray icon looks the same in both themes.
+
 ## [1.8.0] - 2026-11-10
 
 ### Added

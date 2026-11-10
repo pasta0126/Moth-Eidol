@@ -18,6 +18,10 @@
                                        Accent="#DF651D"
                                        RegionColor="#1D1511"
                                        ErrorText="#DB2F0C" />
+                <ColorPaletteResources x:Key="Light"
+                                       Accent="#202536"
+                                       RegionColor="#F5F0E7"
+                                       ErrorText="#B3261E" />
             </FluentTheme.Palettes>
         </FluentTheme>
     </Application.Styles>

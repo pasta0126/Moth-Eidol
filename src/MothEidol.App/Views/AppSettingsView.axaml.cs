@@ -26,6 +26,7 @@ public partial class AppSettingsView : UserControl
         BackButton.Click += (_, _) => back();
         BuildChannels(settings, dispatcher);
         BuildSound(settings);
+        BuildTheme(settings);
         BuildAbout();
 
         if (autostart.IsSupported)
@@ -39,6 +40,19 @@ public partial class AppSettingsView : UserControl
             AutostartNote.Text = autostart.UnsupportedReason;
             AutostartNote.IsVisible = true;
         }
+    }
+
+    /// <summary>The theme applies as soon as it is chosen and is remembered for the next start.</summary>
+    private void BuildTheme(AppSettings settings)
+    {
+        ThemeCombo.SelectedIndex = settings.Theme == AppTheme.Vesper ? 1 : 0;
+        ThemeCombo.SelectionChanged += (_, _) =>
+        {
+            var theme = ThemeCombo.SelectedIndex == 1 ? AppTheme.Vesper : AppTheme.Moth;
+            if (theme == settings.Theme) return;
+            settings.Theme = theme;
+            App.ApplyTheme(theme);
+        };
     }
 
     /// <summary>One switch per channel, built from the registered ones so new channels appear without changes here.</summary>

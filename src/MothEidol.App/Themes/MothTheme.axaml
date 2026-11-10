@@ -1,55 +1,68 @@
 <ResourceDictionary xmlns="https://github.com/avaloniaui"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!--
-        MOTH-EIDOL palette (dark). Colors come from the moth artwork:
-        near-black obsidian, amber/orange/copper/cream, one small turquoise accent.
-        Use these brushes everywhere; do not hard-code colors in views.
+        The application's two themes. Both define the same Moth*Brush names, so no view knows which one is
+        active; use these brushes everywhere and do not hard-code colors in views.
 
-        Raw palette for reference:
-          Obsidiana #1D1511  Caoba #5B2D11  Cobre #9C5825  Ambar intenso #DF651D
-          Naranja polilla #F2932D  Oro suave #E6A15B  Dorado #FCC86E
-          Marfil calido #F8D69E  Blanco crema #FBF2DC  Turquesa #639B9D
+        Dark  = MOTH-EIDOL. Colors come from the moth artwork: near-black obsidian, amber/orange/copper/cream,
+                one small turquoise accent.
+                  Obsidiana #1D1511  Caoba #5B2D11  Cobre #9C5825  Ambar intenso #DF651D
+                  Naranja polilla #F2932D  Oro suave #E6A15B  Dorado #FCC86E
+                  Marfil calido #F8D69E  Blanco crema #FBF2DC  Turquesa #639B9D
+        Light = VESPER. Warm ivory and cream backgrounds, deep navy as primary, gold as the accent.
+                  Marfil #F5F0E7  Crema #FBF8F2  Beige #EDE5D9  Azul marino #202536  Dorado #C8923E
+                Text colors are deepened to stay readable (4.5:1 or more) on the ivory and cream backgrounds;
+                the palette's gold itself (2.4:1) is too light for text, so the accent brushes use a darker gold.
+
+        The application picks one by setting its theme variant (Dark = Moth, Light = Vesper).
     -->
+    <ResourceDictionary.ThemeDictionaries>
 
-    <!-- Colors -->
-    <Color x:Key="MothBgColor">#1D1511</Color>
-    <Color x:Key="MothSurfaceColor">#302017</Color>
-    <Color x:Key="MothSurfaceAltColor">#5B2D11</Color>
-    <Color x:Key="MothBorderColor">#724727</Color>
-    <Color x:Key="MothPrimaryColor">#DF651D</Color>
-    <Color x:Key="MothPrimaryHoverColor">#F2932D</Color>
-    <Color x:Key="MothAccentColor">#FCC86E</Color>
-    <Color x:Key="MothAccentSoftColor">#E6A15B</Color>
-    <Color x:Key="MothTextColor">#FBF2DC</Color>
-    <Color x:Key="MothTextMutedColor">#B08C64</Color>
-    <Color x:Key="MothInfoColor">#639B9D</Color>
-    <Color x:Key="MothWarningColor">#F2932D</Color>
-    <Color x:Key="MothErrorColor">#DB2F0C</Color>
-    <!-- Traffic light for project status (neutral uses MothTextMuted) -->
-    <Color x:Key="MothStatusGreenColor">#5DBB63</Color>
-    <Color x:Key="MothStatusYellowColor">#F2D14B</Color>
-    <Color x:Key="MothStatusOrangeColor">#F28C28</Color>
-    <Color x:Key="MothStatusRedColor">#E5432D</Color>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="MothBgBrush" Color="#1D1511" />
+            <SolidColorBrush x:Key="MothSurfaceBrush" Color="#302017" />
+            <SolidColorBrush x:Key="MothSurfaceAltBrush" Color="#5B2D11" />
+            <SolidColorBrush x:Key="MothBorderBrush" Color="#724727" />
+            <SolidColorBrush x:Key="MothPrimaryBrush" Color="#DF651D" />
+            <SolidColorBrush x:Key="MothPrimaryHoverBrush" Color="#F2932D" />
+            <SolidColorBrush x:Key="MothAccentBrush" Color="#FCC86E" />
+            <SolidColorBrush x:Key="MothAccentSoftBrush" Color="#E6A15B" />
+            <SolidColorBrush x:Key="MothTextBrush" Color="#FBF2DC" />
+            <SolidColorBrush x:Key="MothTextMutedBrush" Color="#B08C64" />
+            <SolidColorBrush x:Key="MothInfoBrush" Color="#639B9D" />
+            <SolidColorBrush x:Key="MothWarningBrush" Color="#F2932D" />
+            <SolidColorBrush x:Key="MothErrorBrush" Color="#DB2F0C" />
+            <!-- Traffic light for project status (neutral uses MothTextMuted) -->
+            <SolidColorBrush x:Key="MothStatusGreenBrush" Color="#5DBB63" />
+            <SolidColorBrush x:Key="MothStatusYellowBrush" Color="#F2D14B" />
+            <SolidColorBrush x:Key="MothStatusOrangeBrush" Color="#F28C28" />
+            <SolidColorBrush x:Key="MothStatusRedBrush" Color="#E5432D" />
+            <!-- Text selection: amber highlight -->
+            <SolidColorBrush x:Key="TextControlSelectionHighlightColor" Color="#DF651D" />
+        </ResourceDictionary>
 
-    <!-- Brushes -->
-    <SolidColorBrush x:Key="MothBgBrush" Color="{StaticResource MothBgColor}" />
-    <SolidColorBrush x:Key="MothSurfaceBrush" Color="{StaticResource MothSurfaceColor}" />
-    <SolidColorBrush x:Key="MothSurfaceAltBrush" Color="{StaticResource MothSurfaceAltColor}" />
-    <SolidColorBrush x:Key="MothBorderBrush" Color="{StaticResource MothBorderColor}" />
-    <SolidColorBrush x:Key="MothPrimaryBrush" Color="{StaticResource MothPrimaryColor}" />
-    <SolidColorBrush x:Key="MothPrimaryHoverBrush" Color="{StaticResource MothPrimaryHoverColor}" />
-    <SolidColorBrush x:Key="MothAccentBrush" Color="{StaticResource MothAccentColor}" />
-    <SolidColorBrush x:Key="MothAccentSoftBrush" Color="{StaticResource MothAccentSoftColor}" />
-    <SolidColorBrush x:Key="MothTextBrush" Color="{StaticResource MothTextColor}" />
-    <SolidColorBrush x:Key="MothTextMutedBrush" Color="{StaticResource MothTextMutedColor}" />
-    <SolidColorBrush x:Key="MothInfoBrush" Color="{StaticResource MothInfoColor}" />
-    <SolidColorBrush x:Key="MothWarningBrush" Color="{StaticResource MothWarningColor}" />
-    <SolidColorBrush x:Key="MothErrorBrush" Color="{StaticResource MothErrorColor}" />
-    <SolidColorBrush x:Key="MothStatusGreenBrush" Color="{StaticResource MothStatusGreenColor}" />
-    <SolidColorBrush x:Key="MothStatusYellowBrush" Color="{StaticResource MothStatusYellowColor}" />
-    <SolidColorBrush x:Key="MothStatusOrangeBrush" Color="{StaticResource MothStatusOrangeColor}" />
-    <SolidColorBrush x:Key="MothStatusRedBrush" Color="{StaticResource MothStatusRedColor}" />
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="MothBgBrush" Color="#F5F0E7" />
+            <SolidColorBrush x:Key="MothSurfaceBrush" Color="#FBF8F2" />
+            <SolidColorBrush x:Key="MothSurfaceAltBrush" Color="#EDE5D9" />
+            <SolidColorBrush x:Key="MothBorderBrush" Color="#DED5C8" />
+            <SolidColorBrush x:Key="MothPrimaryBrush" Color="#202536" />
+            <SolidColorBrush x:Key="MothPrimaryHoverBrush" Color="#3D4355" />
+            <SolidColorBrush x:Key="MothAccentBrush" Color="#8A5E12" />
+            <SolidColorBrush x:Key="MothAccentSoftBrush" Color="#6E5A3A" />
+            <SolidColorBrush x:Key="MothTextBrush" Color="#22242B" />
+            <SolidColorBrush x:Key="MothTextMutedBrush" Color="#65666D" />
+            <SolidColorBrush x:Key="MothInfoBrush" Color="#2F6F73" />
+            <SolidColorBrush x:Key="MothWarningBrush" Color="#9A5B00" />
+            <SolidColorBrush x:Key="MothErrorBrush" Color="#B3261E" />
+            <!-- Traffic light for project status (neutral uses MothTextMuted) -->
+            <SolidColorBrush x:Key="MothStatusGreenBrush" Color="#2E7D32" />
+            <SolidColorBrush x:Key="MothStatusYellowBrush" Color="#B8860B" />
+            <SolidColorBrush x:Key="MothStatusOrangeBrush" Color="#C2570C" />
+            <SolidColorBrush x:Key="MothStatusRedBrush" Color="#B3261E" />
+            <!-- Text selection: navy highlight -->
+            <SolidColorBrush x:Key="TextControlSelectionHighlightColor" Color="#202536" />
+        </ResourceDictionary>
 
-    <!-- Text selection: amber highlight with obsidian text -->
-    <SolidColorBrush x:Key="TextControlSelectionHighlightColor" Color="{StaticResource MothPrimaryColor}" />
+    </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

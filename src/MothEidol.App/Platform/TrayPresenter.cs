@@ -1,5 +1,6 @@
 using System.Globalization;
 using Avalonia;
+using Avalonia.Styling;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
@@ -49,7 +50,7 @@ public sealed class TrayPresenter
 
             var radius = size.Width * 0.30;
             var center = new Point(size.Width - radius, size.Height - radius);
-            context.DrawEllipse(ThemeBrushes.Get("MothErrorBrush"), null, center, radius, radius);
+            context.DrawEllipse(ThemeBrushes.Get("MothErrorBrush", ThemeVariant.Dark), null, center, radius, radius);
 
             var text = new FormattedText(
                 unread > 9 ? "9+" : unread.ToString(CultureInfo.InvariantCulture),
@@ -57,7 +58,7 @@ public sealed class TrayPresenter
                 FlowDirection.LeftToRight,
                 new Typeface(FontFamily.Default, FontStyle.Normal, FontWeight.Bold),
                 radius * 1.25,
-                ThemeBrushes.Get("MothTextBrush"));
+                ThemeBrushes.Get("MothTextBrush", ThemeVariant.Dark));
             context.DrawText(text, new Point(center.X - text.Width / 2, center.Y - text.Height / 2));
         }
         return target;

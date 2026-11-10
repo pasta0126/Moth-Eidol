@@ -29,6 +29,15 @@
             </ComboBox>
         </StackPanel>
 
+        <StackPanel Orientation="Horizontal" Spacing="12" Margin="0,8,0,0">
+            <SelectableTextBlock Text="Theme" VerticalAlignment="Center"
+                       Foreground="{DynamicResource MothTextBrush}" />
+            <ComboBox x:Name="ThemeCombo" MinWidth="170" SelectedIndex="0">
+                <ComboBoxItem Content="Moth (dark)" />
+                <ComboBoxItem Content="Vesper (light)" />
+            </ComboBox>
+        </StackPanel>
+
         <SelectableTextBlock Text="Closing this window keeps Moth-Eidol running in the tray. Use the tray menu to quit."
                    Foreground="{DynamicResource MothTextMutedBrush}"
                    TextWrapping="Wrap" Margin="0,8,0,0" />

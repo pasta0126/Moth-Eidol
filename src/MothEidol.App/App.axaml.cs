@@ -64,6 +64,7 @@ public partial class App : Application
 #endif
             var storage = OpenStorage();
             var settings = storage.Settings;
+            ApplyTheme(settings.Theme);
             ReconcileAutostart(settings, autostart);
 
             ProjectService? projects = null;
@@ -123,6 +124,18 @@ public partial class App : Application
         }
 
         base.OnFrameworkInitializationCompleted();
+    }
+
+    /// <summary>Switches the whole application to a theme right away: Moth is the Dark variant, Vesper the Light one.</summary>
+    public static void ApplyTheme(AppTheme theme)
+    {
+        if (Current is { } app)
+        {
+            app.RequestedThemeVariant = theme == AppTheme.Vesper
+                ? Avalonia.Styling.ThemeVariant.Light
+                : Avalonia.Styling.ThemeVariant.Dark;
+            Dispatcher.UIThread.Post(Views.ThemeBrushes.NotifyChanged, DispatcherPriority.Background);
+        }
     }
 
     private sealed record Storage(

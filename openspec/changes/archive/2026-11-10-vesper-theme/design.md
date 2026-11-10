@@ -33,13 +33,16 @@ There is one dark theme in `src/MothEidol.App/Themes/MothTheme.axaml`, derived f
 - **Contrast:** primary text (13.6:1) and muted text (5.0:1) pass on ivory. Gold as text (2.4:1) and the palette's faint text `#96928A` (2.7:1) do not, so gold is used as a detail (selection, badges), not for readable text, and the faint text color is not used for content.
 - **Semantic colors:** the Moth warning, info and error colors are too light on cream (about 2.1:1, 2.8:1 and 4.2:1), so Vesper gets deeper variants that keep their character (amber, teal, red), possibly with a pale gold background for warning rows. Exact values to be defined with a visual preview.
 
-## Open questions
+## Decisions settled with the maintainer
 
-- Is the primary color navy (buttons and headings) with gold only as accent, or gold as primary? The proposal leans to navy primary and gold accent.
-- Exact values of the Vesper semantic colors (warning, info, error) and the selection highlight.
-- How are the tray icon and the toast window themed? They may follow the OS rather than the app theme (related to the `tray-icon-theming` backlog item).
-- Do the artwork assets (banner, icons) look right on ivory, or are Vesper variants needed?
-- Which theme is the default for new installs (Moth, as today)?
+- **Primary color:** deep navy `#202536` (buttons, headings, the default project accent); gold `#C8923E` is only a detail (selection, badges), never text.
+- **Semantic colors in Vesper:** info `#2F6F73` (5.1:1), warning `#9A5B00` (4.8:1), error `#B3261E` (5.8:1) on ivory.
+- **Traffic light in Vesper:** green `#2E7D32`, yellow `#B8860B`, orange `#C2570C`, red `#B3261E`. They are dots, not text, so they need 3:1 (the yellow is the weakest, 2.9:1 on ivory, and is always paired with its text).
+- **Implementation:** Moth is the Dark theme variant and Vesper the Light one, both defined in `MothTheme.axaml` under the same `Moth*Brush` names. Switching the application's theme variant at runtime updates every `DynamicResource` and the Fluent controls (inputs, combo boxes, check boxes) without restarting.
+- **Project accent in Vesper:** the 16 swatches were chosen for the dark theme and most are illegible as text on cream (for example 1.2:1 to 2.6:1). The chosen color is kept as is for the tile stripe and frame, but the accent used as *text* (the project name) is shifted toward the text color until it reaches 4.5:1 against the tile background, in either theme. This also covers any hex the user types. The palette is not duplicated per theme.
+- **Tray icon:** it does not follow the app theme (it keeps the Moth colors, and a Vesper-aware icon belongs to `tray-icon-theming`). The toast does follow the active theme.
+- **Artwork:** the banner and icons are checked in the real theme during manual verification; variants are only made if they look wrong on ivory.
+- **Default theme:** Moth.
 
 ## Risks / Trade-offs
 

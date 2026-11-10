@@ -36,6 +36,7 @@ public partial class TailView : UserControl
     {
         InitializeComponent();
         LinesList.ItemsSource = _items;
+        ThemeBrushes.Changed += () => { foreach (var item in _items) item.RefreshTheme(); };
         LinesList.TemplateApplied += OnListTemplateApplied;
         SourceCombo.SelectionChanged += (_, _) => { if (!_loading) ResetView(); };
         LevelCombo.SelectionChanged += (_, _) => ResetView();

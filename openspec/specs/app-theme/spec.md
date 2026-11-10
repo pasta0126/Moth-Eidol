@@ -1,7 +1,9 @@
+# app-theme Specification
+
 ## Purpose
 Defines the visual themes the application offers (Moth, dark, and Vesper, warm light), how the user chooses one and how the choice is applied and remembered.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Available themes
 The system SHALL provide two themes, Moth (dark) and Vesper (warm ivory, navy and gold), and every screen, window and toast SHALL be readable in both.
@@ -34,3 +36,21 @@ The system SHALL keep info, warning and error recognizable, distinguishable from
 #### Scenario: Levels in Vesper
 - **WHEN** events of different levels are shown in Vesper
 - **THEN** each level keeps its distinct color with enough contrast against the ivory and cream backgrounds
+
+### Requirement: Readable project accent
+The system SHALL keep the project name on its tile legible in both themes: the chosen accent color is used unchanged for the tile stripe and frame, and, when used as text, it SHALL be shifted toward the text color only as far as needed to reach a contrast of 4.5:1 against the tile background.
+
+#### Scenario: Pale accent in Vesper
+- **WHEN** a project has the accent `#E8E2D4` and the Vesper theme is active
+- **THEN** the stripe and frame show `#E8E2D4` and the project name is shown in a darker shade that is clearly readable on the cream tile
+
+#### Scenario: Accent already legible
+- **WHEN** the accent already has at least 4.5:1 against the tile background
+- **THEN** the project name uses it unchanged
+
+### Requirement: Tray icon independent of the theme
+The system SHALL NOT change the tray icon with the application theme.
+
+#### Scenario: Vesper with the tray icon
+- **WHEN** the Vesper theme is active
+- **THEN** the tray icon and its unread counter look the same as in Moth

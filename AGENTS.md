@@ -63,7 +63,7 @@ Native OS notifications and team-wide channels (email, webhook) are out of the M
 
 Test corpus: `logs/` (git-ignored, one subfolder per project) holds real Serilog logs used as templates; only anonymized subsets may be committed under `tests/fixtures/logs/`, produced by `tools/MothEidol.LogSim` (`log-samples`). The private term list lives in `logs/anonymize.json` and is never committed.
 
-Backlog (not scheduled): `splash-screen` (branded splash shown while the app starts, in the spirit of Adobe apps; artwork in `assets/branding/moth-eidol-banner.png`), `tray-icon-theming` (black/white tray icon per OS theme; macOS template image), `vesper-theme` (second theme with the Vesper palette, proposed in `openspec/changes/vesper-theme/`), a generic light theme (to be analysed separately), user-defined regex rules, export/import of project configuration, team-wide notification channels.
+Backlog (not scheduled): `splash-screen` (branded splash shown while the app starts, in the spirit of Adobe apps; artwork in `assets/branding/moth-eidol-banner.png`), `tray-icon-theming` (black/white tray icon per OS theme; macOS template image), a generic light theme (to be analysed separately; the Vesper theme is delivered), user-defined regex rules, export/import of project configuration, team-wide notification channels.
 
 ## UI structure
 
@@ -94,10 +94,11 @@ Backlog (not scheduled): `splash-screen` (branded splash shown while the app sta
 
 ## UI theme
 
-- Single dark theme defined in `src/MothEidol.App/Themes/MothTheme.axaml` (palette taken from the moth artwork: obsidian, amber, copper, cream, one turquoise accent).
-- Views must use the `Moth*Brush` resources (`DynamicResource`); never hard-code colors.
-- Main combination: obsidian background + intense amber primary + cream text; turquoise only for secondary/info details.
-- Semantic levels: info `MothInfoBrush`, warning `MothWarningBrush`, error `MothErrorBrush`.
+- Two themes in `src/MothEidol.App/Themes/MothTheme.axaml`, chosen by the user in the application settings and applied at runtime: **Moth** (dark, the default; palette from the moth artwork: obsidian, amber, copper, cream, one turquoise accent) is the Dark theme variant, and **Vesper** (warm light: ivory, cream, deep navy, gold) is the Light variant.
+- Views must use the `Moth*Brush` resources (`DynamicResource`); never hard-code colors. Both themes define the same names, so views never know which one is active. Brushes fetched from code with `ThemeBrushes.Get` do not follow a theme change by themselves: long-lived views refresh on `ThemeBrushes.Changed`.
+- Moth: obsidian background + intense amber primary + cream text; turquoise only for secondary/info details. Vesper: ivory background + navy primary + gold accent; gold is a detail, never readable text.
+- Semantic levels: info `MothInfoBrush`, warning `MothWarningBrush`, error `MothErrorBrush`; project status uses the traffic-light `MothStatus{Green,Yellow,Orange,Red}Brush`.
+- Text must keep a contrast of at least 4.5:1 in both themes. A user-chosen project accent is shifted (`AccentColor.ReadableOn`) when used as text, and kept as is for the tile stripe and frame. The tray icon does not follow the theme.
 
 ## Commands
 

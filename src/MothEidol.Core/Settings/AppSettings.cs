@@ -2,6 +2,16 @@ using System.Globalization;
 
 namespace MothEidol.Core.Settings;
 
+/// <summary>The visual themes the user can choose from.</summary>
+public enum AppTheme
+{
+    /// <summary>The dark theme taken from the moth artwork (the default).</summary>
+    Moth,
+
+    /// <summary>The warm light theme: ivory, navy and gold.</summary>
+    Vesper,
+}
+
 /// <summary>Typed access to user settings with their default values.</summary>
 public sealed class AppSettings(ISettingsRepository repository)
 {
@@ -12,6 +22,7 @@ public sealed class AppSettings(ISettingsRepository repository)
         public const string ViewerMaxLines = "viewer.max_lines";
         public const string TailWordWrap = "viewer.word_wrap";
         public const string EventRetentionDays = "alerts.retention_days";
+        public const string Theme = "app.theme";
         public const string ChannelPrefix = "notify.";
     }
 
@@ -19,6 +30,15 @@ public sealed class AppSettings(ISettingsRepository repository)
     {
         get => GetBool(Keys.StartWithSession, defaultValue: false);
         set => SetBool(Keys.StartWithSession, value);
+    }
+
+    /// <summary>The chosen visual theme; Moth until the user chooses otherwise (or when the stored value is unknown).</summary>
+    public AppTheme Theme
+    {
+        get => Enum.TryParse<AppTheme>(repository.Get(Keys.Theme), ignoreCase: false, out var theme) && Enum.IsDefined(theme)
+            ? theme
+            : AppTheme.Moth;
+        set => repository.Set(Keys.Theme, value.ToString());
     }
 
     /// <summary>Polling interval of the log sources, in milliseconds (the worst-case latency of a new line).</summary>

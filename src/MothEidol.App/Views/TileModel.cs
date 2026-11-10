@@ -40,6 +40,12 @@ public sealed class TileModel
     /// <summary>The project's accent (or the default one) for the tile stripe and name.</summary>
     public IBrush? AccentBrush { get; private init; }
 
+    /// <summary>
+    /// The accent as text (the project name): the chosen color shifted only as far as needed to stay legible
+    /// against the tile background in the active theme.
+    /// </summary>
+    public IBrush? AccentTextBrush { get; private init; }
+
     /// <summary>The tile frame: the accent for a project, the plain border for the "New project" tile.</summary>
     public IBrush? FrameBrush { get; private init; }
 
@@ -61,6 +67,7 @@ public sealed class TileModel
             StatusText = tile.Text,
             StatusBrush = ThemeBrushes.Get(BrushKey(tile.Light)),
             AccentBrush = accent,
+            AccentTextBrush = AccentText(project.AccentColor) ?? accent,
             FrameBrush = accent,
             Detail = tile.Detail,
             HasDetail = tile.Detail.Length > 0,
@@ -77,6 +84,15 @@ public sealed class TileModel
         StatusLight.Red => "MothStatusRedBrush",
         _ => "MothTextMutedBrush",
     };
+
+    private static IBrush? AccentText(string? hex)
+    {
+        if (hex is null || ThemeBrushes.Get("MothSurfaceBrush") is not ISolidColorBrush surface) return null;
+        var back = $"#{surface.Color.R:X2}{surface.Color.G:X2}{surface.Color.B:X2}";
+        return AccentColor.ReadableOn(hex, back) is var readable && Color.TryParse(readable, out var color)
+            ? new SolidColorBrush(color)
+            : null;
+    }
 
     /// <summary>The user's accent, or the theme's primary color when none is set (or it cannot be read).</summary>
     private static IBrush? Accent(string? hex) =>

@@ -35,7 +35,7 @@
                                         <StackPanel Grid.Column="1" Margin="14,12" Spacing="6">
                                             <SelectableTextBlock Text="{Binding Name}" FontSize="17" FontWeight="SemiBold"
                                                        TextTrimming="CharacterEllipsis"
-                                                       Foreground="{Binding AccentBrush}" />
+                                                       Foreground="{Binding AccentTextBrush}" />
                                             <StackPanel Orientation="Horizontal" Spacing="6">
                                                 <Ellipse Width="10" Height="10" VerticalAlignment="Center"
                                                          Fill="{Binding StatusBrush}" />

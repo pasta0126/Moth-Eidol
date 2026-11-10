@@ -26,6 +26,9 @@ public sealed class EntryItem(LogEntry entry) : INotifyPropertyChanged
         _ => "MothTextMutedBrush",
     });
 
+    /// <summary>Re-reads the level color after the theme changed.</summary>
+    public void RefreshTheme() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LevelBrush)));
+
     public bool IsMultiLine => Entry.ExtraLines > 0;
 
     public bool Expanded
