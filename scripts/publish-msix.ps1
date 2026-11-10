@@ -32,7 +32,7 @@ $makeappx = Find-SdkTool 'makeappx.exe'
 # Version: x.y.z from Directory.Build.props -> x.y.z.0 (the Store reserves the fourth part).
 $propsXml = [xml](Get-Content (Join-Path $root 'Directory.Build.props'))
 $version = ($propsXml.Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1).Trim()
-if ($version -notmatch '^\d+\.\d+\.\d+$') { throw "Unexpected version '$version' in Directory.Build.props." }
+if ($version -notmatch '^\d+\.\d+\.\d+$') { throw "Unexpected version '$version' in Directory.Build.props: the MSIX is built from a release version x.y.z, not a development build x.y.z.a." }
 $msixVersion = "$version.0"
 
 # Identity: Partner Center values, or a test identity.

@@ -8,6 +8,8 @@ public class AppVersionTests
     [InlineData("0.1.0", "0.1.0")]
     [InlineData("0.1.0+abc123", "0.1.0")]
     [InlineData("1.2.3-beta.1+sha.5", "1.2.3-beta.1")]
+    [InlineData("1.8.0.3", "1.8.0.3")]
+    [InlineData("1.8.0.3+abc123", "1.8.0.3")]
     public void Normalize_StripsBuildMetadata(string raw, string expected)
     {
         Assert.Equal(expected, AppVersion.Normalize(raw));

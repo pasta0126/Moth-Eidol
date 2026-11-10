@@ -74,11 +74,12 @@ Backlog (not scheduled): `splash-screen` (branded splash shown while the app sta
 ## Versioning and release flow
 
 - Semantic versioning `x.y.z`, starting at `0.1.0`. Version numbers are not pre-assigned to planned changes; the number is decided at release time according to what was actually delivered.
+- Between releases, work in progress uses a fourth part, `x.y.z.a`: after releasing `x.y.z`, every commit that changes the application bumps `a` (`x.y.z.1`, `x.y.z.2`, ...) in `Directory.Build.props`, so the maintainer can tell which build they are testing. At release time `a` is dropped and `x`/`y`/`z` are bumped according to semver (the next release after `1.8.0.3` is `1.9.0` or `1.8.1`, never `1.8.0.4`). Tags, changelog entries, the Store and the MSIX only ever use `x.y.z`.
 - The version lives in a single place (`Directory.Build.props`); the app shows it only in the persistent footer of the main window (never in the window title, tray tooltip or images). Any new window or screen must not hide the footer.
 - Each time a change (spec) is finished:
   1. Archive the OpenSpec change.
   2. Add the entry of the new version to `CHANGELOG.md` (user-facing language, grouped as Added / Changed / Fixed, with the release date). Only versions published to the Microsoft Store get an entry: a version that is tagged but not submitted is folded into the entry of the next published one, and fixes to bugs that never reached a published version are not listed.
-  3. Bump the version according to semver and what was delivered.
+  3. Bump the version according to semver and what was delivered (dropping the development `a` part).
   4. Commit, push, and push the git tag `vX.Y.Z`.
   5. **Tell the maintainer** so they can run the application manually and verify it.
 - The changelog is not shown inside the app. For a Microsoft Store submission, the "What's new in this version" text is the changelog entry of that version: `powershell -File scripts/changelog-section.ps1 -Version X.Y.Z` prints it ready to paste (it fails when the entry is missing or too long).

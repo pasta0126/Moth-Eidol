@@ -22,7 +22,8 @@ if (-not $Changelog) { $Changelog = Join-Path $root 'CHANGELOG.md' }
 
 if (-not $Version) {
     $props = Get-Content (Join-Path $root 'Directory.Build.props') -Raw
-    if ($props -match '<Version>([^<]+)</Version>') { $Version = $Matches[1] }
+    # A development build (x.y.z.a) reads the entry of its x.y.z.
+    if ($props -match '<Version>(\d+\.\d+\.\d+)(?:\.\d+)?</Version>') { $Version = $Matches[1] }
     else { Write-Error 'Could not read the version from Directory.Build.props.'; exit 1 }
 }
 

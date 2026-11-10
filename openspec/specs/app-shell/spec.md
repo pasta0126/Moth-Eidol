@@ -6,7 +6,7 @@ Defines the desktop application shell: main window, system tray icon, background
 ## Requirements
 
 ### Requirement: Application startup
-The system SHALL start a main window on Windows, macOS and Linux and SHALL show the application's semantic version `x.y.z` in the interface.
+The system SHALL start a main window on Windows, macOS and Linux and SHALL show the application's version in the interface: `x.y.z` for a release, or `x.y.z.a` for a development build between releases.
 
 #### Scenario: Normal startup
 - **WHEN** the user runs the application
@@ -17,7 +17,7 @@ The system SHALL show the running version in a persistent footer of the main win
 
 #### Scenario: Identify the running version
 - **WHEN** the user looks at the footer of the main window
-- **THEN** the current semantic version `x.y.z` is shown
+- **THEN** the current version (`x.y.z`, or `x.y.z.a` on a development build) is shown
 
 #### Scenario: Title and tooltip without version
 - **WHEN** the user looks at the main window title or hovers the tray icon
