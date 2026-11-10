@@ -23,6 +23,7 @@ public sealed class AppSettings(ISettingsRepository repository)
         public const string TailWordWrap = "viewer.word_wrap";
         public const string EventRetentionDays = "alerts.retention_days";
         public const string Theme = "app.theme";
+        public const string ShowSplash = "app.show_splash";
         public const string ChannelPrefix = "notify.";
     }
 
@@ -39,6 +40,13 @@ public sealed class AppSettings(ISettingsRepository repository)
             ? theme
             : AppTheme.Moth;
         set => repository.Set(Keys.Theme, value.ToString());
+    }
+
+    /// <summary>Whether the branded splash is shown while the application starts (on by default).</summary>
+    public bool ShowSplash
+    {
+        get => GetBool(Keys.ShowSplash, defaultValue: true);
+        set => SetBool(Keys.ShowSplash, value);
     }
 
     /// <summary>Polling interval of the log sources, in milliseconds (the worst-case latency of a new line).</summary>

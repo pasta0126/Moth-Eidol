@@ -1,0 +1,35 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="MothEidol.App.Views.SplashWindow"
+        RequestedThemeVariant="Dark"
+        Width="640" Height="427"
+        CanResize="False" ShowInTaskbar="False" Topmost="True"
+        WindowStartupLocation="CenterScreen"
+        WindowDecorations="None"
+        Background="Transparent"
+        TransparencyLevelHint="Transparent">
+    <!--
+        A floating splash: no frame and no background, only the artwork (a PNG with transparency) and the name
+        over the desktop. Always dark: the artwork is dark and glowing, so the splash ignores the theme chosen for
+        the rest of the app. The text carries a soft shadow so it stays readable over any wallpaper.
+    -->
+    <Grid>
+        <Image Source="avares://MothEidol.App/Assets/splash.png" Stretch="UniformToFill" />
+        <StackPanel VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,44" Spacing="8">
+            <TextBlock Text="MOTH-EIDOL" FontSize="40" FontWeight="Bold" LetterSpacing="6"
+                       HorizontalAlignment="Center" Foreground="{DynamicResource MothTextBrush}">
+                <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="18" OffsetX="0" OffsetY="2" Opacity="0.95"
+                                      Color="{DynamicResource MothShadowColor}" />
+                </TextBlock.Effect>
+            </TextBlock>
+            <TextBlock Text="SYSTEM OBSERVABILITY COMPOUND" FontSize="11" LetterSpacing="3"
+                       HorizontalAlignment="Center" Foreground="{DynamicResource MothAccentSoftBrush}">
+                <TextBlock.Effect>
+                    <DropShadowEffect BlurRadius="12" OffsetX="0" OffsetY="1" Opacity="0.95"
+                                      Color="{DynamicResource MothShadowColor}" />
+                </TextBlock.Effect>
+            </TextBlock>
+        </StackPanel>
+    </Grid>
+</Window>

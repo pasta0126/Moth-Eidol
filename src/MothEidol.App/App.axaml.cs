@@ -12,6 +12,7 @@ using MothEidol.Core.Logs;
 using MothEidol.Core.Notifications;
 using MothEidol.Core.Projects;
 using MothEidol.App.Platform;
+using MothEidol.App.Views;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Settings;
 using MothEidol.Persistence;
@@ -65,61 +66,97 @@ public partial class App : Application
             var storage = OpenStorage();
             var settings = storage.Settings;
             ApplyTheme(settings.Theme);
-            ReconcileAutostart(settings, autostart);
-
-            ProjectService? projects = null;
-            _tailing = new TailingService(
-                storage.Sources,
-                storage.Positions,
-                new TailOptions { PollInterval = TimeSpan.FromMilliseconds(settings.PollIntervalMs) },
-                projectEnabled: id => projects?.IsEnabled(id) ?? true);
-            projects = new ProjectService(storage.Projects, _tailing, storage.Events);
-            _entries = new EntryPipeline(_tailing.Lines);
-            _entries.Start(); // Subscribes before the sources start, so no line is missed.
-            _alerts = new AlertPipeline(
-                _entries.Entries, projects, storage.Events,
-                new AlertOptions { Retention = TimeSpan.FromDays(settings.EventRetentionDays) });
-            _alerts.Start();
-
-            // Alerts reach the user through independent channels, each of which can be switched off.
-            _unread = new UnreadCounter();
-            var toastStack = new ToastStack();
-            _notifications = new NotificationDispatcher(n => settings.IsChannelEnabled(n.Id, n.EnabledByDefault));
-            var windows = OperatingSystem.IsWindows();
-            var toastChannel = new ToastNotifier(toastStack, projects, enabledByDefault: NotificationDefaults.ToastEnabledByDefault(windows));
-            _notifications.Register(toastChannel);
-            _notifications.Register(new TrayNotifier(_unread));
-#if WINDOWS10_0_19041_0_OR_GREATER
-            // Windows: the native notification carries the sound itself, so the sound channel is not registered.
-            Platform.WindowsNotifier.RegisterIdentity(ExtractNotificationIcon());
-            _notifications.Register(new Platform.WindowsNotifier(
-                projects,
-                () => settings.IsAlertSoundEnabled(NotificationDefaults.SoundEnabledByDefault(true)),
-                () => Dispatcher.UIThread.Post(ShowMainWindow),
-                toastChannel.Show));
-#else
-            _notifications.Register(new SoundNotifier(new SystemAudioPlayer()));
-#endif
-            _notifications.Start(_alerts.Deliveries);
-
-            _tails = new ProjectTails(_entries.Entries, projects.ProjectOfSource, settings.ViewerMaxLines);
-            _tailing.Start();
-            desktop.Exit += (_, _) => StopTailing();
-
-            _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, projects, _tails, storage.Events, _notifications, _unread);
-            desktop.MainWindow = _mainWindow;
-
-            var trayIcons = TrayIcon.GetIcons(this);
-            if (trayIcons is { Count: > 0 })
+            // The splash goes up before the rest of the startup work, which then runs once it has had a chance to
+            // paint. A second instance never gets here (the single-instance check above hands over to the first).
+            SplashWindow? splash = null;
+            var shownFor = System.Diagnostics.Stopwatch.StartNew();
+            if (settings.ShowSplash)
             {
-                _ = new TrayPresenter(trayIcons[0], _unread);
+                splash = new SplashWindow();
+                splash.Show();
             }
 
-            _toasts = new ToastPresenter(toastStack, _mainWindow);
-
-            if (OperatingSystem.IsMacOS())
+            void Start()
             {
-                MacDockIcon.TrySet(new Uri("avares://MothEidol.App/Assets/app-icon.png"));
+                ReconcileAutostart(settings, autostart);
+
+                ProjectService? projects = null;
+                _tailing = new TailingService(
+                    storage.Sources,
+                    storage.Positions,
+                    new TailOptions { PollInterval = TimeSpan.FromMilliseconds(settings.PollIntervalMs) },
+                    projectEnabled: id => projects?.IsEnabled(id) ?? true);
+                projects = new ProjectService(storage.Projects, _tailing, storage.Events);
+                _entries = new EntryPipeline(_tailing.Lines);
+                _entries.Start(); // Subscribes before the sources start, so no line is missed.
+                _alerts = new AlertPipeline(
+                    _entries.Entries, projects, storage.Events,
+                    new AlertOptions { Retention = TimeSpan.FromDays(settings.EventRetentionDays) });
+                _alerts.Start();
+
+                // Alerts reach the user through independent channels, each of which can be switched off.
+                _unread = new UnreadCounter();
+                var toastStack = new ToastStack();
+                _notifications = new NotificationDispatcher(n => settings.IsChannelEnabled(n.Id, n.EnabledByDefault));
+                var windows = OperatingSystem.IsWindows();
+                var toastChannel = new ToastNotifier(toastStack, projects, enabledByDefault: NotificationDefaults.ToastEnabledByDefault(windows));
+                _notifications.Register(toastChannel);
+                _notifications.Register(new TrayNotifier(_unread));
+    #if WINDOWS10_0_19041_0_OR_GREATER
+                // Windows: the native notification carries the sound itself, so the sound channel is not registered.
+                Platform.WindowsNotifier.RegisterIdentity(ExtractNotificationIcon());
+                _notifications.Register(new Platform.WindowsNotifier(
+                    projects,
+                    () => settings.IsAlertSoundEnabled(NotificationDefaults.SoundEnabledByDefault(true)),
+                    () => Dispatcher.UIThread.Post(ShowMainWindow),
+                    toastChannel.Show));
+    #else
+                _notifications.Register(new SoundNotifier(new SystemAudioPlayer()));
+    #endif
+                _notifications.Start(_alerts.Deliveries);
+
+                _tails = new ProjectTails(_entries.Entries, projects.ProjectOfSource, settings.ViewerMaxLines);
+                _tailing.Start();
+                desktop.Exit += (_, _) => StopTailing();
+
+                _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, projects, _tails, storage.Events, _notifications, _unread);
+                desktop.MainWindow = _mainWindow;
+
+                var trayIcons = TrayIcon.GetIcons(this);
+                if (trayIcons is { Count: > 0 })
+                {
+                    _ = new TrayPresenter(trayIcons[0], _unread);
+                }
+
+                _toasts = new ToastPresenter(toastStack, _mainWindow);
+
+                if (OperatingSystem.IsMacOS())
+                {
+                    MacDockIcon.TrySet(new Uri("avares://MothEidol.App/Assets/app-icon.png"));
+                }
+            }
+
+            if (splash is null)
+            {
+                Start();
+            }
+            else
+            {
+                Dispatcher.UIThread.Post(async () =>
+                {
+                    try
+                    {
+                        Start();
+                        var remaining = SplashTiming.RemainingVisible(shownFor.Elapsed);
+                        if (remaining > TimeSpan.Zero) await System.Threading.Tasks.Task.Delay(remaining);
+                        _mainWindow?.Show();
+                    }
+                    finally
+                    {
+                        // Whatever happens (including a startup error) the splash never stays on screen.
+                        splash.Close();
+                    }
+                }, DispatcherPriority.Background);
             }
         }
 

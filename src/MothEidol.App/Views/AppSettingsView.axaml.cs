@@ -27,6 +27,8 @@ public partial class AppSettingsView : UserControl
         BuildChannels(settings, dispatcher);
         BuildSound(settings);
         BuildTheme(settings);
+        SplashCheck.IsChecked = settings.ShowSplash;
+        SplashCheck.Click += (_, _) => settings.ShowSplash = SplashCheck.IsChecked == true;
         BuildAbout();
 
         if (autostart.IsSupported)

@@ -37,6 +37,8 @@
             <SolidColorBrush x:Key="MothStatusYellowBrush" Color="#F2D14B" />
             <SolidColorBrush x:Key="MothStatusOrangeBrush" Color="#F28C28" />
             <SolidColorBrush x:Key="MothStatusRedBrush" Color="#E5432D" />
+            <!-- Shadow behind text drawn over artwork (the splash) -->
+            <Color x:Key="MothShadowColor">#000000</Color>
             <!-- Text selection: amber highlight -->
             <SolidColorBrush x:Key="TextControlSelectionHighlightColor" Color="#DF651D" />
         </ResourceDictionary>
@@ -60,6 +62,8 @@
             <SolidColorBrush x:Key="MothStatusYellowBrush" Color="#B8860B" />
             <SolidColorBrush x:Key="MothStatusOrangeBrush" Color="#C2570C" />
             <SolidColorBrush x:Key="MothStatusRedBrush" Color="#B3261E" />
+            <!-- Shadow behind text drawn over artwork (the splash) -->
+            <Color x:Key="MothShadowColor">#000000</Color>
             <!-- Text selection: navy highlight -->
             <SolidColorBrush x:Key="TextControlSelectionHighlightColor" Color="#202536" />
         </ResourceDictionary>

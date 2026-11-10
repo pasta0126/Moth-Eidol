@@ -17,13 +17,14 @@ The artwork `assets/branding/moth-eidol-banner.png` already exists. The app is a
 - The splash is shown by the app itself as the first window, not by an OS-level launch screen. Rationale: it is cross-platform and needs no per-OS packaging.
 - The splash never shows the version (consistent with the footer-only version rule).
 
-## Open questions
+## Decisions settled with the maintainer
 
-- Is the splash shown when the app starts hidden to the tray by autostart? Showing it at every login may be annoying; a likely answer is to show it only on a manual launch.
-- Minimum display time (for example 1 second) so it does not flash, or close as soon as the main window is ready?
-- Should it be possible to disable the splash in the application settings?
-- Does the banner need a splash-specific crop or size? The current artwork is a banner.
-- How does it interact with the single-instance rule (a second launch should not show a splash)?
+- **Artwork:** `assets/branding/moth-eidol-splash.png` (a glowing moth on obsidian, no text), shrunk to a 1280x853 app asset (the window is 640x427, 3:2) so the package stays small. The name `MOTH-EIDOL` and the tagline `SYSTEM OBSERVABILITY COMPOUND` are drawn by the app over the dark lower third with the theme font, never baked into the image; the version never appears.
+- **Always dark:** the splash uses the Moth (dark) colors whatever theme is active, because its artwork is dark.
+- **When it is shown:** on every launch that shows the main window. Today the application never starts hidden (autostart opens the main window like a manual launch), so there is nothing to skip; if a "start in the tray" mode is added later, it will skip the splash. A second instance never shows it: the single-instance check runs first and hands over to the running one.
+- **How long:** it appears before the rest of the startup work and stays at least 2 seconds, long enough to be seen and so it does not flash; it closes as soon as the main window is ready after that.
+- **Setting:** "Show the splash screen at startup" in the application settings, on by default. It is read before the splash is shown, so turning it off takes effect on the next launch.
+- **Failures:** the splash closes on any startup error, and it never delays the startup beyond the 2 second minimum.
 
 ## Risks / Trade-offs
 
