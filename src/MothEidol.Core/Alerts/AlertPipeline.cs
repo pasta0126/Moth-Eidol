@@ -171,6 +171,11 @@ public sealed class AlertPipeline : IAsyncDisposable
                         _store.PruneBuckets(now - TimeSpan.FromDays(8)); // The timeline reaches back 7 days.
                     }
                     catch (Exception) { /* Retry on the next purge. */ }
+                    try
+                    {
+                        _projects.MaintainStorage(); // WAL checkpoint and the sizes behind the storage warnings.
+                    }
+                    catch (Exception) { /* Retry on the next purge. */ }
                 }
             }
         }

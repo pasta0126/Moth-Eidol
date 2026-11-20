@@ -80,13 +80,18 @@ public partial class App : Application
             {
                 ReconcileAutostart(settings, autostart);
 
+                // Rows left behind by an interrupted removal in an earlier run go before anything reads them.
+                try { storage.ProjectStorage.RemoveOrphans(); }
+                catch (Exception) { /* Best effort; the next start tries again. */ }
+
                 ProjectService? projects = null;
                 _tailing = new TailingService(
                     storage.Sources,
                     storage.Positions,
                     new TailOptions { PollInterval = TimeSpan.FromMilliseconds(settings.PollIntervalMs) },
                     projectEnabled: id => projects?.IsEnabled(id) ?? true);
-                projects = new ProjectService(storage.Projects, _tailing, storage.Events);
+                projects = new ProjectService(storage.Projects, _tailing, storage.Events, storage.ProjectStorage);
+                _ = projects.RefreshStorageSizesAsync(); // Sizes behind the tiles' storage warnings.
                 _entries = new EntryPipeline(_tailing.Lines);
                 _entries.Start(); // Subscribes before the sources start, so no line is missed.
                 _alerts = new AlertPipeline(
@@ -181,6 +186,7 @@ public partial class App : Application
         IReadPositionStore Positions,
         IProjectRepository Projects,
         IEventStore Events,
+        IProjectStorage ProjectStorage,
         string? Notice);
 
     private static Storage OpenStorage()
@@ -210,15 +216,21 @@ public partial class App : Application
             new SqliteReadPositionStore(database),
             new SqliteProjectRepository(database),
             new SqliteEventStore(database),
+            new SqliteProjectStorage(database),
             notice);
 
-        static Storage InMemory(string notice) => new(
-            new AppSettings(new InMemorySettingsRepository()),
-            new InMemoryLogSourceRepository(),
-            new InMemoryReadPositionStore(),
-            new InMemoryProjectRepository(),
-            new InMemoryEventStore(),
-            notice);
+        static Storage InMemory(string notice)
+        {
+            var events = new InMemoryEventStore();
+            return new(
+                new AppSettings(new InMemorySettingsRepository()),
+                new InMemoryLogSourceRepository(),
+                new InMemoryReadPositionStore(),
+                new InMemoryProjectRepository(),
+                events,
+                new InMemoryProjectStorage(events),
+                notice);
+        }
     }
 
     /// <summary>Stops every source and saves its read position, so nothing is repeated on the next start.</summary>
@@ -231,6 +243,7 @@ public partial class App : Application
             _alerts?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(2));
             _tails?.Dispose();
             _entries?.DisposeAsync().AsTask().Wait(TimeSpan.FromSeconds(2));
+            SqliteDatabase.ReleaseConnections(); // Closes the file and checkpoints the WAL.
         }
         catch (Exception)
         {

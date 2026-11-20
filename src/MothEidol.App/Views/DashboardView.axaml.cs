@@ -54,7 +54,7 @@ public partial class DashboardView : UserControl
         var tiles = _projects.Projects
             .Select(p => TileModel.For(
                 p, _projects.StatusOf(p.Id), _events.Pending(p.Id),
-                _events.ProjectSeries(p.Id, DateTimeOffset.UtcNow, 48)))
+                _events.ProjectSeries(p.Id, DateTimeOffset.UtcNow, 48), _projects.StorageWarningOf(p.Id)))
             .Append(TileModel.NewProject())
             .ToList();
 

@@ -1,0 +1,86 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="MothEidol.App.Views.ProjectStorageView">
+    <ScrollViewer>
+        <StackPanel Margin="0,16,16,16" Spacing="20" MaxWidth="900" HorizontalAlignment="Left">
+
+            <StackPanel Spacing="8">
+                <Grid ColumnDefinitions="*,Auto">
+                    <SelectableTextBlock Text="Usage" FontWeight="SemiBold" FontSize="16" VerticalAlignment="Center"
+                               Foreground="{DynamicResource MothAccentBrush}" />
+                    <Button x:Name="RefreshButton" Grid.Column="1" Content="Refresh" />
+                </Grid>
+                <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+                           Text="What this project keeps in the local database. Old seen events are removed automatically after the retention period; pending ones stay until you review or clean them." />
+                <Border Padding="12" CornerRadius="4" Background="{DynamicResource MothSurfaceBrush}">
+                    <Grid x:Name="Figures" ColumnDefinitions="Auto,*" ColumnSpacing="24" RowSpacing="6"
+                          RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
+                        <SelectableTextBlock Grid.Row="0" Text="Event groups" Foreground="{DynamicResource MothTextMutedBrush}" />
+                        <SelectableTextBlock Grid.Row="0" Grid.Column="1" x:Name="GroupsText" Foreground="{DynamicResource MothTextBrush}" />
+                        <SelectableTextBlock Grid.Row="1" Text="Retained occurrences" Foreground="{DynamicResource MothTextMutedBrush}" />
+                        <SelectableTextBlock Grid.Row="1" Grid.Column="1" x:Name="OccurrencesText" Foreground="{DynamicResource MothTextBrush}" />
+                        <SelectableTextBlock Grid.Row="2" Text="Hourly counts" Foreground="{DynamicResource MothTextMutedBrush}" />
+                        <SelectableTextBlock Grid.Row="2" Grid.Column="1" x:Name="BucketsText" Foreground="{DynamicResource MothTextBrush}" />
+                        <SelectableTextBlock Grid.Row="3" Text="Approximate size" Foreground="{DynamicResource MothTextMutedBrush}" />
+                        <SelectableTextBlock Grid.Row="3" Grid.Column="1" x:Name="SizeText" Foreground="{DynamicResource MothTextBrush}" />
+                        <SelectableTextBlock Grid.Row="4" Text="Oldest occurrence" Foreground="{DynamicResource MothTextMutedBrush}" />
+                        <SelectableTextBlock Grid.Row="4" Grid.Column="1" x:Name="OldestText" Foreground="{DynamicResource MothTextBrush}" />
+                        <SelectableTextBlock Grid.Row="5" Text="Newest occurrence" Foreground="{DynamicResource MothTextMutedBrush}" />
+                        <SelectableTextBlock Grid.Row="5" Grid.Column="1" x:Name="NewestText" Foreground="{DynamicResource MothTextBrush}" />
+                        <SelectableTextBlock Grid.Row="6" Text="Database file (all projects)" Foreground="{DynamicResource MothTextMutedBrush}" />
+                        <SelectableTextBlock Grid.Row="6" Grid.Column="1" x:Name="FileText" Foreground="{DynamicResource MothTextBrush}" />
+                    </Grid>
+                </Border>
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <SelectableTextBlock Text="Storage warning" FontWeight="SemiBold" FontSize="16"
+                           Foreground="{DynamicResource MothAccentBrush}" />
+                <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+                           Text="The project's tile tells you when its approximate size goes over this limit. Nothing is removed automatically." />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <SelectableTextBlock Text="Warn above" VerticalAlignment="Center" Foreground="{DynamicResource MothTextBrush}" />
+                    <TextBox x:Name="ThresholdBox" Width="100" MaxLength="5" />
+                    <SelectableTextBlock Text="MB" VerticalAlignment="Center" Foreground="{DynamicResource MothTextBrush}" />
+                    <Button x:Name="ApplyThresholdButton" Content="Apply" />
+                </StackPanel>
+                <SelectableTextBlock x:Name="ThresholdError" TextWrapping="Wrap" Foreground="{DynamicResource MothErrorBrush}" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <SelectableTextBlock Text="Clean up" FontWeight="SemiBold" FontSize="16"
+                           Foreground="{DynamicResource MothAccentBrush}" />
+                <Border x:Name="OverPanel" IsVisible="False" Padding="12" CornerRadius="4"
+                        BorderThickness="1" BorderBrush="{DynamicResource MothWarningBrush}"
+                        Background="{DynamicResource MothSurfaceBrush}">
+                    <SelectableTextBlock x:Name="OverText" TextWrapping="Wrap" FontWeight="SemiBold"
+                               Foreground="{DynamicResource MothWarningBrush}" />
+                </Border>
+                <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+                           Text="Sources and settings are kept, and lines already read are not alerted again. The freed space is returned to the disk." />
+
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <SelectableTextBlock Text="Keep the last" VerticalAlignment="Center" Foreground="{DynamicResource MothTextBrush}" />
+                    <TextBox x:Name="DaysBox" Width="70" MaxLength="3" Text="7" />
+                    <SelectableTextBlock Text="days" VerticalAlignment="Center" Foreground="{DynamicResource MothTextBrush}" />
+                    <Button x:Name="KeepButton" Content="Remove older history" />
+                </StackPanel>
+                <SelectableTextBlock x:Name="DaysError" TextWrapping="Wrap" Foreground="{DynamicResource MothErrorBrush}" />
+                <Button x:Name="ClearButton" Content="Clear all events" HorizontalAlignment="Left" />
+
+                <StackPanel x:Name="ConfirmPanel" IsVisible="False" Spacing="8">
+                    <SelectableTextBlock x:Name="ConfirmText" TextWrapping="Wrap" Foreground="{DynamicResource MothTextBrush}" />
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <Button x:Name="ConfirmButton" Content="Yes, remove them" />
+                        <Button x:Name="CancelButton" Content="Cancel" />
+                    </StackPanel>
+                </StackPanel>
+
+                <SelectableTextBlock x:Name="BusyText" IsVisible="False" Text="Cleaning up… monitoring keeps running."
+                           Foreground="{DynamicResource MothTextMutedBrush}" />
+                <SelectableTextBlock x:Name="ResultText" TextWrapping="Wrap" Foreground="{DynamicResource MothTextBrush}" />
+                <SelectableTextBlock x:Name="CleanupError" TextWrapping="Wrap" Foreground="{DynamicResource MothErrorBrush}" />
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

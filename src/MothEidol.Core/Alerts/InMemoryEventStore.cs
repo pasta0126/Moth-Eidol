@@ -110,6 +110,58 @@ public sealed class InMemoryEventStore : IEventStore
         lock (_gate) _groups.RemoveAll(e => e.Group.ProjectId == projectId);
     }
 
+    /// <summary>The project's load, estimated like the database does (UTF-8 text plus a per-row overhead).</summary>
+    public MothEidol.Core.Projects.ProjectStorageUsage UsageOf(long projectId)
+    {
+        static long Bytes(string? text) => text is null ? 0 : System.Text.Encoding.UTF8.GetByteCount(text);
+        lock (_gate)
+        {
+            var entries = _groups.Where(e => e.Group.ProjectId == projectId).ToList();
+            var occurrences = entries.SelectMany(e => e.Occurrences).ToList();
+            var buckets = entries.Sum(e => (long)e.Buckets.Count);
+            var bytes =
+                entries.Sum(e => Bytes(e.Group.Title) + Bytes(e.Key) + Bytes(e.Group.Location)
+                                 + MothEidol.Core.Projects.ProjectStorageUsage.GroupOverhead)
+                + occurrences.Sum(o => Bytes(o.Message) + (o.Context?.Sum(c => Bytes(c.Text)) ?? 0)
+                                       + MothEidol.Core.Projects.ProjectStorageUsage.OccurrenceOverhead)
+                + buckets * MothEidol.Core.Projects.ProjectStorageUsage.BucketOverhead;
+            return new MothEidol.Core.Projects.ProjectStorageUsage(
+                entries.Count, entries.Count(e => e.Group.IsPending), occurrences.Count, buckets, bytes,
+                occurrences.Count == 0 ? null : occurrences.Min(o => o.At),
+                occurrences.Count == 0 ? null : occurrences.Max(o => o.At));
+        }
+    }
+
+    /// <summary>Removes every group of the project, pending ones included.</summary>
+    public MothEidol.Core.Projects.CleanupResult ClearProject(long projectId)
+    {
+        lock (_gate)
+        {
+            var removed = _groups.Where(e => e.Group.ProjectId == projectId).ToList();
+            _groups.RemoveAll(e => e.Group.ProjectId == projectId);
+            return new(removed.Count, removed.Sum(e => e.Occurrences.Count));
+        }
+    }
+
+    /// <summary>Keeps only what happened since the cutoff; kept groups keep their totals and pending state.</summary>
+    public MothEidol.Core.Projects.CleanupResult KeepSince(long projectId, DateTimeOffset cutoff)
+    {
+        var cutoffHour = HourOf(cutoff);
+        lock (_gate)
+        {
+            var entries = _groups.Where(e => e.Group.ProjectId == projectId).ToList();
+            var stale = entries.Where(e => e.Group.LastSeen < cutoff).ToList();
+            var occurrences = stale.Sum(e => e.Occurrences.Count);
+            _groups.RemoveAll(stale.Contains);
+            foreach (var entry in entries.Except(stale))
+            {
+                occurrences += entry.Occurrences.RemoveAll(o => o.At < cutoff);
+                foreach (var hour in entry.Buckets.Keys.Where(h => h < cutoffHour).ToList()) entry.Buckets.Remove(hour);
+            }
+            return new(stale.Count, occurrences);
+        }
+    }
+
     public IReadOnlyList<int> GroupSeries(long groupId, DateTimeOffset now, int hours)
     {
         lock (_gate) return Series(_groups.Where(e => e.Group.Id == groupId), now, hours);

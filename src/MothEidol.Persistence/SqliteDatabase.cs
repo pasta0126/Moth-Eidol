@@ -49,8 +49,15 @@ public sealed class SqliteDatabase
 
         var connection = new SqliteConnection(ConnectionString(Path));
         connection.Open();
+        // Per connection: with WAL this stays consistent on power loss and avoids one fsync per write.
+        using var command = connection.CreateCommand();
+        command.CommandText = "PRAGMA synchronous = NORMAL;";
+        command.ExecuteNonQuery();
         return connection;
     }
+
+    /// <summary>Closes the pooled connections, so the file is released and the WAL is checkpointed.</summary>
+    public static void ReleaseConnections() => SqliteConnection.ClearAllPools();
 
     public static SqliteDatabase Open(string path, IReadOnlyList<Migration>? migrations = null)
     {
@@ -67,6 +74,7 @@ public sealed class SqliteDatabase
         }
         catch (SqliteException ex) when (IsCorruption(ex))
         {
+            ReleaseConnections(); // A pooled connection would keep the corrupt file open.
             var backup = BackupCorruptFile(path);
             return OpenCore(path, migrations, DatabaseStatus.RecoveredFromCorruption, backup);
         }
@@ -77,7 +85,8 @@ public sealed class SqliteDatabase
     {
         var target = migrations.Count == 0 ? 0 : migrations[^1].Version;
 
-        using var connection = new SqliteConnection(ConnectionString(path));
+        // Not pooled: once opened and migrated the file is closed for real (WAL checkpointed, nothing held open).
+        using var connection = new SqliteConnection(ConnectionString(path, pooling: false));
         connection.Open();
 
         // The first query on a non-database file raises NOTADB, handled by the caller.
@@ -131,8 +140,10 @@ public sealed class SqliteDatabase
     private static bool IsCorruption(SqliteException ex) =>
         ex.SqliteErrorCode is SqliteCorrupt or SqliteNotADatabase;
 
-    private static string ConnectionString(string path) =>
-        new SqliteConnectionStringBuilder { DataSource = path, Pooling = false }.ToString();
+    // Pooled connections avoid reopening the file (and checkpointing the WAL) on every call; the timeout makes
+    // concurrent writers wait for each other instead of failing with SQLITE_BUSY.
+    private static string ConnectionString(string path, bool pooling = true) =>
+        new SqliteConnectionStringBuilder { DataSource = path, Pooling = pooling, DefaultTimeout = 5 }.ToString();
 
     private static object? Scalar(SqliteConnection connection, string sql)
     {

@@ -26,7 +26,7 @@
                 <ItemsControl.ItemTemplate>
                     <DataTemplate x:DataType="views:TileModel">
                         <Border AttachedToVisualTree="OnTileAttached" Cursor="Hand" Margin="0,0,16,16" Background="Transparent">
-                            <Border Width="270" Height="150" CornerRadius="6" ClipToBounds="True"
+                            <Border Width="270" MinHeight="150" CornerRadius="6" ClipToBounds="True"
                                     Background="{DynamicResource MothSurfaceBrush}"
                                     BorderBrush="{Binding FrameBrush}" BorderThickness="1">
                                 <Grid>
@@ -46,6 +46,10 @@
                                                        IsVisible="{Binding HasDetail}"
                                                        TextTrimming="CharacterEllipsis"
                                                        Foreground="{DynamicResource MothTextMutedBrush}" />
+                                            <SelectableTextBlock Text="{Binding StorageText}" FontSize="12"
+                                                       IsVisible="{Binding HasStorageWarning}"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       Foreground="{DynamicResource MothWarningBrush}" />
                                             <views:SparklineControl IsVisible="{Binding HasSeries}" Height="26"
                                                                     Margin="0,4,0,0" HorizontalAlignment="Stretch"
                                                                     Values="{Binding Series}"

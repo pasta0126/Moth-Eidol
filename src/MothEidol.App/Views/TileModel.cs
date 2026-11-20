@@ -26,6 +26,11 @@ public sealed class TileModel
 
     public bool HasDetail { get; private init; }
 
+    /// <summary>"Storage over 100 MB" while the project's storage is over its threshold, empty otherwise.</summary>
+    public string StorageText { get; private init; } = "";
+
+    public bool HasStorageWarning => StorageText.Length > 0;
+
     /// <summary>Alert-level events per hour over the last 24 hours (oldest first), or null when not shown.</summary>
     public IReadOnlyList<int>? Series { get; private init; }
 
@@ -54,8 +59,10 @@ public sealed class TileModel
     /// the activity trend and, only when it says something the status does not, a detail line.
     /// </summary>
     /// <param name="last48Hours">Alert-level events per hour for the last 48 hours, oldest first.</param>
+    /// <param name="storage">The project's storage against its threshold; it adds a line, never changes the status.</param>
     public static TileModel For(
-        Project project, ProjectStatus status, PendingSummary pending, IReadOnlyList<int> last48Hours)
+        Project project, ProjectStatus status, PendingSummary pending, IReadOnlyList<int> last48Hours,
+        StorageWarning? storage = null)
     {
         var tile = TileStatus.From(status, pending);
         var monitored = status.Health is ProjectHealth.Healthy or ProjectHealth.Degraded;
@@ -71,6 +78,7 @@ public sealed class TileModel
             FrameBrush = accent,
             Detail = tile.Detail,
             HasDetail = tile.Detail.Length > 0,
+            StorageText = storage?.TileText ?? "",
             Series = monitored ? [.. last48Hours.Skip(Math.Max(0, last48Hours.Count - 24))] : null,
             HealthText = monitored ? Describe(Trend.From(last48Hours)) : "",
         };

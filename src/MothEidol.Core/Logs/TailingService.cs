@@ -72,6 +72,33 @@ public sealed class TailingService : IAsyncDisposable
         }
     }
 
+    /// <summary>
+    /// Stops the monitors of a project's sources and forgets their statuses, leaving storage untouched; used before
+    /// the project is removed. <see cref="RefreshProjectAsync"/> starts them again if the removal does not happen.
+    /// </summary>
+    public async Task UnloadProjectAsync(long projectId)
+    {
+        foreach (var source in _sources.List().Where(s => s.ProjectId == projectId))
+        {
+            await StopMonitorAsync(source.Id);
+            lock (_gate) _statuses.Remove(source.Id);
+        }
+    }
+
+    /// <summary>
+    /// Deletes whatever is still stored for the sources of a removed project (nothing when the project's removal
+    /// already deleted them, as the database does).
+    /// </summary>
+    public void ForgetProjectSources(long projectId)
+    {
+        foreach (var source in _sources.List().Where(s => s.ProjectId == projectId))
+        {
+            _sources.Remove(source.Id);
+            _positions.Delete(source.Id);
+            lock (_gate) _statuses.Remove(source.Id);
+        }
+    }
+
     public LogSource Add(SourceKind kind, string path, string? pattern, long projectId = 0)
     {
         path = path?.Trim() ?? "";

@@ -24,6 +24,9 @@
             <TabItem Header="Settings">
                 <views:ProjectSettingsView x:Name="SettingsSection" />
             </TabItem>
+            <TabItem x:Name="StorageTab" Header="Storage">
+                <views:ProjectStorageView x:Name="StorageSection" />
+            </TabItem>
         </TabControl>
     </DockPanel>
 </UserControl>

@@ -7,7 +7,7 @@ using MothEidol.Core.Settings;
 
 namespace MothEidol.App.Views;
 
-/// <summary>The screen of one project, with its live tail and its settings.</summary>
+/// <summary>The screen of one project, with its events, live tail, settings and storage.</summary>
 public partial class ProjectView : UserControl
 {
     private readonly DispatcherTimer _timer = new() { Interval = TimeSpan.FromSeconds(2) };
@@ -32,6 +32,12 @@ public partial class ProjectView : UserControl
         Events.Initialize(projects, events, wrap);
         Tail.Initialize(tails, settings, wrap);
         SettingsSection.Initialize(projects, tailing, back);
+        StorageSection.Initialize(projects);
+        // Usage is measured when the section is shown, never on every new entry.
+        Sections.SelectionChanged += async (_, e) =>
+        {
+            if (e.Source == Sections && Sections.SelectedItem == StorageTab) await StorageSection.MeasureAsync();
+        };
 
         projects.Changed += (_, _) => Dispatcher.UIThread.Post(() => Refresh());
         tailing.StatusChanged += (_, _) => Dispatcher.UIThread.Post(() => Refresh());
@@ -45,6 +51,7 @@ public partial class ProjectView : UserControl
         _projectId = project.Id;
         SettingsSection.Bind(project);
         Events.Bind(project);
+        StorageSection.Bind(project);
         Sections.SelectedIndex = settingsFirst ? 2 : 0;
         Refresh(force: true);
     }

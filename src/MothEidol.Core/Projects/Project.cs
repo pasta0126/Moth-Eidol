@@ -29,8 +29,15 @@ public sealed record AlertSettings(bool WarningAlerts, FrequencyMode Mode, int M
 
 /// <param name="AccentColor">A normalized <c>#RRGGBB</c> color chosen by the user, or null for the default accent.</param>
 /// <param name="Position">Place in the user's order of the dashboard tiles (lower first).</param>
+/// <param name="StorageWarningMb">Approximate size in MB above which the project's storage is flagged.</param>
 public sealed record Project(
-    long Id, string Name, bool Enabled, AlertSettings Alerts, string? AccentColor = null, int Position = 0);
+    long Id, string Name, bool Enabled, AlertSettings Alerts, string? AccentColor = null, int Position = 0,
+    int StorageWarningMb = Project.DefaultStorageWarningMb)
+{
+    public const int DefaultStorageWarningMb = 100;
+    public const int MinStorageWarningMb = 1;
+    public const int MaxStorageWarningMb = 10240;
+}
 
 public interface IProjectRepository
 {

@@ -86,5 +86,9 @@ public static class Migrations
             UPDATE projects
                SET position = (SELECT COUNT(*) FROM projects other WHERE other.name < projects.name COLLATE NOCASE) + 1;
             """),
+        new Migration(7, """
+            -- Approximate size in MB above which a project's storage is flagged.
+            ALTER TABLE projects ADD COLUMN storage_warning_mb INTEGER NOT NULL DEFAULT 100;
+            """),
     ];
 }

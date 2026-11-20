@@ -9,7 +9,7 @@ public sealed class SqliteProjectRepository(SqliteDatabase database) : IProjectR
         using var connection = database.CreateConnection();
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT id, name, enabled, warning_alerts, frequency_mode, frequency_minutes, accent_color, position
+            SELECT id, name, enabled, warning_alerts, frequency_mode, frequency_minutes, accent_color, position, storage_warning_mb
             FROM projects ORDER BY position, id;
             """;
 
@@ -26,7 +26,8 @@ public sealed class SqliteProjectRepository(SqliteDatabase database) : IProjectR
                     Enum.TryParse<FrequencyMode>(reader.GetString(4), out var mode) ? mode : FrequencyMode.Immediate,
                     (int)reader.GetInt64(5)),
                 reader.IsDBNull(6) ? null : reader.GetString(6),
-                (int)reader.GetInt64(7)));
+                (int)reader.GetInt64(7),
+                (int)reader.GetInt64(8)));
         }
         return projects;
     }
@@ -53,7 +54,8 @@ public sealed class SqliteProjectRepository(SqliteDatabase database) : IProjectR
         command.CommandText = """
             UPDATE projects
                SET name = $name, enabled = $enabled, warning_alerts = $warnings,
-                   frequency_mode = $mode, frequency_minutes = $minutes, accent_color = $accent
+                   frequency_mode = $mode, frequency_minutes = $minutes, accent_color = $accent,
+                   storage_warning_mb = $storage
              WHERE id = $id;
             """;
         command.Parameters.AddWithValue("$id", project.Id);
@@ -63,16 +65,28 @@ public sealed class SqliteProjectRepository(SqliteDatabase database) : IProjectR
         command.Parameters.AddWithValue("$mode", project.Alerts.Mode.ToString());
         command.Parameters.AddWithValue("$minutes", project.Alerts.Minutes);
         command.Parameters.AddWithValue("$accent", (object?)project.AccentColor ?? DBNull.Value);
+        command.Parameters.AddWithValue("$storage", project.StorageWarningMb);
         command.ExecuteNonQuery();
     }
 
+    /// <summary>Deletes the project with its sources, read positions and events, all or nothing.</summary>
     public void Remove(long id)
     {
         using var connection = database.CreateConnection();
+        using var transaction = connection.BeginTransaction();
         using var command = connection.CreateCommand();
-        command.CommandText = "DELETE FROM projects WHERE id = $id;";
+        command.Transaction = transaction;
+        command.CommandText = """
+            DELETE FROM read_positions WHERE source_id IN (SELECT id FROM log_sources WHERE project_id = $id);
+            DELETE FROM log_sources WHERE project_id = $id;
+            DELETE FROM event_occurrences WHERE group_id IN (SELECT id FROM event_groups WHERE project_id = $id);
+            DELETE FROM event_buckets WHERE project_id = $id;
+            DELETE FROM event_groups WHERE project_id = $id;
+            DELETE FROM projects WHERE id = $id;
+            """;
         command.Parameters.AddWithValue("$id", id);
         command.ExecuteNonQuery();
+        transaction.Commit();
     }
 
     public void Reorder(IReadOnlyList<long> orderedIds)
