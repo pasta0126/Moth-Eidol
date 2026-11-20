@@ -6,7 +6,7 @@ Defines the per-project screen, where the user follows the project's live log an
 ## Requirements
 
 ### Requirement: Project screen sections
-The system SHALL show for the opened project an events section, a live tail section and a settings section, SHALL open on the events section, and SHALL allow switching between them without losing the tail.
+The system SHALL show for the opened project an events section, a live tail section, a settings section and a storage section, SHALL open on the events section, and SHALL allow switching between them without losing the tail.
 
 #### Scenario: Open a project
 - **WHEN** the user opens a project from its tile
@@ -15,6 +15,10 @@ The system SHALL show for the opened project an events section, a live tail sect
 #### Scenario: Switch sections
 - **WHEN** the user moves from the tail to the settings and back
 - **THEN** the tail still shows the lines that arrived in the meantime
+
+#### Scenario: Storage section
+- **WHEN** the user selects the storage section, placed next to settings
+- **THEN** the project's database usage and cleanup actions are shown
 
 ### Requirement: Project tail
 The system SHALL show in the tail the new lines of all the project's sources, SHALL allow limiting the view to one source, and SHALL keep the auto-scroll, pause and line-limit behavior of the live viewer.

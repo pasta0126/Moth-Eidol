@@ -6,7 +6,7 @@ Defines monitored projects: a named group of log sources with its own alert conf
 ## Requirements
 
 ### Requirement: Project management
-The system SHALL allow creating, renaming, enabling, disabling and removing projects, each with a unique non-empty name.
+The system SHALL allow creating, renaming, enabling, disabling and removing projects, each with a unique non-empty name. Removing a project SHALL delete all its stored data in a single operation: the project, its sources, their read positions, and its event groups, occurrences and hourly counts; either everything is removed or nothing is.
 
 #### Scenario: Create a project with a name only
 - **WHEN** the user creates a project giving only a name
@@ -23,6 +23,14 @@ The system SHALL allow creating, renaming, enabling, disabling and removing proj
 #### Scenario: Remove a project
 - **WHEN** the user removes a project
 - **THEN** its sources stop being monitored and the project disappears from the dashboard
+
+#### Scenario: Nothing left behind
+- **WHEN** a project with sources and recorded events is removed
+- **THEN** the database holds no source, read position, event group, occurrence or hourly count of that project, and its freed space is returned to the disk
+
+#### Scenario: Same name again
+- **WHEN** a removed project is created again with the same name and sources
+- **THEN** it starts with no events and its sources are read as new
 
 ### Requirement: Project sources
 The system SHALL let the user add, enable, disable and remove the log sources of a project, as a file or as a folder with a file-name pattern.

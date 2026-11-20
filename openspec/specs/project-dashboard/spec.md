@@ -81,3 +81,14 @@ The system SHALL use the project's accent color on its tile (frame and name) and
 #### Scenario: Project with accent
 - **WHEN** a project has the accent color `#3FA7D6`
 - **THEN** its tile is accented with that color and its status dot keeps the traffic-light color
+
+### Requirement: Tile storage warning
+The system SHALL show on a project's tile a line stating that its storage is over its threshold, with the threshold in MB, while the project's approximate size is over it. The line SHALL NOT change the tile's status dot or status text.
+
+#### Scenario: Healthy project over its threshold
+- **WHEN** a healthy project with nothing pending is over its storage threshold of 100 MB
+- **THEN** its tile shows a green dot with "Healthy" and a line "Storage over 100 MB"
+
+#### Scenario: Under its threshold
+- **WHEN** a project is under its storage threshold
+- **THEN** its tile shows no storage line
