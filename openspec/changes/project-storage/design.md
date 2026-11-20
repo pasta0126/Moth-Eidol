@@ -16,7 +16,8 @@ See proposal.md for motivation. Current state relevant to the approach:
 - Cheaper storage hot path with no observable behavior change.
 
 **Non-Goals:**
-- Automatic per-project size limits or scheduled cleanups (the existing retention keeps working as is).
+- Automatic cleanups when a project goes over its size threshold, or scheduled cleanups (the threshold only warns; the existing retention keeps working as is).
+- A notification for the storage warning (it is not an event; it is shown on the tile and in the Storage section only).
 - Changing the per-group occurrence limit or the retention setting UI.
 - Caching the dashboard queries (pooling removes most of their cost; revisit only if measured).
 
@@ -46,7 +47,14 @@ In one transaction, with `cutoff` in UTC ms and `cutoffHour = cutoff_seconds / 3
 2. Remove remaining occurrences of the project's groups with `at < cutoff`.
 3. Remove the project's buckets with `hour < cutoffHour`.
 
-Group `count`, `first_seen` and `pending_count` of kept groups are not recomputed: the totals keep meaning "seen in total", matching how the per-group occurrence limit already works. The existing `ix_event_occurrences_group` index and the per-project groups index are enough (occurrences are reached through their groups), so no migration is added. Days are validated in the view (1–365, default 7) and converted to a cutoff with `TimeProvider`.
+Group `count`, `first_seen` and `pending_count` of kept groups are not recomputed: the totals keep meaning "seen in total", matching how the per-group occurrence limit already works. The existing `ix_event_occurrences_group` index and the per-project groups index are enough (occurrences are reached through their groups), so no index is added. Days are validated in the view (1–365, default 7) and converted to a cutoff with `TimeProvider`.
+
+### Storage warning threshold
+Each project gets `StorageWarningMb` (integer, 1–10240, default 100) on `Project`, stored by migration 7 as `projects.storage_warning_mb INTEGER NOT NULL DEFAULT 100`, so existing projects get the default. It is edited in the Storage section (not in Settings, so it sits next to the figures it refers to) and saved through `ProjectService.UpdateAsync` like the other project parameters; the wizard does not ask for it.
+
+The comparison uses the same approximate size as the usage figures. Computing it is a `SUM` over the project's occurrences, too costly for the dashboard's 1.5 s refresh, so `ProjectService` keeps the last measured size per project in memory and `StorageWarningOf(projectId)` (size, threshold, over or not) reads only that cache. The cache is refreshed for all projects once at startup (background, after the orphan sweep), in the hourly purge tick, after each cleanup, when the storage section measures the project, and for one project when its threshold changes (no new measure, only the comparison). Until the first measure a project is not over its threshold. A project can therefore go over the threshold up to an hour before its tile says so; acceptable for a warning about slow growth.
+
+The warning does not change the tile's status dot (the traffic light keeps meaning monitoring state and pending events): it adds a detail line, "Storage over N MB", below the status, which satisfies the "meaningful tile text" rule because the user can act on it. The Storage section shows the threshold field and, when over, a highlighted message with the size and the threshold right above the cleanup actions. Colors: `MothWarningBrush` for the text, no new brushes.
 
 ### Clear all
 Same transaction as `IEventStore.RemoveProject` (occurrences, buckets, groups of the project); exposed through `IProjectStorage` with counts. Read positions are not touched, so the tail resumes where it was and old lines are not re-alerted. A frequency policy may still hold a summary for cleared events; it is delivered normally (acceptable, it describes what happened before the cleanup).
@@ -78,4 +86,4 @@ After a manual cleanup or a project removal, run `VACUUM` and then `PRAGMA wal_c
 
 ## Migration Plan
 
-No schema migration. The orphan sweep cleans data left by earlier versions on the first start. Rollback: an older build opens the same schema version unchanged.
+Migration 7 adds `projects.storage_warning_mb` with default 100, so existing projects get the default threshold. The orphan sweep cleans data left by earlier versions on the first start. Rollback: an older build refuses a newer schema version, as with any migration; the added column is otherwise harmless.

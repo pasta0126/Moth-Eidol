@@ -63,3 +63,30 @@ The system SHALL report after a cleanup how many groups and occurrences were rem
 #### Scenario: Monitoring continues
 - **WHEN** a cleanup is running
 - **THEN** the tail keeps showing new lines and new events are recorded once it finishes
+
+### Requirement: Storage size warning
+The system SHALL keep for each project a storage threshold in megabytes, from 1 to 10240 and 100 by default, that the user can change in the project's storage section and that is kept between runs. When the project's approximate size is over its threshold, the system SHALL show it on the project's tile and in its storage section, next to the cleanup actions, without removing anything automatically and without sending notifications. The size SHALL be measured at startup, at least once per hour while the application runs, after every cleanup and when the storage section is opened or refreshed.
+
+#### Scenario: Default threshold
+- **WHEN** a project is created, or an existing project is opened for the first time after this version
+- **THEN** its storage threshold is 100 MB
+
+#### Scenario: Change the threshold
+- **WHEN** the user sets the threshold of a project to 20 MB in its storage section
+- **THEN** the value is saved, is kept after a restart, and the warning is evaluated again against it at once
+
+#### Scenario: Over the threshold
+- **WHEN** a project's approximate size is over its threshold
+- **THEN** its tile shows a line stating that its storage is over the threshold and its storage section shows the size and the threshold highlighted next to the cleanup actions
+
+#### Scenario: Back under the threshold
+- **WHEN** a cleanup leaves the project's approximate size under its threshold
+- **THEN** the warning disappears from its tile and from its storage section
+
+#### Scenario: Only a warning
+- **WHEN** a project goes over its threshold
+- **THEN** no event is removed, no notification is sent and the status dot of its tile is unchanged
+
+#### Scenario: Invalid threshold
+- **WHEN** the user enters a threshold outside 1–10240 or not a whole number
+- **THEN** it is not saved and the valid range is shown

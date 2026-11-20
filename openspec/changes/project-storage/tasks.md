@@ -24,19 +24,27 @@
 - [ ] 4.3 `ProjectService.RemoveAsync`: unload → repository remove → compact in background; reload monitors if the removal fails
 - [ ] 4.4 Tests: nothing of the project left in any table; other projects untouched; recreating a project with the same name starts empty
 
-## 5. Wiring
+## 5. Storage warning
 
-- [ ] 5.1 App startup: run `RemoveOrphans` after opening the database, before monitors start
-- [ ] 5.2 Alert pipeline hourly purge tick also calls `Checkpoint`
+- [ ] 5.1 Migration 7: `projects.storage_warning_mb INTEGER NOT NULL DEFAULT 100`; `Project.StorageWarningMb` (1–10240, default 100) read/written by both repositories
+- [ ] 5.2 `ProjectService`: in-memory size cache per project, `StorageWarningOf(projectId)`, `RefreshStorageSizesAsync()` (all projects, background), refresh of one project after a cleanup, a measure from the storage section or a threshold change
+- [ ] 5.3 Core tests: default threshold, over/under after measuring, warning cleared after a cleanup, threshold change re-evaluated without a new measure, not over before the first measure; persistence test for the threshold round-trip and the migration default
 
-## 6. UI: Storage section
+## 6. Wiring
 
-- [ ] 6.1 `ProjectStorageView` (Storage tab next to Settings in `ProjectView`): usage figures with relative/absolute dates, database file size, refresh button; theme brushes only
-- [ ] 6.2 "Clear all" and "Keep the last [N] days" actions with confirmation stating how many groups (and pending ones) will be removed; disabled when the project has no events or the days are invalid
-- [ ] 6.3 Busy state while running, result message (removed groups/occurrences, new file size), figures refreshed; version footer stays visible
+- [ ] 6.1 App startup: run `RemoveOrphans` after opening the database, before monitors start; then measure storage sizes in the background
+- [ ] 6.2 Alert pipeline hourly purge tick also calls `Checkpoint` and refreshes the storage sizes
 
-## 7. Validation and release
+## 7. UI: Storage section
 
-- [ ] 7.1 `dotnet build` and `dotnet test`
-- [ ] 7.2 Launch the app, fill a project with the log simulator, check the figures, both cleanups, the file size dropping, and removing the project (manual check by the maintainer)
-- [ ] 7.3 Bump the development version `1.10.0.a` in `Directory.Build.props`
+- [ ] 7.1 `ProjectStorageView` (Storage tab next to Settings in `ProjectView`): usage figures with relative/absolute dates, database file size, refresh button; theme brushes only
+- [ ] 7.2 "Clear all" and "Keep the last [N] days" actions with confirmation stating how many groups (and pending ones) will be removed; disabled when the project has no events or the days are invalid
+- [ ] 7.3 Busy state while running, result message (removed groups/occurrences, new file size), figures refreshed; version footer stays visible
+- [ ] 7.4 Threshold field in the Storage section (whole MB, 1–10240, range shown when invalid) and highlighted over-threshold message above the cleanup actions (`MothWarningBrush`)
+- [ ] 7.5 Dashboard tile: "Storage over N MB" line from `StorageWarningOf`, status dot unchanged
+
+## 8. Validation and release
+
+- [ ] 8.1 `dotnet build` and `dotnet test`
+- [ ] 8.2 Launch the app, fill a project with the log simulator, check the figures, both cleanups, the file size dropping, the storage warning (lower the threshold until the tile shows it, clean until it disappears) and removing the project (manual check by the maintainer)
+- [ ] 8.3 Bump the development version `1.10.0.a` in `Directory.Build.props`
