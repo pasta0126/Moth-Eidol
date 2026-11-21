@@ -9,9 +9,8 @@ set "OUT=%ROOT%\artifacts"
 
 where dotnet >nul 2>nul || (echo dotnet SDK not found. Install it from https://dotnet.microsoft.com/download & exit /b 1)
 
-rem Leading spaces and tabs are delimiters too, so the first token is "Version" and the second the number.
 set "VERSION="
-for /f "tokens=2 delims=<> 	" %%v in ('findstr "<Version>" "%ROOT%\Directory.Build.props"') do set "VERSION=%%v"
+for /f "usebackq delims=" %%v in (`powershell -NoProfile -Command "([xml](Get-Content '%ROOT%\Directory.Build.props')).Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1"`) do set "VERSION=%%v"
 if not defined VERSION (echo Could not read the version from Directory.Build.props & exit /b 1)
 
 set "NAME=MothEidol-%VERSION%-win-x64"
