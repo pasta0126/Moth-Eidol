@@ -22,5 +22,7 @@
 ## 4. Verification
 
 - [x] 4.1 With the maintainer, create the repository variables and the `store` environment
-- [ ] 4.2 Run the Release workflow for a version that is not tagged and confirm it stops in `check`; run it with `store: false` for the next real version and check the GitHub Release (notes, zip, no MSIX) and a second run that updates it
-- [ ] 4.3 With the maintainer, set up the Entra ID app and secrets, run with `store: true`, approve, and confirm the submission in Partner Center has the new package and the changelog text; record any difference in the `msstore` commands in the design
+- [x] 4.2 Run the Release workflow for a version that is not tagged and confirm it stops in `check`; run it with `store: false` for the next real version and check the GitHub Release (notes, zip, no MSIX) and a second run that updates it
+- [ ] 4.3 (deferred: Entra ID app not set up yet; Store uploads stay manual until then) With the maintainer, set up the Entra ID app and secrets, run with `store: true`, approve, and confirm the submission in Partner Center has the new package and the changelog text; record any difference in the `msstore` commands in the design
+
+> Archived on 2026-11-21 after releasing 1.11.0 with the workflow (`store: false`). 4.2: missing tag and GitHub Release verified; the update-on-rerun path is untested. 4.3 deferred.
