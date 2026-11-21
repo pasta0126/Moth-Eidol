@@ -1,0 +1,235 @@
+name: Release
+
+# On-demand publication of a tagged version (Windows only). Pushing a commit or a tag publishes nothing.
+# Prepare the tag first with scripts/release.sh x.y.z (it requires the CHANGELOG.md entry).
+# Setup (repository variables, the "store" environment and its secrets): packaging/SUBMISSION.md.
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version x.y.z (the tag vX.Y.Z must exist)
+        required: true
+        type: string
+      store:
+        description: Also submit the MSIX to the Microsoft Store (asks for approval)
+        required: false
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-${{ inputs.version }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  VERSION: ${{ inputs.version }}
+
+jobs:
+  check:
+    name: Check tag, version and changelog
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate the version input
+        shell: bash
+        run: |
+          [[ "$VERSION" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ ]] \
+            || { echo "::error::'$VERSION' is not a release version x.y.z"; exit 1; }
+
+      - name: Check that the tag exists
+        shell: bash
+        env:
+          REPO_URL: ${{ github.server_url }}/${{ github.repository }}
+        run: |
+          git ls-remote --exit-code --tags "$REPO_URL" "refs/tags/v$VERSION" >/dev/null \
+            || { echo "::error::Tag v$VERSION does not exist. Prepare it with scripts/release.sh $VERSION"; exit 1; }
+
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/v${{ inputs.version }}
+
+      - name: Check the version at the tag
+        shell: bash
+        run: |
+          TAGGED="$(sed -n 's:.*<Version>\(.*\)</Version>.*:\1:p' Directory.Build.props | head -1)"
+          [ "$TAGGED" = "$VERSION" ] \
+            || { echo "::error::Directory.Build.props at v$VERSION holds '$TAGGED', expected '$VERSION'"; exit 1; }
+
+      - name: Extract the Store text (fails when missing or too long)
+        shell: pwsh
+        run: |
+          $text = & ./scripts/changelog-section.ps1 -Version $env:VERSION
+          if ($LASTEXITCODE -ne 0 -or -not $text) { exit 1 }
+          New-Item -ItemType Directory notes -Force | Out-Null
+          Set-Content notes/store.txt ($text -join "`n") -Encoding utf8NoBOM
+
+      - name: Extract the release notes (markdown)
+        shell: bash
+        run: |
+          awk -v v="$VERSION" '
+            index($0, "## [" v "]") == 1 { on = 1; next }
+            on && /^## / { exit }
+            on { print }
+          ' CHANGELOG.md | sed -e '/./,$!d' > notes/release.md
+          [ -s notes/release.md ] || { echo "::error::Empty changelog entry for $VERSION"; exit 1; }
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: notes
+          path: notes/
+
+  build:
+    name: Test and package (win-x64)
+    needs: check
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/v${{ inputs.version }}
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Test
+        run: dotnet test -c Release --nologo
+
+      - name: Zip
+        shell: cmd
+        run: scripts\publish.cmd
+
+      - name: Store identity from repository variables
+        shell: pwsh
+        env:
+          STORE_IDENTITY_NAME: ${{ vars.STORE_IDENTITY_NAME }}
+          STORE_PUBLISHER: ${{ vars.STORE_PUBLISHER }}
+          STORE_PUBLISHER_DISPLAY_NAME: ${{ vars.STORE_PUBLISHER_DISPLAY_NAME }}
+        run: |
+          $missing = 'STORE_IDENTITY_NAME', 'STORE_PUBLISHER', 'STORE_PUBLISHER_DISPLAY_NAME' |
+            Where-Object { -not [Environment]::GetEnvironmentVariable($_) }
+          if ($missing) { Write-Output "::error::Missing repository variable(s): $($missing -join ', ')"; exit 1 }
+          @{ identityName = $env:STORE_IDENTITY_NAME; publisher = $env:STORE_PUBLISHER; publisherDisplayName = $env:STORE_PUBLISHER_DISPLAY_NAME } |
+            ConvertTo-Json | Set-Content packaging/store-identity.local.json
+
+      - name: MSIX (unsigned, the Store signs it)
+        shell: pwsh
+        run: ./scripts/publish-msix.ps1
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows
+          path: |
+            artifacts/MothEidol-${{ inputs.version }}-win-x64.zip
+            artifacts/MothEidol-${{ inputs.version }}-win-x64.msix
+          if-no-files-found: error
+
+  github-release:
+    name: GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dl
+
+      - name: Create or update the release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          TAG="v$VERSION"
+          ZIP="dl/windows/MothEidol-$VERSION-win-x64.zip"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --title "$TAG" --notes-file dl/notes/release.md
+            gh release upload "$TAG" "$ZIP" --clobber
+            echo "Updated release $TAG" >> "$GITHUB_STEP_SUMMARY"
+          else
+            gh release create "$TAG" "$ZIP" --verify-tag --title "$TAG" --notes-file dl/notes/release.md
+            echo "Created release $TAG" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+  store:
+    name: Microsoft Store submission
+    needs: github-release
+    if: ${{ inputs.store }}
+    runs-on: windows-latest
+    environment: store
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dl
+
+      - name: Check Store configuration
+        shell: pwsh
+        env:
+          MSSTORE_TENANT_ID: ${{ secrets.MSSTORE_TENANT_ID }}
+          MSSTORE_SELLER_ID: ${{ secrets.MSSTORE_SELLER_ID }}
+          MSSTORE_CLIENT_ID: ${{ secrets.MSSTORE_CLIENT_ID }}
+          MSSTORE_CLIENT_SECRET: ${{ secrets.MSSTORE_CLIENT_SECRET }}
+          MSSTORE_PRODUCT_ID: ${{ vars.MSSTORE_PRODUCT_ID }}
+        run: |
+          $missing = 'MSSTORE_TENANT_ID', 'MSSTORE_SELLER_ID', 'MSSTORE_CLIENT_ID', 'MSSTORE_CLIENT_SECRET', 'MSSTORE_PRODUCT_ID' |
+            Where-Object { -not [Environment]::GetEnvironmentVariable($_) }
+          if ($missing) { Write-Output "::error::Missing in the 'store' environment: $($missing -join ', ')"; exit 1 }
+
+      - name: Install the Microsoft Store CLI
+        uses: microsoft/microsoft-store-apppublisher@v1.1
+
+      - name: Sign in to Partner Center
+        shell: pwsh
+        env:
+          MSSTORE_TENANT_ID: ${{ secrets.MSSTORE_TENANT_ID }}
+          MSSTORE_SELLER_ID: ${{ secrets.MSSTORE_SELLER_ID }}
+          MSSTORE_CLIENT_ID: ${{ secrets.MSSTORE_CLIENT_ID }}
+          MSSTORE_CLIENT_SECRET: ${{ secrets.MSSTORE_CLIENT_SECRET }}
+        run: |
+          msstore settings --enableTelemetry false | Out-Null
+          msstore reconfigure --tenantId $env:MSSTORE_TENANT_ID --sellerId $env:MSSTORE_SELLER_ID `
+            --clientId $env:MSSTORE_CLIENT_ID --clientSecret $env:MSSTORE_CLIENT_SECRET
+          if ($LASTEXITCODE -ne 0) { Write-Output '::error::Could not sign in to Partner Center'; exit 1 }
+
+      - name: Upload the package (draft submission)
+        shell: pwsh
+        env:
+          MSSTORE_PRODUCT_ID: ${{ vars.MSSTORE_PRODUCT_ID }}
+        run: |
+          $msix = (Resolve-Path "dl/windows/MothEidol-$env:VERSION-win-x64.msix").Path
+          msstore publish (Split-Path $msix) --inputFile $msix --appId $env:MSSTORE_PRODUCT_ID --noCommit
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: Set "What's new in this version"
+        shell: pwsh
+        env:
+          MSSTORE_PRODUCT_ID: ${{ vars.MSSTORE_PRODUCT_ID }}
+        run: |
+          $raw = (msstore submission get $env:MSSTORE_PRODUCT_ID) -join "`n"
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          $start = $raw.IndexOf('{')
+          if ($start -lt 0) { Write-Output '::error::Unexpected output from msstore submission get'; exit 1 }
+          $submission = $raw.Substring($start) | ConvertFrom-Json
+          $notes = Get-Content dl/notes/store.txt -Raw
+          $langs = @($submission.Listings.PSObject.Properties.Name)
+          if (-not $langs) { Write-Output '::error::The submission has no listings'; exit 1 }
+          foreach ($lang in $langs) { $submission.Listings.$lang.BaseListing.ReleaseNotes = $notes.Trim() }
+          Write-Output "Release notes set for: $($langs -join ', ')"
+          msstore submission update $env:MSSTORE_PRODUCT_ID ($submission | ConvertTo-Json -Depth 100 -Compress)
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+
+      - name: Submit for certification
+        shell: pwsh
+        env:
+          MSSTORE_PRODUCT_ID: ${{ vars.MSSTORE_PRODUCT_ID }}
+        run: |
+          msstore submission publish $env:MSSTORE_PRODUCT_ID
+          if ($LASTEXITCODE -ne 0) { exit 1 }
+          "Submitted $env:VERSION to the Microsoft Store for certification." >> $env:GITHUB_STEP_SUMMARY
+
+      - name: Report that the Store was not updated
+        if: ${{ failure() }}
+        shell: pwsh
+        run: |
+          "**The Microsoft Store was not updated.** The GitHub Release v$env:VERSION is published. A draft submission may remain in Partner Center; finish it by hand or run the workflow again with 'store' checked." >> $env:GITHUB_STEP_SUMMARY

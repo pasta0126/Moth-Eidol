@@ -80,7 +80,7 @@ Backlog (not scheduled): `tray-icon-theming` (black/white tray icon per OS theme
   1. Archive the OpenSpec change.
   2. Add the entry of the new version to `CHANGELOG.md` (user-facing language, grouped as Added / Changed / Fixed, with the release date). Only versions published to the Microsoft Store get an entry: a version that is tagged but not submitted is folded into the entry of the next published one, and fixes to bugs that never reached a published version are not listed.
   3. Bump the version according to semver and what was delivered (dropping the development `a` part).
-  4. Commit, push, and push the git tag `vX.Y.Z`.
+  4. Commit the changelog entry and run `scripts/release.sh X.Y.Z`: it checks the entry and the version, sets the version, commits, tags `vX.Y.Z` and pushes. A tag publishes nothing; if that version is finally not submitted, rename its entry to the next published version when folding it.
   5. **Tell the maintainer** so they can run the application manually and verify it.
 - The changelog is not shown inside the app. For a Microsoft Store submission, the "What's new in this version" text is the changelog entry of that version: `powershell -File scripts/changelog-section.ps1 -Version X.Y.Z` prints it ready to paste (it fails when the entry is missing or too long).
 - Do not start the next change before the maintainer has had the chance to verify.
@@ -115,8 +115,12 @@ Distribution (self-contained single-file zips that run after unzipping: no .NET,
 ```sh
 scripts/publish.sh [win-x64|osx-arm64|osx-x64|linux-x64 ...]   # default: all; output in artifacts/
 scripts\publish.cmd                                             # Windows host, win-x64 only
-powershell -File scripts\publish-msix.ps1                      # Microsoft Store MSIX, Windows host + Windows SDK (or the "Build MSIX" GitHub workflow)
+powershell -File scripts\publish-msix.ps1                      # Microsoft Store MSIX, Windows host + Windows SDK
+scripts/release.sh X.Y.Z                                        # set the version, commit, tag vX.Y.Z and push (needs the changelog entry)
+gh workflow run release.yml -f version=X.Y.Z [-f store=true]    # publish on demand: GitHub Release with the win-x64 zip, optional Store submission
 ```
+
+Publication is on demand only (the "Release" workflow, Windows artifacts); its setup and the manual fallback are in `packaging/SUBMISSION.md`.
 
 Shortcut to build and launch the app: `scripts/run.sh` (macOS/Linux) or `scripts\run.cmd` (Windows).
 
