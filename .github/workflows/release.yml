@@ -59,8 +59,9 @@ jobs:
       - name: Extract the Store text (fails when missing or too long)
         shell: pwsh
         run: |
+          # The script stops with an error (missing or too long entry); on success it sets no exit code.
           $text = & ./scripts/changelog-section.ps1 -Version $env:VERSION
-          if ($LASTEXITCODE -ne 0 -or -not $text) { exit 1 }
+          if (-not $text) { Write-Output "::error::No Store text for $env:VERSION"; exit 1 }
           New-Item -ItemType Directory notes -Force | Out-Null
           Set-Content notes/store.txt ($text -join "`n") -Encoding utf8NoBOM
 
