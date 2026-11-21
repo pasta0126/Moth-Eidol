@@ -21,6 +21,6 @@
 
 ## 4. Verification
 
-- [ ] 4.1 With the maintainer, create the repository variables and the `store` environment
+- [x] 4.1 With the maintainer, create the repository variables and the `store` environment
 - [ ] 4.2 Run the Release workflow for a version that is not tagged and confirm it stops in `check`; run it with `store: false` for the next real version and check the GitHub Release (notes, zip, no MSIX) and a second run that updates it
 - [ ] 4.3 With the maintainer, set up the Entra ID app and secrets, run with `store: true`, approve, and confirm the submission in Partner Center has the new package and the changelog text; record any difference in the `msstore` commands in the design
