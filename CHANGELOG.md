@@ -4,6 +4,17 @@ All notable changes to Moth-Eidol, newest first. Versions follow [semantic versi
 Only versions published to the Microsoft Store get an entry; versions in between are folded into the next published one.
 Each entry is written for the people who use the app; the technical detail lives in `openspec/`.
 
+## [1.11.0] - 2026-11-21
+
+### Added
+- A Storage section in each project, next to Settings, showing how much the project takes in the app's database: events, occurrences, approximate size, oldest and newest event, and the size of the whole database file.
+- Two ways to lighten a project, each after confirmation: clear all its events, or keep only the last N days. Sources, settings and read positions are kept, so lines already read are not alerted again, and the freed space is returned to the disk.
+- A storage warning per project: set a size in MB (100 by default) in the Storage section, and the project's tile tells you when it goes over it. Nothing is removed automatically.
+
+### Changed
+- Removing a project now removes all its stored events too, and leftovers from projects removed earlier are cleaned up when the app starts.
+- Faster and lighter recording of events in the database.
+
 ## [1.10.0] - 2026-11-10
 
 ### Added
