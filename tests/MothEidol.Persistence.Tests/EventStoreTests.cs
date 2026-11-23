@@ -135,24 +135,6 @@ public abstract class EventStoreContract : IDisposable
     }
 
     [Fact]
-    public void Purging_removes_quiet_seen_groups_and_never_pending_ones()
-    {
-        var store = Create();
-        var oldSeen = Record(store, "old-seen", second: 0);
-        Record(store, "old-pending", second: 0);
-        var recentSeen = Record(store, "recent-seen", second: 3600);
-        store.MarkSeen(oldSeen.Id, T0);
-        store.MarkSeen(recentSeen.Id, T0);
-
-        var removed = store.PurgeQuiet(T0.AddSeconds(1800));
-
-        Assert.Equal(1, removed);
-        Assert.Equal(2, store.Groups(1).Count);
-        Assert.Empty(store.Occurrences(oldSeen.Id));
-        Assert.DoesNotContain(store.Groups(1), g => g.Id == oldSeen.Id);
-    }
-
-    [Fact]
     public void Removing_a_project_removes_its_groups_and_occurrences()
     {
         var store = Create();
@@ -238,18 +220,15 @@ public abstract class EventStoreContract : IDisposable
     }
 
     [Fact]
-    public void Purging_a_group_or_removing_a_project_drops_its_hourly_counts()
+    public void Removing_a_project_drops_its_hourly_counts()
     {
         var store = Create();
-        var purged = store.Record(1, EntryLevel.Error, "a", "a", 10, T0, "m", 50);
-        store.MarkSeen(purged.Id, T0);
+        var kept = store.Record(1, EntryLevel.Error, "a", "a", 10, T0, "m", 50);
         var removed = store.Record(2, EntryLevel.Error, "b", "b", 10, T0, "m", 50);
 
-        store.PurgeQuiet(T0.AddHours(1));
         store.RemoveProject(2);
 
-        Assert.Equal(0, store.GroupSeries(purged.Id, T0, 24).Sum());
-        Assert.Equal(0, store.ProjectSeries(1, T0, 24).Sum());
+        Assert.Equal(1, store.GroupSeries(kept.Id, T0, 24).Sum());
         Assert.Equal(0, store.GroupSeries(removed.Id, T0, 24).Sum());
         Assert.Equal(0, store.ProjectSeries(2, T0, 24).Sum());
     }

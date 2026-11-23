@@ -125,27 +125,6 @@ public sealed class SqliteEventStore(SqliteDatabase database) : IEventStore
         return occurrences == 0 ? PendingSummary.None : new PendingSummary(occurrences, (EntryLevel)reader.GetInt32(1));
     }
 
-    public int PurgeQuiet(DateTimeOffset lastSeenBefore)
-    {
-        using var connection = database.CreateConnection();
-        using var transaction = connection.BeginTransaction();
-        var cutoff = lastSeenBefore.ToUnixTimeMilliseconds();
-
-        Execute(connection, transaction, """
-            DELETE FROM event_occurrences WHERE group_id IN
-                (SELECT id FROM event_groups WHERE pending_count = 0 AND last_seen < $cutoff);
-            """, ("$cutoff", cutoff));
-        Execute(connection, transaction, """
-            DELETE FROM event_buckets WHERE group_id IN
-                (SELECT id FROM event_groups WHERE pending_count = 0 AND last_seen < $cutoff);
-            """, ("$cutoff", cutoff));
-        var removed = Execute(connection, transaction,
-            "DELETE FROM event_groups WHERE pending_count = 0 AND last_seen < $cutoff;", ("$cutoff", cutoff));
-
-        transaction.Commit();
-        return removed;
-    }
-
     public void RemoveProject(long projectId)
     {
         using var connection = database.CreateConnection();

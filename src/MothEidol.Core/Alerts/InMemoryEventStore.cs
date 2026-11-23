@@ -100,11 +100,6 @@ public sealed class InMemoryEventStore : IEventStore
         }
     }
 
-    public int PurgeQuiet(DateTimeOffset lastSeenBefore)
-    {
-        lock (_gate) return _groups.RemoveAll(e => !e.Group.IsPending && e.Group.LastSeen < lastSeenBefore);
-    }
-
     public void RemoveProject(long projectId)
     {
         lock (_gate) _groups.RemoveAll(e => e.Group.ProjectId == projectId);
@@ -130,6 +125,14 @@ public sealed class InMemoryEventStore : IEventStore
                 occurrences.Count == 0 ? null : occurrences.Min(o => o.At),
                 occurrences.Count == 0 ? null : occurrences.Max(o => o.At));
         }
+    }
+
+    /// <summary>The usage of every project that holds events.</summary>
+    public IReadOnlyDictionary<long, MothEidol.Core.Projects.ProjectStorageUsage> UsageOfAll()
+    {
+        long[] ids;
+        lock (_gate) ids = [.. _groups.Select(e => e.Group.ProjectId).Distinct()];
+        return ids.ToDictionary(id => id, UsageOf);
     }
 
     /// <summary>Removes every group of the project, pending ones included.</summary>

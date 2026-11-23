@@ -9,7 +9,7 @@ public sealed class SqliteProjectRepository(SqliteDatabase database) : IProjectR
         using var connection = database.CreateConnection();
         using var command = connection.CreateCommand();
         command.CommandText = """
-            SELECT id, name, enabled, warning_alerts, frequency_mode, frequency_minutes, accent_color, position, storage_warning_mb
+            SELECT id, name, enabled, warning_alerts, frequency_mode, frequency_minutes, accent_color, position, storage_warning_mb, retention_days
             FROM projects ORDER BY position, id;
             """;
 
@@ -27,7 +27,8 @@ public sealed class SqliteProjectRepository(SqliteDatabase database) : IProjectR
                     (int)reader.GetInt64(5)),
                 reader.IsDBNull(6) ? null : reader.GetString(6),
                 (int)reader.GetInt64(7),
-                (int)reader.GetInt64(8)));
+                (int)reader.GetInt64(8),
+                (int)reader.GetInt64(9)));
         }
         return projects;
     }
@@ -55,7 +56,7 @@ public sealed class SqliteProjectRepository(SqliteDatabase database) : IProjectR
             UPDATE projects
                SET name = $name, enabled = $enabled, warning_alerts = $warnings,
                    frequency_mode = $mode, frequency_minutes = $minutes, accent_color = $accent,
-                   storage_warning_mb = $storage
+                   storage_warning_mb = $storage, retention_days = $retention
              WHERE id = $id;
             """;
         command.Parameters.AddWithValue("$id", project.Id);
@@ -66,6 +67,7 @@ public sealed class SqliteProjectRepository(SqliteDatabase database) : IProjectR
         command.Parameters.AddWithValue("$minutes", project.Alerts.Minutes);
         command.Parameters.AddWithValue("$accent", (object?)project.AccentColor ?? DBNull.Value);
         command.Parameters.AddWithValue("$storage", project.StorageWarningMb);
+        command.Parameters.AddWithValue("$retention", project.RetentionDays);
         command.ExecuteNonQuery();
     }
 

@@ -3,6 +3,7 @@ using Avalonia.Input.Platform;
 using Avalonia.Threading;
 using MothEidol.Core.Notifications;
 using MothEidol.Core.Platform;
+using MothEidol.Core.Projects;
 using MothEidol.Core.Settings;
 
 namespace MothEidol.App.Views;
@@ -19,11 +20,19 @@ public partial class AppSettingsView : UserControl
         InitializeComponent();
     }
 
-    public void Initialize(IAutostart autostart, AppSettings settings, NotificationDispatcher dispatcher, Action back)
+    public void Initialize(
+        IAutostart autostart, AppSettings settings, NotificationDispatcher dispatcher, AppStorageService storage,
+        Action<Project> openProject, Action back)
     {
         _autostart = autostart;
         _settings = settings;
         BackButton.Click += (_, _) => back();
+        StorageSection.Initialize(storage, openProject);
+        // The figures are measured when the section is shown, never on every new entry.
+        Sections.SelectionChanged += async (_, e) =>
+        {
+            if (e.Source == Sections && Sections.SelectedItem == StorageTab) await StorageSection.MeasureAsync();
+        };
         BuildChannels(settings, dispatcher);
         BuildSound(settings);
         BuildTheme(settings);
@@ -42,6 +51,12 @@ public partial class AppSettingsView : UserControl
             AutostartNote.Text = autostart.UnsupportedReason;
             AutostartNote.IsVisible = true;
         }
+    }
+
+    /// <summary>Called when the settings screen is shown: an open Storage section is measured again.</summary>
+    public async Task OnShownAsync()
+    {
+        if (Sections.SelectedItem == StorageTab) await StorageSection.MeasureAsync();
     }
 
     /// <summary>The theme applies as soon as it is chosen and is remembered for the next start.</summary>

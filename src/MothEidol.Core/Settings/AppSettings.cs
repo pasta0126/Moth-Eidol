@@ -21,7 +21,6 @@ public sealed class AppSettings(ISettingsRepository repository)
         public const string PollIntervalMs = "tail.poll_interval_ms";
         public const string ViewerMaxLines = "viewer.max_lines";
         public const string TailWordWrap = "viewer.word_wrap";
-        public const string EventRetentionDays = "alerts.retention_days";
         public const string Theme = "app.theme";
         public const string ShowSplash = "app.show_splash";
         public const string ChannelPrefix = "notify.";
@@ -68,13 +67,6 @@ public sealed class AppSettings(ISettingsRepository repository)
     {
         get => GetBool(Keys.TailWordWrap, defaultValue: true);
         set => SetBool(Keys.TailWordWrap, value);
-    }
-
-    /// <summary>How long a seen event group is kept without new occurrences; pending groups are never removed automatically.</summary>
-    public int EventRetentionDays
-    {
-        get => GetInt(Keys.EventRetentionDays, defaultValue: 30, min: 1);
-        set => SetInt(Keys.EventRetentionDays, value);
     }
 
     /// <summary>Whether a notification channel is on; channels that were never touched use their default.</summary>

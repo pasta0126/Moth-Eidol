@@ -25,6 +25,14 @@ public sealed record DatabaseFileUsage(long MainBytes, long WalBytes)
     public long TotalBytes => MainBytes + WalBytes;
 }
 
+/// <summary>Rows that belong to no existing project, source or group, per table.</summary>
+public sealed record LeftoverUsage(long Sources, long ReadPositions, long Groups, long Occurrences, long HourlyCounts)
+{
+    public static LeftoverUsage None { get; } = new(0, 0, 0, 0, 0);
+
+    public long Total => Sources + ReadPositions + Groups + Occurrences + HourlyCounts;
+}
+
 /// <summary>What a cleanup removed.</summary>
 public sealed record CleanupResult(int Groups, int Occurrences)
 {
@@ -49,7 +57,16 @@ public interface IProjectStorage
 {
     ProjectStorageUsage Usage(long projectId);
 
+    /// <summary>The usage of every project holding events, measured together; projects without events are absent.</summary>
+    IReadOnlyDictionary<long, ProjectStorageUsage> UsageOfAll();
+
     DatabaseFileUsage File();
+
+    /// <summary>Free space inside the file that a compaction would return to the disk.</summary>
+    long ReclaimableBytes();
+
+    /// <summary>Counts the rows <see cref="RemoveOrphans"/> would remove, without removing them.</summary>
+    LeftoverUsage Leftovers();
 
     /// <summary>Removes every event group of the project with its occurrences and hourly counts, pending ones included.</summary>
     CleanupResult ClearAll(long projectId);
@@ -75,7 +92,13 @@ public sealed class InMemoryProjectStorage(InMemoryEventStore events) : IProject
 {
     public ProjectStorageUsage Usage(long projectId) => events.UsageOf(projectId);
 
+    public IReadOnlyDictionary<long, ProjectStorageUsage> UsageOfAll() => events.UsageOfAll();
+
     public DatabaseFileUsage File() => DatabaseFileUsage.None;
+
+    public long ReclaimableBytes() => 0;
+
+    public LeftoverUsage Leftovers() => LeftoverUsage.None;
 
     public CleanupResult ClearAll(long projectId) => events.ClearProject(projectId);
 

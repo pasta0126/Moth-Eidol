@@ -11,7 +11,7 @@
                     <Button x:Name="RefreshButton" Grid.Column="1" Content="Refresh" />
                 </Grid>
                 <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
-                           Text="What this project keeps in the local database. Old seen events are removed automatically after the retention period; pending ones stay until you review or clean them." />
+                           Text="What this project keeps in the local database. History older than the retention below is removed automatically, pending events included." />
                 <Border Padding="12" CornerRadius="4" Background="{DynamicResource MothSurfaceBrush}">
                     <Grid x:Name="Figures" ColumnDefinitions="Auto,*" ColumnSpacing="24" RowSpacing="6"
                           RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto">
@@ -31,6 +31,21 @@
                         <SelectableTextBlock Grid.Row="6" Grid.Column="1" x:Name="FileText" Foreground="{DynamicResource MothTextBrush}" />
                     </Grid>
                 </Border>
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <SelectableTextBlock Text="Retention" FontWeight="SemiBold" FontSize="16"
+                           Foreground="{DynamicResource MothAccentBrush}" />
+                <SelectableTextBlock TextWrapping="Wrap" Foreground="{DynamicResource MothTextMutedBrush}"
+                           Text="Every hour, and when Moth-Eidol starts, events older than this are removed, pending ones included. Event groups with recent activity are kept with their totals." />
+                <StackPanel Orientation="Horizontal" Spacing="8">
+                    <SelectableTextBlock Text="Keep" VerticalAlignment="Center" Foreground="{DynamicResource MothTextBrush}" />
+                    <TextBox x:Name="RetentionBox" Width="70" MaxLength="3" />
+                    <SelectableTextBlock Text="days" VerticalAlignment="Center" Foreground="{DynamicResource MothTextBrush}" />
+                    <Button x:Name="ApplyRetentionButton" Content="Apply" />
+                </StackPanel>
+                <SelectableTextBlock x:Name="RetentionError" TextWrapping="Wrap" Foreground="{DynamicResource MothErrorBrush}" />
+                <SelectableTextBlock x:Name="RetentionResult" TextWrapping="Wrap" Foreground="{DynamicResource MothTextBrush}" />
             </StackPanel>
 
             <StackPanel Spacing="8">

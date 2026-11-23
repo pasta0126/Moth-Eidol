@@ -18,6 +18,9 @@ public enum DatabaseStatus
 public sealed class SqliteDatabase
 {
     private const int SqliteCorrupt = 11;
+
+    /// <summary>Inserted between the database file name and a timestamp to name the copy of a corrupt file.</summary>
+    public const string CorruptBackupMarker = ".corrupt-";
     private const int SqliteNotADatabase = 26;
 
     private SqliteDatabase(string path, DatabaseStatus status, string? backupPath, int? foundVersion)
@@ -122,7 +125,7 @@ public sealed class SqliteDatabase
     private static string BackupCorruptFile(string path)
     {
         var stamp = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
-        var backup = $"{path}.corrupt-{stamp}";
+        var backup = $"{path}{CorruptBackupMarker}{stamp}";
         File.Move(path, backup, overwrite: true);
 
         foreach (var suffix in new[] { "-wal", "-shm" })

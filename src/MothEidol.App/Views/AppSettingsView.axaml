@@ -1,13 +1,17 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:views="using:MothEidol.App.Views"
              x:Class="MothEidol.App.Views.AppSettingsView">
-    <Grid Margin="24" RowDefinitions="*,Auto">
-    <StackPanel Grid.Row="0" Spacing="12">
+    <DockPanel Margin="24,16,24,0">
+    <StackPanel DockPanel.Dock="Top" Spacing="12">
         <Button x:Name="BackButton" Content="&#x2190; Dashboard" HorizontalAlignment="Left" />
         <SelectableTextBlock Text="Settings" FontSize="28" FontWeight="Bold"
                    Foreground="{DynamicResource MothPrimaryBrush}" />
-        <Separator Margin="0,8" Background="{DynamicResource MothBorderBrush}" />
-
+    </StackPanel>
+    <TabControl x:Name="Sections" Margin="0,12,0,0">
+    <TabItem Header="General">
+    <Grid Margin="0,16,0,16" RowDefinitions="*,Auto">
+    <StackPanel Grid.Row="0" Spacing="12">
         <CheckBox x:Name="AutostartCheck" Content="Start with my session"
                   Foreground="{DynamicResource MothTextBrush}" />
         <SelectableTextBlock x:Name="AutostartNote" TextWrapping="Wrap" IsVisible="False"
@@ -67,4 +71,10 @@
                    Foreground="{DynamicResource MothTextMutedBrush}" />
     </StackPanel>
     </Grid>
+    </TabItem>
+    <TabItem x:Name="StorageTab" Header="Storage">
+        <views:AppStorageView x:Name="StorageSection" />
+    </TabItem>
+    </TabControl>
+    </DockPanel>
 </UserControl>

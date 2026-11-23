@@ -11,9 +11,6 @@ public sealed record AlertOptions
     /// <summary>Occurrences kept with their full text per group; the group count keeps growing beyond it.</summary>
     public int MaxOccurrencesPerGroup { get; init; } = 50;
 
-    /// <summary>How long a seen group is kept without new occurrences.</summary>
-    public TimeSpan Retention { get; init; } = TimeSpan.FromDays(30);
-
     /// <summary>How often cooldowns and intervals are checked.</summary>
     public TimeSpan TickInterval { get; init; } = TimeSpan.FromSeconds(1);
 
@@ -23,7 +20,7 @@ public sealed record AlertOptions
     /// <summary>Longest text kept per context entry.</summary>
     public int MaxContextTextLength { get; init; } = 600;
 
-    /// <summary>How often old seen groups are purged.</summary>
+    /// <summary>How often each project's history is trimmed to its retention (the first time right after starting).</summary>
     public TimeSpan PurgeInterval { get; init; } = TimeSpan.FromHours(1);
 }
 
@@ -167,7 +164,7 @@ public sealed class AlertPipeline : IAsyncDisposable
                     lastPurge = now;
                     try
                     {
-                        _store.PurgeQuiet(now - _options.Retention);
+                        _projects.ApplyRetention(now); // Each project's own retention, pending events included.
                         _store.PruneBuckets(now - TimeSpan.FromDays(8)); // The timeline reaches back 7 days.
                     }
                     catch (Exception) { /* Retry on the next purge. */ }

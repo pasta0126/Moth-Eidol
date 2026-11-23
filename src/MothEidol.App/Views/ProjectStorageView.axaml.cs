@@ -23,6 +23,9 @@ public partial class ProjectStorageView : UserControl
         ApplyThresholdButton.Click += (_, _) => ApplyThreshold();
         ThresholdBox.KeyDown += (_, e) => { if (e.Key == Key.Enter) ApplyThreshold(); };
         ThresholdBox.TextChanged += (_, _) => ThresholdError.Text = "";
+        ApplyRetentionButton.Click += async (_, _) => await ApplyRetentionAsync();
+        RetentionBox.KeyDown += async (_, e) => { if (e.Key == Key.Enter) await ApplyRetentionAsync(); };
+        RetentionBox.TextChanged += (_, _) => RetentionError.Text = "";
         DaysBox.TextChanged += (_, _) => UpdateActions();
         ClearButton.Click += (_, _) => AskClearAll();
         KeepButton.Click += (_, _) => AskKeepLastDays();
@@ -39,6 +42,8 @@ public partial class ProjectStorageView : UserControl
         _usage = ProjectStorageUsage.Empty;
         _measure++;
         ThresholdBox.Text = project.StorageWarningMb.ToString();
+        RetentionBox.Text = project.RetentionDays.ToString();
+        RetentionError.Text = RetentionResult.Text = "";
         DaysBox.Text = ProjectService.DefaultKeepDays.ToString();
         ThresholdError.Text = DaysError.Text = ResultText.Text = CleanupError.Text = "";
         ConfirmPanel.IsVisible = false;
@@ -111,7 +116,7 @@ public partial class ProjectStorageView : UserControl
             : "";
         KeepButton.IsEnabled = hasEvents && days is not null && !_busy;
         ClearButton.IsEnabled = hasEvents && !_busy;
-        DaysBox.IsEnabled = ThresholdBox.IsEnabled = !_busy;
+        DaysBox.IsEnabled = ThresholdBox.IsEnabled = RetentionBox.IsEnabled = ApplyRetentionButton.IsEnabled = !_busy;
     }
 
     private int? ValidDays() =>
@@ -140,6 +145,40 @@ public partial class ProjectStorageView : UserControl
         {
             ThresholdError.Text = ex.Message;
         }
+    }
+
+    private async Task ApplyRetentionAsync()
+    {
+        if (_projects is null || _busy) return;
+        RetentionResult.Text = "";
+        if (!int.TryParse(RetentionBox.Text?.Trim(), out var days)
+            || days is < Project.MinRetentionDays or > Project.MaxRetentionDays)
+        {
+            RetentionError.Text =
+                $"Enter a whole number of days between {Project.MinRetentionDays} and {Project.MaxRetentionDays}.";
+            return;
+        }
+
+        _busy = true;
+        UpdateActions();
+        try
+        {
+            var result = await _projects.SetRetentionAsync(_projectId, days);
+            RetentionError.Text = "";
+            RetentionResult.Text = result.Groups == 0 && result.Occurrences == 0
+                ? $"Saved. This project keeps {days} days of history."
+                : $"Saved. Removed {result.Groups:N0} event groups and {result.Occurrences:N0} occurrences older than {days} days.";
+        }
+        catch (Exception ex)
+        {
+            RetentionError.Text = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+            UpdateActions();
+        }
+        await MeasureAsync();
     }
 
     private void AskClearAll()

@@ -19,6 +19,10 @@ public sealed class ProjectService
     private Dictionary<long, long> _sourceProject = [];
     private Dictionary<long, Project> _snapshot = [];
     private Dictionary<long, long> _sizes = [];
+    private Task _compaction = Task.CompletedTask;
+
+    /// <summary>Free space the periodic upkeep needs before it compacts: at least this much and a quarter of the file.</summary>
+    public const long ProgressiveCompactionMinBytes = 8L * 1024 * 1024;
 
     /// <param name="events">When given, a project's recorded events are removed together with the project.</param>
     /// <param name="storage">When given, project storage can be measured and cleaned up, and the file compacted.</param>
@@ -178,8 +182,14 @@ public sealed class ProjectService
         lock (_gate) _sizes.Remove(id);
         RefreshSourceMap();
         RaiseChanged();
-        _ = Task.Run(CompactQuietly);
+        _compaction = Task.Run(CompactQuietly);
     }
+
+    /// <summary>Completes when the compaction queued by the last project removal has finished.</summary>
+    public Task WhenCompacted() => _compaction;
+
+    /// <summary>Returns the database's free space to the disk now, off the UI thread.</summary>
+    public Task CompactAsync() => Task.Run(CompactQuietly);
 
     /// <summary>Changes the storage threshold of a project (whole MB within the allowed range).</summary>
     public void SetStorageWarning(long id, int megabytes)
@@ -189,6 +199,47 @@ public sealed class ProjectService
                 $"The storage threshold must be between {Project.MinStorageWarningMb} and {Project.MaxStorageWarningMb:N0} MB.");
         _projects.Update(Require(id) with { StorageWarningMb = megabytes });
         RaiseChanged();
+    }
+
+    /// <summary>
+    /// Changes how many days of history the project keeps (1–365) and removes at once, off the UI thread, what is now
+    /// older than that.
+    /// </summary>
+    public async Task<CleanupResult> SetRetentionAsync(long id, int days)
+    {
+        if (days is < Project.MinRetentionDays or > Project.MaxRetentionDays)
+            throw new ArgumentException(
+                $"The retention must be between {Project.MinRetentionDays} and {Project.MaxRetentionDays} days.");
+        _projects.Update(Require(id) with { RetentionDays = days });
+        RaiseChanged();
+        var result = await Task.Run(() => TrimToRetention(id, days, _time.GetUtcNow()));
+        Measure(id);
+        return result;
+    }
+
+    /// <summary>
+    /// Removes from every project the history older than its retention, pending events included (at startup and
+    /// periodically). Returns what was removed in total.
+    /// </summary>
+    public CleanupResult ApplyRetention(DateTimeOffset now)
+    {
+        var groups = 0;
+        var occurrences = 0;
+        foreach (var project in _projects.List())
+        {
+            var removed = TrimToRetention(project.Id, project.RetentionDays, now);
+            groups += removed.Groups;
+            occurrences += removed.Occurrences;
+        }
+        return new CleanupResult(groups, occurrences);
+    }
+
+    private CleanupResult TrimToRetention(long projectId, int days, DateTimeOffset now)
+    {
+        if (_storage is not { } storage) return CleanupResult.Nothing;
+        _maintenance.Wait();
+        try { return storage.KeepLastDays(projectId, now - TimeSpan.FromDays(days)); }
+        finally { _maintenance.Release(); }
     }
 
     /// <summary>The project's last measured size against its threshold; cheap (reads only memory).</summary>
@@ -210,12 +261,28 @@ public sealed class ProjectService
     /// <summary>Measures every project, for the storage warnings (at startup and periodically).</summary>
     public Task RefreshStorageSizesAsync() => Task.Run(RefreshStorageSizes);
 
-    /// <summary>Periodic upkeep: checkpoints the write-ahead log and measures every project again.</summary>
+    /// <summary>
+    /// Periodic upkeep: checkpoints the write-ahead log, returns the free space to the disk once it is worth it
+    /// (see <see cref="ShouldCompact"/>) and measures every project again.
+    /// </summary>
     public void MaintainStorage()
     {
-        _storage?.Checkpoint();
+        if (_storage is { } storage)
+        {
+            storage.Checkpoint();
+            if (ShouldCompact(storage.ReclaimableBytes(), storage.File().TotalBytes))
+            {
+                _maintenance.Wait();
+                try { CompactCore(storage); }
+                finally { _maintenance.Release(); }
+            }
+        }
         RefreshStorageSizes();
     }
+
+    /// <summary>Compacting rewrites the whole file, so the periodic upkeep waits for a meaningful amount of free space.</summary>
+    public static bool ShouldCompact(long reclaimableBytes, long fileBytes) =>
+        reclaimableBytes >= ProgressiveCompactionMinBytes && reclaimableBytes * 4 >= fileBytes;
 
     /// <summary>Removes every event of the project (pending ones included) and returns the space to the disk.</summary>
     public Task<CleanupResult> ClearEventsAsync(long projectId)

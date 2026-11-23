@@ -30,13 +30,18 @@ public sealed record AlertSettings(bool WarningAlerts, FrequencyMode Mode, int M
 /// <param name="AccentColor">A normalized <c>#RRGGBB</c> color chosen by the user, or null for the default accent.</param>
 /// <param name="Position">Place in the user's order of the dashboard tiles (lower first).</param>
 /// <param name="StorageWarningMb">Approximate size in MB above which the project's storage is flagged.</param>
+/// <param name="RetentionDays">History older than this many days is removed automatically, pending events included.</param>
 public sealed record Project(
     long Id, string Name, bool Enabled, AlertSettings Alerts, string? AccentColor = null, int Position = 0,
-    int StorageWarningMb = Project.DefaultStorageWarningMb)
+    int StorageWarningMb = Project.DefaultStorageWarningMb, int RetentionDays = Project.DefaultRetentionDays)
 {
     public const int DefaultStorageWarningMb = 100;
     public const int MinStorageWarningMb = 1;
     public const int MaxStorageWarningMb = 10240;
+
+    public const int DefaultRetentionDays = 10;
+    public const int MinRetentionDays = 1;
+    public const int MaxRetentionDays = 365;
 }
 
 public interface IProjectRepository

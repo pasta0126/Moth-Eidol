@@ -46,6 +46,94 @@ public sealed class SqliteProjectStorage(SqliteDatabase database) : IProjectStor
             reader.IsDBNull(7) ? null : DateTimeOffset.FromUnixTimeMilliseconds(reader.GetInt64(7)));
     }
 
+    /// <summary>One pass per table grouped by project, instead of measuring each project on its own.</summary>
+    public IReadOnlyDictionary<long, ProjectStorageUsage> UsageOfAll()
+    {
+        var groups = new Dictionary<long, (long Count, long Pending, long Bytes)>();
+        var occurrences = new Dictionary<long, (long Count, long Bytes, long Oldest, long Newest)>();
+        var buckets = new Dictionary<long, long>();
+
+        using var connection = database.CreateConnection();
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText = """
+                SELECT project_id, COUNT(*), SUM(pending_count > 0),
+                       COALESCE(SUM(length(CAST(title AS BLOB)) + length(CAST(key AS BLOB))
+                                    + COALESCE(length(CAST(location AS BLOB)), 0)), 0)
+                  FROM event_groups GROUP BY project_id;
+                """;
+            using var reader = command.ExecuteReader();
+            while (reader.Read()) groups[reader.GetInt64(0)] = (reader.GetInt64(1), reader.GetInt64(2), reader.GetInt64(3));
+        }
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText = """
+                SELECT g.project_id, COUNT(*),
+                       COALESCE(SUM(length(CAST(o.message AS BLOB)) + COALESCE(length(CAST(o.context AS BLOB)), 0)), 0),
+                       MIN(o.at), MAX(o.at)
+                  FROM event_occurrences o JOIN event_groups g ON g.id = o.group_id
+                 GROUP BY g.project_id;
+                """;
+            using var reader = command.ExecuteReader();
+            while (reader.Read())
+                occurrences[reader.GetInt64(0)] = (reader.GetInt64(1), reader.GetInt64(2), reader.GetInt64(3), reader.GetInt64(4));
+        }
+        using (var command = connection.CreateCommand())
+        {
+            command.CommandText = "SELECT project_id, COUNT(*) FROM event_buckets GROUP BY project_id;";
+            using var reader = command.ExecuteReader();
+            while (reader.Read()) buckets[reader.GetInt64(0)] = reader.GetInt64(1);
+        }
+
+        var result = new Dictionary<long, ProjectStorageUsage>();
+        foreach (var id in groups.Keys.Union(occurrences.Keys).Union(buckets.Keys))
+        {
+            var g = groups.GetValueOrDefault(id);
+            var hasOccurrences = occurrences.TryGetValue(id, out var o);
+            var b = buckets.GetValueOrDefault(id);
+            var bytes = g.Bytes + o.Bytes
+                        + g.Count * ProjectStorageUsage.GroupOverhead
+                        + o.Count * ProjectStorageUsage.OccurrenceOverhead
+                        + b * ProjectStorageUsage.BucketOverhead;
+            result[id] = new ProjectStorageUsage(
+                g.Count, g.Pending, o.Count, b, bytes,
+                hasOccurrences ? DateTimeOffset.FromUnixTimeMilliseconds(o.Oldest) : null,
+                hasOccurrences ? DateTimeOffset.FromUnixTimeMilliseconds(o.Newest) : null);
+        }
+        return result;
+    }
+
+    public long ReclaimableBytes()
+    {
+        using var connection = database.CreateConnection();
+        using var command = connection.CreateCommand();
+        command.CommandText = "PRAGMA freelist_count;";
+        var pages = Convert.ToInt64(command.ExecuteScalar());
+        command.CommandText = "PRAGMA page_size;";
+        return pages * Convert.ToInt64(command.ExecuteScalar());
+    }
+
+    public LeftoverUsage Leftovers()
+    {
+        using var connection = database.CreateConnection();
+        using var command = connection.CreateCommand();
+        // The same conditions as RemoveOrphans; a row counted once even if its parent is an orphan too.
+        command.CommandText = """
+            SELECT
+                (SELECT COUNT(*) FROM log_sources WHERE project_id NOT IN (SELECT id FROM projects)),
+                (SELECT COUNT(*) FROM read_positions WHERE source_id NOT IN
+                    (SELECT id FROM log_sources WHERE project_id IN (SELECT id FROM projects))),
+                (SELECT COUNT(*) FROM event_groups WHERE project_id NOT IN (SELECT id FROM projects)),
+                (SELECT COUNT(*) FROM event_occurrences WHERE group_id NOT IN
+                    (SELECT id FROM event_groups WHERE project_id IN (SELECT id FROM projects))),
+                (SELECT COUNT(*) FROM event_buckets WHERE group_id NOT IN
+                    (SELECT id FROM event_groups WHERE project_id IN (SELECT id FROM projects)));
+            """;
+        using var reader = command.ExecuteReader();
+        reader.Read();
+        return new LeftoverUsage(reader.GetInt64(0), reader.GetInt64(1), reader.GetInt64(2), reader.GetInt64(3), reader.GetInt64(4));
+    }
+
     public DatabaseFileUsage File()
     {
         static long SizeOf(string path) => System.IO.File.Exists(path) ? new FileInfo(path).Length : 0;

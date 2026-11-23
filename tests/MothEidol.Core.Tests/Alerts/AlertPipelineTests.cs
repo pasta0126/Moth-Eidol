@@ -34,7 +34,8 @@ public sealed class AlertPipelineTests : IAsyncDisposable
             new InMemoryLogSourceRepository(), new InMemoryReadPositionStore(),
             new TailOptions { PollInterval = TimeSpan.FromMinutes(5), RetryInterval = TimeSpan.FromMinutes(5) },
             projectEnabled: id => projects?.IsEnabled(id) ?? true);
-        _projects = projects = new ProjectService(new InMemoryProjectRepository(), _tailing, _store);
+        _projects = projects = new ProjectService(
+            new InMemoryProjectRepository(), _tailing, _store, new InMemoryProjectStorage(_store), _time);
         _project = _projects.Create("Billing");
         _sourceId = _projects.AddSource(_project.Id, SourceKind.File, _temp.File("a.log"), null).Id;
     }
@@ -197,13 +198,12 @@ public sealed class AlertPipelineTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task Old_seen_groups_are_purged_but_pending_ones_are_kept()
+    public async Task History_older_than_the_project_retention_is_purged_pending_included()
     {
         var options = new AlertOptions
         {
             TickInterval = TimeSpan.FromMilliseconds(20),
             PurgeInterval = TimeSpan.FromMinutes(1),
-            Retention = TimeSpan.FromDays(30),
         };
         Start(options);
         await Publish(EntryLevel.Error, "seen and old");
@@ -211,10 +211,10 @@ public sealed class AlertPipelineTests : IAsyncDisposable
         await WaitForAsync(() => _store.Groups(_project.Id).Count == 2);
         _store.MarkSeen(_store.Groups(_project.Id).Single(g => g.Level == EntryLevel.Error).Id, T0);
 
-        _time.Advance(TimeSpan.FromDays(31));
+        _time.Advance(TimeSpan.FromDays(Project.DefaultRetentionDays + 1));
 
-        await WaitForAsync(() => _store.Groups(_project.Id).Count == 1);
-        Assert.Equal(EntryLevel.Fatal, _store.Groups(_project.Id).Single().Level);
+        await WaitForAsync(() => _store.Groups(_project.Id).Count == 0);
+        Assert.Equal(PendingSummary.None, _store.Pending(_project.Id));
     }
 
     private Task PublishAt(EntryLevel level, string message, int second, long? sourceId = null) =>

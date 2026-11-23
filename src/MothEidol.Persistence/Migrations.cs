@@ -90,5 +90,9 @@ public static class Migrations
             -- Approximate size in MB above which a project's storage is flagged.
             ALTER TABLE projects ADD COLUMN storage_warning_mb INTEGER NOT NULL DEFAULT 100;
             """),
+        new Migration(8, """
+            -- Days of history kept per project; older history is removed automatically, pending events included.
+            ALTER TABLE projects ADD COLUMN retention_days INTEGER NOT NULL DEFAULT 10;
+            """),
     ];
 }

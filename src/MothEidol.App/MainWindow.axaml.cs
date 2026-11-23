@@ -29,7 +29,8 @@ public partial class MainWindow : Window
         ProjectTails tails,
         IEventStore events,
         NotificationDispatcher notifications,
-        UnreadCounter unread) : this()
+        UnreadCounter unread,
+        AppStorageService appStorage) : this()
     {
         if (!string.IsNullOrEmpty(notice))
         {
@@ -37,10 +38,10 @@ public partial class MainWindow : Window
             NoticeBanner.IsVisible = true;
         }
 
-        Dashboard.Initialize(projects, tailing, events, OpenProject, () => Show(SettingsScreen), StartWizard);
+        Dashboard.Initialize(projects, tailing, events, OpenProject, ShowSettings, StartWizard);
         WizardScreen.Initialize(projects, project => OpenProject(project, false), ShowDashboard);
         ProjectScreen.Initialize(projects, tailing, tails, events, settings, ShowDashboard);
-        SettingsScreen.Initialize(autostart, settings, notifications, ShowDashboard);
+        SettingsScreen.Initialize(autostart, settings, notifications, appStorage, project => OpenProject(project, false), ShowDashboard);
 
         // Opening the application is how alerts get acknowledged: the tray counter returns to normal.
         Activated += (_, _) => unread.Acknowledge();
@@ -87,6 +88,12 @@ public partial class MainWindow : Window
     {
         Dashboard.Refresh();
         Show(Dashboard);
+    }
+
+    private void ShowSettings()
+    {
+        Show(SettingsScreen);
+        _ = SettingsScreen.OnShownAsync();
     }
 
     private void StartWizard()

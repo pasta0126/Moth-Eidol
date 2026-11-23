@@ -81,7 +81,8 @@ public partial class App : Application
                 ReconcileAutostart(settings, autostart);
 
                 // Rows left behind by an interrupted removal in an earlier run go before anything reads them.
-                try { storage.ProjectStorage.RemoveOrphans(); }
+                var swept = 0;
+                try { swept = storage.ProjectStorage.RemoveOrphans(); }
                 catch (Exception) { /* Best effort; the next start tries again. */ }
 
                 ProjectService? projects = null;
@@ -96,7 +97,7 @@ public partial class App : Application
                 _entries.Start(); // Subscribes before the sources start, so no line is missed.
                 _alerts = new AlertPipeline(
                     _entries.Entries, projects, storage.Events,
-                    new AlertOptions { Retention = TimeSpan.FromDays(settings.EventRetentionDays) });
+                    new AlertOptions());
                 _alerts.Start();
 
                 // Alerts reach the user through independent channels, each of which can be switched off.
@@ -123,8 +124,11 @@ public partial class App : Application
                 _tails = new ProjectTails(_entries.Entries, projects.ProjectOfSource, settings.ViewerMaxLines);
                 _tailing.Start();
                 desktop.Exit += (_, _) => StopTailing();
+                // What the sweep removed goes back to the disk once monitoring is already running.
+                if (swept > 0) _ = projects.CompactAsync();
 
-                _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, projects, _tails, storage.Events, _notifications, _unread);
+                var appStorage = new AppStorageService(projects, storage.ProjectStorage, storage.DataFolder);
+                _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, projects, _tails, storage.Events, _notifications, _unread, appStorage);
                 desktop.MainWindow = _mainWindow;
 
                 var trayIcons = TrayIcon.GetIcons(this);
@@ -187,6 +191,7 @@ public partial class App : Application
         IProjectRepository Projects,
         IEventStore Events,
         IProjectStorage ProjectStorage,
+        IDataFolder DataFolder,
         string? Notice);
 
     private static Storage OpenStorage()
@@ -217,6 +222,7 @@ public partial class App : Application
             new SqliteProjectRepository(database),
             new SqliteEventStore(database),
             new SqliteProjectStorage(database),
+            new SqliteDataFolder(database.Path),
             notice);
 
         static Storage InMemory(string notice)
@@ -229,6 +235,7 @@ public partial class App : Application
                 new InMemoryProjectRepository(),
                 events,
                 new InMemoryProjectStorage(events),
+                new NoDataFolder(),
                 notice);
         }
     }

@@ -63,9 +63,6 @@ public interface IEventStore
 
     PendingSummary Pending(long projectId);
 
-    /// <summary>Removes groups that have nothing pending and were last seen before the cutoff. Returns how many.</summary>
-    int PurgeQuiet(DateTimeOffset lastSeenBefore);
-
     void RemoveProject(long projectId);
 
     /// <summary>Occurrences of a group per hour for the last <paramref name="hours"/> hours, oldest first; the last is the current hour.</summary>
