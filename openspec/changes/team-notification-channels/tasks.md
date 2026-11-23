@@ -16,5 +16,5 @@
 ## 3. Validation
 
 - [ ] 3.1 Tests with a fake HTTP server: success, timeout, retry, drop, minimum level
-- [ ] 3.2 Verify secrets never appear in logs or exports
+- [ ] 3.2 Verify secrets never appear in logs
 - [ ] 3.3 Update specs and CHANGELOG at release

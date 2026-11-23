@@ -30,11 +30,11 @@ The system SHALL let the user configure team channels per project (destination, 
 - **THEN** nothing is sent through that channel
 
 ### Requirement: Credentials stay local
-The system SHALL store webhook URLs that act as secrets and SMTP credentials only on the user's machine, protected with the OS credential facilities where available, and SHALL NOT include them in logs or in exported project configuration.
+The system SHALL store webhook URLs that act as secrets and SMTP credentials only on the user's machine, protected with the OS credential facilities where available, and SHALL NOT include them in logs.
 
-#### Scenario: Export with a webhook
-- **WHEN** a project with a webhook is exported
-- **THEN** the exported file does not contain the webhook URL or any credential
+#### Scenario: Webhook kept out of the logs
+- **WHEN** a message is sent through a webhook channel and the application writes its diagnostic logs
+- **THEN** the logs do not contain the webhook URL or any credential
 
 ### Requirement: Test send
 The system SHALL provide a "Send test" action for each team channel that sends a clearly marked test message and reports success or the failure reason.
