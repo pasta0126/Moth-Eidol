@@ -96,12 +96,12 @@ The system SHALL show on each dashboard tile the number of pending occurrences a
 - **THEN** its tile shows the clear status
 
 ### Requirement: Persistence and retention
-The system SHALL persist groups, occurrences and seen state across runs and SHALL remove groups that were seen and have been quiet for longer than the configured retention, never removing pending groups automatically.
+The system SHALL persist groups, occurrences and seen state across runs and SHALL apply each project's retention automatically, as defined by the project storage retention: history older than the project's retention days is removed, pending groups included.
 
 #### Scenario: Restart
 - **WHEN** the application restarts
 - **THEN** groups and their pending/seen state are restored
 
 #### Scenario: Retention
-- **WHEN** a seen group has had no occurrences for longer than the retention
+- **WHEN** a group of a project has had no occurrences for longer than the project's retention, seen or pending
 - **THEN** it is removed
