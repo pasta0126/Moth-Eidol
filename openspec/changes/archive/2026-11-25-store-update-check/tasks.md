@@ -26,3 +26,4 @@
 
 - [x] 5.1 `dotnet build` and `dotnet test` pass on macOS; the zip build shows no setting and makes no check
 - [ ] 5.2 Maintainer: on a Store install older than the published version, the banner and one notification appear; "Not now" brings it back after restart; "Don't remind me" silences it after restart; turning the setting off hides it; "Open Store" opens the app's Store page
+  - Note: archived with 5.2 open at the maintainer's request (development finished). It can only be checked once a version newer than the installed one (1.12.0 or later) is published in the Store.
