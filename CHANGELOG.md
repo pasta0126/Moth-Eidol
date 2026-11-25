@@ -4,6 +4,17 @@ All notable changes to Moth-Eidol, newest first. Versions follow [semantic versi
 Only versions published to the Microsoft Store get an entry; versions in between are folded into the next published one.
 Each entry is written for the people who use the app; the technical detail lives in `openspec/`.
 
+## [1.12.0] - 2026-11-25
+
+### Added
+- The app tells you when a newer version is published in the Microsoft Store: a banner on the dashboard and one notification, with Open Store, Not now, and Don't remind me about this version. It can be turned off in Settings with "Check for new versions". The app never updates itself, and the check sends nothing about you, your projects or your logs.
+- A Storage section in Settings with the whole database at a glance: its size, every project with its events and size, disabled or unconfigured projects that still hold data, and leftovers from removed projects. From there you can clear or remove projects, remove leftovers and compact the database.
+- Each project keeps its history for a number of days (10 by default, up to 365), set in its Storage section. Older history is removed automatically.
+
+### Changed
+- On the first start of this version, history older than 10 days is removed from every project, pending events included. Raise a project's retention right after updating if you need to keep more.
+- Space freed in the database is now returned to the disk automatically.
+
 ## [1.11.0] - 2026-11-21
 
 ### Added
