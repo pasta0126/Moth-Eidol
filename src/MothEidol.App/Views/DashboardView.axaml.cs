@@ -7,6 +7,7 @@ using Avalonia.Threading;
 using MothEidol.Core.Alerts;
 using MothEidol.Core.Logs;
 using MothEidol.Core.Projects;
+using MothEidol.Core.Updates;
 
 namespace MothEidol.App.Views;
 
@@ -45,6 +46,28 @@ public partial class DashboardView : UserControl
         _timer.Tick += (_, _) => { if (IsEffectivelyVisible && _draggingId is null) Refresh(); };
         _timer.Start();
         Refresh();
+    }
+
+    /// <summary>
+    /// Shows the update banner while the Store check has a version to announce. Only called in the Store build;
+    /// elsewhere the banner never appears.
+    /// </summary>
+    public void InitializeUpdates(UpdateCheckService updates, Func<Task<bool>> openStore)
+    {
+        void Sync()
+        {
+            var version = updates.Notice;
+            UpdateBanner.IsVisible = version is not null;
+            if (version is null) return;
+            UpdateText.Text = $"Moth-Eidol {UpdateNoticePolicy.Format(version)} is available in the Microsoft Store.";
+            UpdateProblem.IsVisible = false;
+        }
+
+        OpenStoreButton.Click += async (_, _) => UpdateProblem.IsVisible = !await openStore();
+        NotNowButton.Click += (_, _) => updates.Postpone();
+        DismissUpdateButton.Click += (_, _) => updates.Dismiss();
+        updates.NoticeChanged += () => Dispatcher.UIThread.Post(Sync);
+        Sync();
     }
 
     public void Refresh()

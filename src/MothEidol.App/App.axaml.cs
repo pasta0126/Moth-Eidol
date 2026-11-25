@@ -15,6 +15,7 @@ using MothEidol.App.Platform;
 using MothEidol.App.Views;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Settings;
+using MothEidol.Core.Updates;
 using MothEidol.Persistence;
 
 namespace MothEidol.App;
@@ -111,11 +112,12 @@ public partial class App : Application
     #if WINDOWS10_0_19041_0_OR_GREATER
                 // Windows: the native notification carries the sound itself, so the sound channel is not registered.
                 Platform.WindowsNotifier.RegisterIdentity(ExtractNotificationIcon());
-                _notifications.Register(new Platform.WindowsNotifier(
+                var windowsNotifier = new Platform.WindowsNotifier(
                     projects,
                     () => settings.IsAlertSoundEnabled(NotificationDefaults.SoundEnabledByDefault(true)),
                     () => Dispatcher.UIThread.Post(ShowMainWindow),
-                    toastChannel.Show));
+                    toastChannel.Show);
+                _notifications.Register(windowsNotifier);
     #else
                 _notifications.Register(new SoundNotifier(new SystemAudioPlayer()));
     #endif
@@ -128,7 +130,27 @@ public partial class App : Application
                 if (swept > 0) _ = projects.CompactAsync();
 
                 var appStorage = new AppStorageService(projects, storage.ProjectStorage, storage.DataFolder);
-                _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, projects, _tails, storage.Events, _notifications, _unread, appStorage);
+                // Only the Store (MSIX) build asks the Store for newer versions; zip builds never contact anything.
+                UpdateCheckService? updates = null;
+                Func<Task<bool>>? openStore = null;
+    #if WINDOWS10_0_19041_0_OR_GREATER
+                if (PackageIdentity.IsPackaged)
+                {
+                    updates = new UpdateCheckService(new Platform.StoreUpdateSource(), settings, version);
+                    openStore = Platform.StorePage.OpenAsync;
+                }
+    #endif
+                _mainWindow = new MainWindow(version, autostart, settings, storage.Notice, _tailing, projects, _tails, storage.Events, _notifications, _unread, appStorage, updates, openStore);
+    #if WINDOWS10_0_19041_0_OR_GREATER
+                if (updates is not null)
+                {
+                    // Once per start, after monitoring is running, without holding up the startup.
+                    updates.NoticeAvailable += v => windowsNotifier.ShowUpdateAvailable(
+                        UpdateNoticePolicy.Format(v),
+                        () => Dispatcher.UIThread.Post(() => _mainWindow?.ShowUpdateNotice()));
+                    _ = Task.Run(() => updates.CheckAsync());
+                }
+    #endif
                 desktop.MainWindow = _mainWindow;
 
                 var trayIcons = TrayIcon.GetIcons(this);

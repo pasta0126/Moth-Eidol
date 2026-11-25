@@ -18,6 +18,16 @@ public class NativeNotificationTests
     }
 
     [Fact]
+    public void ToastXml_UpdateNamesTheVersionAndIsSilent()
+    {
+        var xml = ToastXml.BuildUpdate("1.12.0");
+
+        Assert.Contains("<text>Moth-Eidol 1.12.0 is available</text>", xml);
+        Assert.Contains("Microsoft Store", xml);
+        Assert.Contains("<audio silent=\"true\"", xml);
+    }
+
+    [Fact]
     public void ToastXml_WithSoundHasNoAudioElement()
     {
         var xml = ToastXml.Build(new AlertText("P", EntryLevel.Warning, "h", null), silent: false);

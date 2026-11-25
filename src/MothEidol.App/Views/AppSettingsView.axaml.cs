@@ -5,6 +5,7 @@ using MothEidol.Core.Notifications;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Projects;
 using MothEidol.Core.Settings;
+using MothEidol.Core.Updates;
 
 namespace MothEidol.App.Views;
 
@@ -51,6 +52,14 @@ public partial class AppSettingsView : UserControl
             AutostartNote.Text = autostart.UnsupportedReason;
             AutostartNote.IsVisible = true;
         }
+    }
+
+    /// <summary>"Check for new versions": only offered in the Store build, where the check exists.</summary>
+    public void InitializeUpdates(UpdateCheckService updates, AppSettings settings)
+    {
+        UpdateCheck.IsVisible = true;
+        UpdateCheck.IsChecked = settings.CheckForUpdates;
+        UpdateCheck.Click += (_, _) => updates.SetEnabled(UpdateCheck.IsChecked == true);
     }
 
     /// <summary>Called when the settings screen is shown: an open Storage section is measured again.</summary>

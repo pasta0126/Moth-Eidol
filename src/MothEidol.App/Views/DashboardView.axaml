@@ -12,6 +12,24 @@
             <Button x:Name="SettingsButton" Grid.Column="1" Content="Settings" VerticalAlignment="Top" />
         </Grid>
 
+        <Border x:Name="UpdateBanner" DockPanel.Dock="Top" IsVisible="False" Margin="0,16,0,0" Padding="12"
+                CornerRadius="4" BorderThickness="1"
+                Background="{DynamicResource MothSurfaceAltBrush}"
+                BorderBrush="{DynamicResource MothInfoBrush}">
+            <StackPanel Spacing="8">
+                <SelectableTextBlock x:Name="UpdateText" TextWrapping="Wrap" FontWeight="SemiBold"
+                           Foreground="{DynamicResource MothTextBrush}" />
+                <WrapPanel Orientation="Horizontal" ItemSpacing="8" LineSpacing="8">
+                    <Button x:Name="OpenStoreButton" Content="Open Store" />
+                    <Button x:Name="NotNowButton" Content="Not now" />
+                    <Button x:Name="DismissUpdateButton" Content="Don't remind me about this version" />
+                </WrapPanel>
+                <SelectableTextBlock x:Name="UpdateProblem" TextWrapping="Wrap" FontSize="12" IsVisible="False"
+                           Text="The Microsoft Store could not be opened. Update Moth-Eidol from the Microsoft Store app."
+                           Foreground="{DynamicResource MothTextMutedBrush}" />
+            </StackPanel>
+        </Border>
+
         <SelectableTextBlock x:Name="HintText" DockPanel.Dock="Top" Margin="0,16,0,0" IsVisible="False" TextWrapping="Wrap"
                    Text="No projects yet. Create one and the wizard will guide you through its log folders and alerts."
                    Foreground="{DynamicResource MothTextMutedBrush}" />

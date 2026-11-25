@@ -6,6 +6,7 @@ using MothEidol.Core.Notifications;
 using MothEidol.Core.Platform;
 using MothEidol.Core.Projects;
 using MothEidol.Core.Settings;
+using MothEidol.Core.Updates;
 
 namespace MothEidol.App;
 
@@ -30,7 +31,9 @@ public partial class MainWindow : Window
         IEventStore events,
         NotificationDispatcher notifications,
         UnreadCounter unread,
-        AppStorageService appStorage) : this()
+        AppStorageService appStorage,
+        UpdateCheckService? updates = null,
+        Func<Task<bool>>? openStore = null) : this()
     {
         if (!string.IsNullOrEmpty(notice))
         {
@@ -42,6 +45,11 @@ public partial class MainWindow : Window
         WizardScreen.Initialize(projects, project => OpenProject(project, false), ShowDashboard);
         ProjectScreen.Initialize(projects, tailing, tails, events, settings, ShowDashboard);
         SettingsScreen.Initialize(autostart, settings, notifications, appStorage, project => OpenProject(project, false), ShowDashboard);
+        if (updates is not null && openStore is not null)
+        {
+            Dashboard.InitializeUpdates(updates, openStore);
+            SettingsScreen.InitializeUpdates(updates, settings);
+        }
 
         // Opening the application is how alerts get acknowledged: the tray counter returns to normal.
         Activated += (_, _) => unread.Acknowledge();
@@ -68,6 +76,13 @@ public partial class MainWindow : Window
         }
 
         Activate();
+    }
+
+    /// <summary>Brings the window up on the dashboard, where the update banner is (click on the update notification).</summary>
+    public void ShowUpdateNotice()
+    {
+        ShowFromTray();
+        ShowDashboard();
     }
 
     protected override void OnClosing(WindowClosingEventArgs e)

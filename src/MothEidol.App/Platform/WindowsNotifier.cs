@@ -61,6 +61,29 @@ public sealed class WindowsNotifier(
         }
     }
 
+    /// <summary>
+    /// Announces a newer Store version: silent, outside the alert channels and the tray counter. Clicking it runs
+    /// <paramref name="activate"/>. Best effort: when it cannot be shown, the dashboard banner is enough.
+    /// </summary>
+    public void ShowUpdateAvailable(string version, Action activate)
+    {
+        try
+        {
+            var notifier = Notifier();
+            if (notifier.Setting != NotificationSetting.Enabled) return;
+
+            var xml = new XmlDocument();
+            xml.LoadXml(ToastXml.BuildUpdate(version));
+            var toast = new ToastNotification(xml);
+            toast.Activated += (_, _) => activate();
+            notifier.Show(toast);
+        }
+        catch (Exception)
+        {
+            // See the summary.
+        }
+    }
+
     private OsToastNotifier Notifier() => _notifier ??= PackageIdentity.IsPackaged
         ? ToastNotificationManager.CreateToastNotifier()
         : ToastNotificationManager.CreateToastNotifier(Aumid);

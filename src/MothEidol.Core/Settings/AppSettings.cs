@@ -24,6 +24,8 @@ public sealed class AppSettings(ISettingsRepository repository)
         public const string Theme = "app.theme";
         public const string ShowSplash = "app.show_splash";
         public const string ChannelPrefix = "notify.";
+        public const string CheckForUpdates = "update.check_enabled";
+        public const string DismissedUpdateVersion = "update.dismissed_version";
     }
 
     public bool StartWithSession
@@ -46,6 +48,20 @@ public sealed class AppSettings(ISettingsRepository repository)
     {
         get => GetBool(Keys.ShowSplash, defaultValue: true);
         set => SetBool(Keys.ShowSplash, value);
+    }
+
+    /// <summary>Whether the Store build asks the Microsoft Store for a newer version at startup (on by default).</summary>
+    public bool CheckForUpdates
+    {
+        get => GetBool(Keys.CheckForUpdates, defaultValue: true);
+        set => SetBool(Keys.CheckForUpdates, value);
+    }
+
+    /// <summary>The version (x.y.z) the user asked not to be reminded about; empty when none.</summary>
+    public string DismissedUpdateVersion
+    {
+        get => repository.Get(Keys.DismissedUpdateVersion) ?? string.Empty;
+        set => repository.Set(Keys.DismissedUpdateVersion, value);
     }
 
     /// <summary>Polling interval of the log sources, in milliseconds (the worst-case latency of a new line).</summary>

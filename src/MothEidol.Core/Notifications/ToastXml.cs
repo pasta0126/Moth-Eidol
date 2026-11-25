@@ -24,6 +24,18 @@ public static class ToastXml
         return toast.ToString(SaveOptions.DisableFormatting);
     }
 
+    /// <summary>The silent notification announcing a newer version published in the Microsoft Store.</summary>
+    public static string BuildUpdate(string version)
+    {
+        var toast = new XElement("toast",
+            new XElement("visual",
+                new XElement("binding", new XAttribute("template", "ToastGeneric"),
+                    new XElement("text", $"Moth-Eidol {version} is available"),
+                    new XElement("text", "Update it from the Microsoft Store whenever you like."))),
+            new XElement("audio", new XAttribute("silent", "true")));
+        return toast.ToString(SaveOptions.DisableFormatting);
+    }
+
     private static string LevelWord(EntryLevel level) => level switch
     {
         EntryLevel.Fatal => "Fatal",

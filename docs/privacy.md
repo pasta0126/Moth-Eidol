@@ -4,7 +4,7 @@ title: Moth-Eidol privacy policy
 
 # Moth-Eidol privacy policy
 
-_Last updated: 2026-11-05_
+_Last updated: 2026-11-24_
 
 Moth-Eidol is an open-source desktop application that monitors log files on your own computer.
 Source code: <https://github.com/pasta0126/Moth-Eidol>
@@ -14,7 +14,8 @@ Source code: <https://github.com/pasta0126/Moth-Eidol>
 - **Everything stays on your device.** The app reads the log files and folders you choose, with your own
   operating system permissions, and stores its settings, projects and detected events in a local database in your user profile.
 - **No data is collected or sent.** The app has no accounts, analytics, telemetry, advertising or crash reporting, and it does not
-  connect to any server of ours or of third parties.
+  connect to any server of ours or of third parties. The only exception is the version check of the Microsoft Store edition,
+  described below.
 - **No data is shared or sold.** We have no access to your logs, projects or settings.
 - **Network shares.** If you point a project at a network share, the app reads it through your operating system,
   exactly as any other program running as you would.
@@ -24,6 +25,14 @@ Source code: <https://github.com/pasta0126/Moth-Eidol>
 The Settings screen has links (support the author, suggestions and bugs, the author's GitHub). They only open your web browser
 when you click them; the app sends nothing with them. Suggestions and bug reports are public GitHub issues that you write yourself,
 on GitHub, with your own account. The app never collects or sends feedback on its own.
+
+## Checking for new versions (Microsoft Store edition)
+
+When installed from the Microsoft Store, the app asks the Microsoft Store once at startup, through Windows, whether a newer
+version of Moth-Eidol is published, and tells you if there is one. Nothing about your projects, logs or settings is sent; the
+request is handled by Windows and the Microsoft Store like any Store update check. The app never downloads or installs the
+update by itself. You can turn this off in Settings > "Check for new versions in the Microsoft Store at startup". The zip
+edition never makes this check.
 
 ## Notifications and startup
 
